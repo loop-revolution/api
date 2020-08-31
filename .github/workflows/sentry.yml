@@ -1,10 +1,10 @@
-name: Format
+name: Sentry
 on:
   push:
     branches:
       - main
 jobs:
-  format:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
