@@ -11,9 +11,9 @@ schema.extendType({
       args: {
         data: schema.stringArg(),
       },
-      async resolve(_root, { data }, ctx) {
+      resolve(_root, { data }, ctx) {
         const personId = getPersonId(ctx.token)
-        const block = await ctx.db.block.create({
+        return ctx.db.block.create({
           data: {
             data: data ?? '',
             owner: {
@@ -23,7 +23,6 @@ schema.extendType({
             },
           },
         })
-        return block
       },
     })
   },
