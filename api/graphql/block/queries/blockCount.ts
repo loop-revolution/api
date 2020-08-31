@@ -8,7 +8,7 @@ schema.extendType({
       type: 'Int',
       resolve(_root, _args, ctx) {
         return ctx.db.block.count()
-      }
+      },
     })
   },
 })

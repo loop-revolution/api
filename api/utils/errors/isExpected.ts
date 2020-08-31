@@ -1,5 +1,5 @@
-import { AuthenticationError, AuthorizationError } from "./auth";
-import { InvalidPasswordError } from "./password";
+import { AuthenticationError, AuthorizationError } from './auth'
+import { InvalidPasswordError } from './password'
 
 /**
  * Returns true if the error is expected through a query.

@@ -13,16 +13,24 @@ export const hashPassword = async (password: string) => {
   return hashedBuffer.toString('base64')
 }
 
-export const verifyPassword = async ({hashedPassword, password }: { hashedPassword: string, password: string }) =>
+export const verifyPassword = async ({ hashedPassword, password }: { hashedPassword: string; password: string }) =>
   SP.verify(Buffer.from(password), Buffer.from(hashedPassword, 'base64'))
 
 /** Authenticate whether or not a person's name and password match */
-export const authenticatePerson = async ({refName,password, db }: { refName: string, password: string, db: PrismaClient }) => {
+export const authenticatePerson = async ({
+  refName,
+  password,
+  db,
+}: {
+  refName: string
+  password: string
+  db: PrismaClient
+}) => {
   const person = await db.person.findOne({ where: { refName } })
   if (!person || !person.hashedPassword) {
     throw new AuthenticationError()
   }
-  switch (await verifyPassword({hashedPassword: person.hashedPassword, password})) {
+  switch (await verifyPassword({ hashedPassword: person.hashedPassword, password })) {
     case SecurePassword.VALID:
       break
     case SecurePassword.VALID_NEEDS_REHASH:

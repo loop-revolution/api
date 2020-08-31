@@ -11,7 +11,7 @@ schema.extendType({
       args: {
         data: schema.stringArg(),
       },
-      async resolve(_root, {data}, ctx) {
+      async resolve(_root, { data }, ctx) {
         const personId = getPersonId(ctx.token)
         const block = await ctx.db.block.create({
           data: {

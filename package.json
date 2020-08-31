@@ -21,8 +21,7 @@
     "nexus-plugin-shield": "^0.2.0",
     "secure-password": "^4.0.0"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "author": "Louis Birla <louis@birla.io>",
   "license": "MIT",
   "description": "The GraphQL api for interacting with the Blocks system",

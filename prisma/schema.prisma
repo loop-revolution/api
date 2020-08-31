@@ -20,12 +20,12 @@ model Block {
 }
 
 model Person {
-  id      Int     @id @default(autoincrement())
+  id             Int     @id @default(autoincrement())
   // The handle of the person @name
-  name    String  @unique
-  refName String  @unique
+  name           String  @unique
+  refName        String  @unique
   // The password, hashed with bcrypt
   hashedPassword String
   // Blocks owned by this person
-  owned   Block[]
+  owned          Block[]
 }

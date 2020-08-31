@@ -37,6 +37,6 @@ export const permissions = shield({
       }
       Sentry.captureException(err)
       return err
-    }
-  }
+    },
+  },
 })

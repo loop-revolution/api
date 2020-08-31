@@ -1,9 +1,9 @@
-import { appSecret } from '../../../utils/auth/secret';
-import { authenticatePerson } from '../../../utils/auth/password';
-import { AuthPayload } from './AuthPayload';
-import { makeReferenceName } from '../../../utils/person/name';
-import { schema } from 'nexus';
-import { sign } from 'jsonwebtoken';
+import { appSecret } from '../../../utils/auth/secret'
+import { authenticatePerson } from '../../../utils/auth/password'
+import { AuthPayload } from './AuthPayload'
+import { makeReferenceName } from '../../../utils/person/name'
+import { schema } from 'nexus'
+import { sign } from 'jsonwebtoken'
 
 /**
  * To log in to an account.
