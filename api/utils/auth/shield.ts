@@ -1,12 +1,12 @@
 import { rule, not, shield } from 'nexus-plugin-shield'
 import { getPersonId } from './getPersonId'
 import { isExpected } from '../errors/isExpected'
-import * as Sentry from '@sentry/node'
+import { init, captureException } from '@sentry/node'
 
 // Error reporting
 const dsn = process.env.SENTRY_DSN
 if (dsn) {
-  Sentry.init({ dsn: process.env.SENTRY_DSN })
+  init({ dsn: process.env.SENTRY_DSN })
 }
 
 /** Makes sure that a person id exists */
@@ -35,7 +35,7 @@ export const permissions = shield({
       if (isExpected(err)) {
         return err
       }
-      Sentry.captureException(err)
+      captureException(err)
       return err
     },
   },
