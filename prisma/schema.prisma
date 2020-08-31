@@ -1,0 +1,31 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Block {
+  id      Int    @id @default(autoincrement())
+  // The intrinsic data of the block
+  data    String
+  // Who owns this block?
+  owner   Person @relation(fields: [ownerId], references: [id])
+  ownerId Int
+}
+
+model Person {
+  id      Int     @id @default(autoincrement())
+  // The handle of the person @name
+  name    String  @unique
+  refName String  @unique
+  // The password, hashed with bcrypt
+  hashedPassword String
+  // Blocks owned by this person
+  owned   Block[]
+}

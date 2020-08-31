@@ -1,0 +1,10 @@
+{
+  "extends": ["config:base"],
+  "packageRules": [
+    {
+      "updateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    }
+  ],
+  "labels": ["effort: low", "topic: dependencies", "type: maintenance"]
+}
