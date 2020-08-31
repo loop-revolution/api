@@ -1,0 +1,6 @@
+pull_request_rules:
+  - name: Automatic branch updates
+    conditions:
+      - base=main
+    actions:
+      update: {}
