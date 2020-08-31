@@ -1,0 +1,6 @@
+# Sensitive stuff
+.env
+prisma/.env
+
+# Git
+.git
