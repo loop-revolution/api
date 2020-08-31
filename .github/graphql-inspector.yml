@@ -1,0 +1,4 @@
+branch: 'main'
+schema: 'api.graphql'
+notifications:
+  slack: 'https://hooks.slack.com/services/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'
