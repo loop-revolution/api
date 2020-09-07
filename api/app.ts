@@ -25,6 +25,6 @@ settings.change({
     host: '/',
     graphql: {
       introspection: true,
-    }
+    },
   },
 })
