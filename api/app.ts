@@ -26,6 +26,11 @@ settings.change({
     graphql: {
       introspection: true,
     },
-    cors: true,
+    cors: {
+      origin: (origin, callback) => callback(null, true),
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+    },
   },
 })
