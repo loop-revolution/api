@@ -1,8 +1,8 @@
 // This is for setting up connections with GraphQL
-import { schema } from "nexus";
+import { schema } from 'nexus'
 
 const data = {
-  count: 1
+  count: 1,
 }
 
 /** Returns a list of blocks */
@@ -13,7 +13,7 @@ schema.extendType({
       type: 'Int',
       resolve(_root, _args, ctx) {
         return data.count
-      }
+      },
     })
   },
 })
@@ -24,13 +24,12 @@ schema.extendType({
     t.field('updateCount', {
       type: 'Int',
       args: {
-        by: schema.intArg({required: true})
+        by: schema.intArg({ required: true }),
       },
       resolve(_root, { by }, ctx) {
         data.count += by
         return data.count
-      }
+      },
     })
   },
 })
-
