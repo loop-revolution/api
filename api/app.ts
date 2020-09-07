@@ -25,10 +25,6 @@ settings.change({
     path: '/',
     graphql: {
       introspection: true,
-    },
-    cors: {
-      enabled: true,
-      origin: /(https?:\/\/)?[\w.]+(:\d+)?/g,
-    },
+    },cors: true,
   },
 })
