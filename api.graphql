@@ -33,6 +33,7 @@ type Mutation {
   login(name: String!, password: String!): AuthPayload
   signup(name: String!, password: String!): AuthPayload
   updateBlockData(blockId: Int!, newData: String!): Block
+  updateCount(by: Int!): Int
 }
 
 type Person {
@@ -50,5 +51,6 @@ input PersonWhereUniqueInput {
 type Query {
   blockCount: Int
   blocks(after: BlockWhereUniqueInput, before: BlockWhereUniqueInput, first: Int, last: Int): [Block!]!
+  count: Int
   people(after: PersonWhereUniqueInput, before: PersonWhereUniqueInput, first: Int, last: Int): [Person!]!
 }
