@@ -26,7 +26,7 @@ schema.extendType({
       args: {
         by: schema.intArg({ required: true }),
       },
-      resolve(_root, { by }, ctx) {
+      resolve(_root, { by }) {
         data.count += by
         return data.count
       },
