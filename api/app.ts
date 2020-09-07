@@ -2,7 +2,7 @@ import { appSecret } from './utils/auth/secret'
 import { auth } from 'nexus-plugin-jwt-auth'
 import { permissions } from './utils/auth/shield'
 import { prisma } from 'nexus-plugin-prisma'
-import { use } from 'nexus'
+import { use, settings } from 'nexus'
 
 // Plugins
 use(
@@ -18,3 +18,13 @@ use(
   }),
 )
 use(permissions)
+
+settings.change({
+  server: {
+    playground: true,
+    host: '/',
+    graphql: {
+      introspection: true,
+    }
+  },
+})
