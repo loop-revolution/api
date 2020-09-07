@@ -29,6 +29,6 @@ settings.change({
     cors: {
       enabled: true,
       origin: /(https?:\/\/)?[\w.]+(:\d+)?/g,
-    }
+    },
   },
 })
