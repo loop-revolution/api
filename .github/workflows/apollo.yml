@@ -1,0 +1,15 @@
+name: Apollo Studio
+on:
+  push:
+    branches:
+      - main
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: actions/setup-node@v2-beta
+      - name: Push the schema
+        run: npx apollo service:push --graph=loop-api --key=service:loop-api:pLypVMOIhNXMDkyu7NDyYg --variant=current --localSchemaFile=./schema.graphql
