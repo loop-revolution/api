@@ -12,4 +12,4 @@ jobs:
           ref: ${{ github.head_ref }}
       - uses: actions/setup-node@v2-beta
       - name: Push the schema
-        run: npx apollo service:push --graph=loop-api --key=service:loop-api:pLypVMOIhNXMDkyu7NDyYg --variant=current --localSchemaFile=./schema.graphql
+        run: npx apollo service:push --graph=loop-api --key=service:loop-api:pLypVMOIhNXMDkyu7NDyYg --variant=current --localSchemaFile=./api.graphql
