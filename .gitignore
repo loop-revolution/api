@@ -7,6 +7,9 @@ prisma/migrations
 # VSCode
 .vscode
 
+# Temp
+.temp*
+
 # Created by https://www.toptal.com/developers/gitignore/api/yarn,node,macos,linux,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=yarn,node,macos,linux,windows
 

@@ -22,7 +22,7 @@ use(permissions)
 settings.change({
   server: {
     playground: true,
-    host: '/',
+    path: '/',
     graphql: {
       introspection: true,
     },
