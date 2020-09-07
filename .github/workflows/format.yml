@@ -4,7 +4,7 @@ on:
     branches:
       - main
 jobs:
-  format:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -18,6 +18,6 @@ jobs:
       - name: Check if there are changes
         id: changes
         uses: UnicornGlobal/has-changes-action@v1.0.11
-      - name: Process changes
+      - name: Fail on changes
         if: steps.changes.outputs.changed == 1
         run: exit 1

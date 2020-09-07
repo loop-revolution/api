@@ -25,6 +25,7 @@ settings.change({
     path: '/',
     graphql: {
       introspection: true,
-    },cors: true,
+    },
+    cors: true,
   },
 })
