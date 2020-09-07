@@ -27,7 +27,7 @@ settings.change({
       introspection: true,
     },
     cors: {
-      origin: (origin, callback) => callback(undefined, callback),
+      origin: (origin, callback) => callback(null, callback),
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       preflightContinue: false,
       optionsSuccessStatus: 204,
