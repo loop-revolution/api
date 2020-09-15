@@ -4,6 +4,7 @@
     "dev": "nexus dev",
     "migrate": "sh prisma/migrate/migrate.sh",
     "test": "jest",
+    "test:dev": "yarn test --watch",
     "start": "node ./.nexus/build/index.js",
     "build": "nexus build",
     "format": "npx eslint --fix . && npx prettier --write . && prisma format"
@@ -21,7 +22,12 @@
     "nexus-plugin-shield": "0.2.0",
     "secure-password": "4.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^26.4.2",
+    "jest-environment-node": "^26.3.0",
+    "jest-sonar-reporter": "^2.0.0",
+    "ts-jest": "^26.3.0"
+  },
   "author": "Louis Birla <louis@birla.io>",
   "license": "MIT",
   "description": "The GraphQL api for interacting with the Blocks system",
