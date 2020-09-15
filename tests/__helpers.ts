@@ -1,6 +1,6 @@
 // tests/__helpers.ts
 import { createTestContext as originalCreateTestContext, TestContext } from 'nexus/testing'
-import {nanoid} from 'nanoid'
+import { nanoid } from 'nanoid'
 
 process.env.APP_SECRET = nanoid(30)
 
