@@ -18,6 +18,16 @@ jobs:
       - name: Check if there are changes
         id: changes
         uses: UnicornGlobal/has-changes-action@v1.0.11
+      - name: Create a PR on changes
+        if: steps.changes.outputs.changed == 1
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: Automatic formatting
+          branch: formatting/auto
+          branch-suffix: short-commit-hash
+          title: Automatic Formatting
+          body: You can merge this PR safely because it simply changes formatting.
+          delete-branch: true
       - name: Fail on changes
         if: steps.changes.outputs.changed == 1
         run: exit 1
