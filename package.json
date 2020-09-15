@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "nexus dev",
     "migrate": "sh prisma/migrate/migrate.sh",
-    "test": "jest",
+    "test": "jest --forceExit",
     "test:dev": "yarn test --watch",
     "start": "node ./.nexus/build/index.js",
     "build": "nexus build",
