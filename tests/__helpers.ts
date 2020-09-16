@@ -2,10 +2,11 @@
 import { createTestContext as originalCreateTestContext, TestContext } from 'nexus/testing'
 import { nanoid } from 'nanoid'
 
-process.env.APP_SECRET = nanoid(30)
+const secretLength = 30
+process.env.APP_SECRET = nanoid(secretLength)
 
 export function createTestContext(): TestContext {
-  let ctx = {} as TestContext
+  const ctx = {} as TestContext
 
   beforeAll(async () => {
     Object.assign(ctx, await originalCreateTestContext())
