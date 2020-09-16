@@ -8,5 +8,8 @@ module.exports = {
       },
     ],
   },
+  env: {
+    es2020: true,
+  },
   ignorePatterns: ['nexus-test-environment.js'],
 }

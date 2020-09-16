@@ -7,7 +7,7 @@ import { PrismaClient } from '@prisma/client'
 export const resetMigrations = async () => {
   console.log('🍁 Cleaning migrations')
   // Clear local migrations
-  await del('./db/migrations')
+  await del('./prisma/migrations')
   // Clear migrations on server
   const prisma = new PrismaClient()
   await prisma.$executeRaw('TRUNCATE "_Migration";')
