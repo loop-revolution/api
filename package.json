@@ -10,7 +10,7 @@
     "format": "npx eslint --fix . && npx prettier --write . && prisma format"
   },
   "dependencies": {
-    "@sentry/node": "5.22.3",
+    "@sentry/node": "5.23.0",
     "@types/jsonwebtoken": "8.5.0",
     "@types/secure-password": "3.1.0",
     "del": "5.1.0",
