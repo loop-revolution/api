@@ -29,7 +29,7 @@ class PrismaTestEnvironment extends NodeEnvironment {
     await del('./prisma/migrations')
 
     // Run the migrations to ensure our schema has the required structure
-    await exec(`npx @prisma/cli@latest migrate up --experimental -c`)
+    await exec(`yarn prisma migrate up --experimental -c`)
     // ^ This uses the latest version of prisma because nexus-plugin-prisma doesn't use it yet
     // https://github.com/prisma/migrate/issues/572#issuecomment-689879825
 

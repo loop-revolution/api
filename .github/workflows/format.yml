@@ -28,6 +28,8 @@ jobs:
           title: Automatic Formatting
           body: You can merge this PR safely because it simply changes formatting.
           delete-branch: true
+          labels: |
+            automerge
       - name: Fail on changes
         if: steps.changes.outputs.changed == 1
         run: exit 1
