@@ -7,9 +7,11 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
+      - uses: technote-space/auto-cancel-redundant-job@v1
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.head_ref }}
+          token: ${{ secrets.AUTOTHINGS_TOKEN }}
       - uses: actions/setup-node@v2.1.1
       - name: Install dependencies
         run: yarn
@@ -18,18 +20,11 @@ jobs:
       - name: Check if there are changes
         id: changes
         uses: UnicornGlobal/has-changes-action@v1.0.11
-      - name: Create a PR on changes
+      - name: Commit formatting changes
         if: steps.changes.outputs.changed == 1
-        uses: peter-evans/create-pull-request@v3
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit-message: Automatic formatting
-          branch: formatting/auto
-          branch-suffix: short-commit-hash
-          title: Automatic Formatting
-          body: You can merge this PR safely because it simply changes formatting.
-          delete-branch: true
-          labels: |
-            automerge
+          commit_message: Automatic formatting
       - name: Fail on changes
         if: steps.changes.outputs.changed == 1
         run: exit 1
