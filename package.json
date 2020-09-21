@@ -26,7 +26,7 @@
     "jest": "^26.4.2",
     "jest-environment-node": "^26.3.0",
     "jest-sonar-reporter": "^2.0.0",
-    "ts-jest": "^26.3.0"
+    "ts-jest": "^26.4.0"
   },
   "author": "Louis Birla <louis@birla.io>",
   "license": "MIT",
