@@ -26,3 +26,4 @@ jobs:
         env:
           GITHUB_TOKEN: '${{ secrets.AUTOTHINGS_TOKEN }}'
           MERGE_FORKS: 'false'
+          MERGE_REMOVE_LABELS: 'automerge'
