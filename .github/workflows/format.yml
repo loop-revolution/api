@@ -12,7 +12,7 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.AUTOTHINGS_TOKEN }}
-      - uses: actions/setup-node@v2.1.1
+      - uses: actions/setup-node@v2.1.2
       - name: Install dependencies
         run: yarn
       - name: Format
