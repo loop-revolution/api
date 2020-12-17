@@ -10,6 +10,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.head_ref }}
-      - uses: actions/setup-node@v2.1.2
+      - uses: actions/setup-node@v2.1.4
       - name: Push the schema
         run: npx apollo service:push --graph=loop-api --key=service:loop-api:pLypVMOIhNXMDkyu7NDyYg --variant=current --localSchemaFile=./api.graphql
