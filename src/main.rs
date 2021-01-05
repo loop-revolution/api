@@ -35,7 +35,7 @@ async fn main() {
 	let graphql_filter = juniper_warp::make_graphql_filter(create_schema(), state.boxed());
 	let cors = warp::cors()
 		.allow_methods(&[Method::GET, Method::POST])
-		.allow_origin("http://localhost:3000")
+		.allow_any_origin()
 		.allow_headers(&[header::CONTENT_TYPE]);
 	// Filter `/graphql` to the GraphQL API
 	let api = warp::path("graphql").and(graphql_filter);
