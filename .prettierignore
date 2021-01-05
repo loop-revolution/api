@@ -1,5 +1,0 @@
-.env
-.nexus
-prisma/migrations
-api.graphql
-coverage
