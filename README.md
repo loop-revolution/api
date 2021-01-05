@@ -1,9 +1,7 @@
 # Loop API
 
-![Tests](https://github.com/loop-revolution/loop-api/workflows/Tests/badge.svg)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=loop-revolution_loop-api&metric=alert_status)](https://sonarcloud.io/dashboard?id=loop-revolution_loop-api)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=loop-revolution_loop-api&metric=coverage)](https://sonarcloud.io/dashboard?id=loop-revolution_loop-api)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=loop-revolution_loop-api&metric=code_smells)](https://sonarcloud.io/dashboard?id=loop-revolution_loop-api)
+![Tests](https://github.com/loop-revolution/api/workflows/Tests/badge.svg)
+[![codecov](https://codecov.io/gh/loop-revolution/api/branch/main/graph/badge.svg)](https://codecov.io/gh/loop-revolution/api)
 
 The GraphQL API for interacting with Loop & the Block Platform
 

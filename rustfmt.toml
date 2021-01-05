@@ -1,0 +1,9 @@
+edition = "2018"
+# Use tabs for accessibility reasons
+hard_tabs = true
+newline_style = "Unix"
+normalize_comments = true
+normalize_doc_attributes = true
+reorder_imports = true
+# Not using because it seperates comments
+# blank_lines_lower_bound = 1
