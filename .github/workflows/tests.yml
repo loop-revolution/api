@@ -32,6 +32,11 @@ jobs:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.AUTOTHINGS_TOKEN }}
 
+      - name: Test that it starts
+        run: |
+          cargo run &
+          npx wait-on http-get://localhost:4000/play && kill $!
+
       - name: Install Tarpaulin
         run: cargo install cargo-tarpaulin
 
