@@ -31,6 +31,10 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.AUTOTHINGS_TOKEN }}
+      - name: Install node (for wait-on)
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
 
       - name: Test that it starts
         run: |
