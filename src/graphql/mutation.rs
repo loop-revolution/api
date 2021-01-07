@@ -1,4 +1,4 @@
-use super::context::Context;
+use super::{context::Context, models::User, user_logic::auth::signup, Error};
 use juniper::graphql_object;
 
 /// Struct for GraphQL Mutations
@@ -6,10 +6,8 @@ pub struct Mutation;
 
 #[graphql_object(context = Context)]
 impl Mutation {
-	/// Modifies the internal counter
-	async fn change_count(context: &Context, by: i32) -> i32 {
-		let mut counter = context.counter.lock().await;
-		*counter += by;
-		counter.to_owned()
+	/// Attempts to create an account for the username provided
+	async fn signup(context: &Context, username: String, password: String) -> Result<User, Error> {
+		signup(context, username, password).await
 	}
 }
