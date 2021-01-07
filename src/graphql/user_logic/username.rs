@@ -6,7 +6,7 @@ pub fn localize_username<'a>(username: &'a str) -> String {
 }
 
 #[cfg(test)]
-mod tests {
+mod test {
 	use super::*;
 
 	#[test]

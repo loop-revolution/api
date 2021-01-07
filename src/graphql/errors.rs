@@ -1,4 +1,4 @@
-use std::fmt;
+use std::{fmt, time::SystemTimeError};
 
 use juniper::{FieldError, IntoFieldError};
 
@@ -30,7 +30,7 @@ impl fmt::Display for Error {
 				f,
 				"[sd] There was an issue with connecting to the database."
 			),
-			Error::PasswordTooShort => write!(f, "[up] The provided password was too short."),
+			Error::PasswordTooShort => write!(f, "[ups] The provided password was too short."),
 			Error::GenericError => write!(f, "[g] Something unspecified went wrong."),
 		}
 	}
@@ -48,6 +48,14 @@ impl From<r2d2::Error> for Error {
 	fn from(e: r2d2::Error) -> Self {
 		match e {
 			_ => Error::DatabaseTimeout,
+		}
+	}
+}
+
+impl From<SystemTimeError> for Error {
+	fn from(e: SystemTimeError) -> Self {
+		match e {
+			_ => Error::GenericError,
 		}
 	}
 }
