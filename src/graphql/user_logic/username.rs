@@ -1,8 +1,26 @@
+use crate::{
+	db::{schema::users::dsl, PgConnect},
+	Error,
+};
+use diesel::prelude::*;
+use diesel::select;
 use regex::Regex;
 
 pub fn localize_username<'a>(username: &'a str) -> String {
 	let re = Regex::new(r"[^a-zA-Z\d]").unwrap();
 	re.replace_all(username, "").to_string().to_lowercase()
+}
+
+pub fn verify_username<'a>(localuname: &'a str, conn: &PgConnect) -> Result<(), Error> {
+	// A user with that name should not exist!
+	let name_exists: bool = select(diesel::dsl::exists(
+		dsl::users.filter(dsl::localuname.eq(localuname)),
+	))
+	.get_result(conn)?;
+	if name_exists {
+		return Err(Error::NameConflict(localuname.to_string()));
+	};
+	Ok(())
 }
 
 #[cfg(test)]
