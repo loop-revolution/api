@@ -1,7 +1,10 @@
 use super::{
 	context::Context,
-	models::{EmailConfirm, User},
-	user_logic::auth::{confirm_email, signup},
+	models::EmailConfirm,
+	user_logic::{
+		auth::{confirm_email, signup},
+		user::User,
+	},
 	Error,
 };
 use juniper::graphql_object;
