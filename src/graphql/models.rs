@@ -2,19 +2,17 @@ use crate::db::schema::{potential_users, users};
 use juniper::GraphQLObject;
 use std::time::SystemTime;
 
-#[derive(Queryable, GraphQLObject)]
-pub struct User {
+#[derive(Queryable)]
+pub struct UserD {
 	/// Auto-incrementing unique ID for a user
 	pub id: i32,
 	/// Unique alphanumeric username for easy identification
 	pub username: String,
-	#[graphql(skip)]
 	/// Username (standardized)
 	pub localuname: String,
-	#[graphql(skip)]
 	pub password: String,
-	#[graphql(skip)]
 	pub email: String,
+	pub credits: i32,
 }
 
 #[derive(Insertable)]
@@ -27,6 +25,7 @@ pub struct NewUser<'a> {
 	/// Will be securely stored
 	pub password: &'a str,
 	pub email: &'a str,
+	pub credits: i32,
 }
 
 #[derive(Queryable)]

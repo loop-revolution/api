@@ -2,7 +2,9 @@ use std::time::SystemTime;
 
 use super::{
 	email::{make_mailer, verification_code_email},
-	hash_pwd, localize_username, verify_pwd, verify_username,
+	hash_pwd, localize_username,
+	user::User,
+	verify_pwd, verify_username,
 };
 use crate::{
 	db::{
@@ -10,7 +12,7 @@ use crate::{
 		PgConnect,
 	},
 	graphql::{
-		models::{EmailConfirm, NewPotentialUser, NewUser, PotentialUser, User},
+		models::{EmailConfirm, NewPotentialUser, NewUser, PotentialUser, UserD},
 		Context, EmailConfirmError, InternalError,
 	},
 	rand_string, Error,
@@ -121,16 +123,17 @@ pub async fn confirm_email(
 		localuname,
 		password: &potential.password,
 		email: &potential.email,
+		credits: 0,
 	};
 
-	let new_user: User = diesel::insert_into(users::table)
+	let new_user: UserD = diesel::insert_into(users::table)
 		.values(&new_user)
 		.get_result(conn)?;
 
 	// User is created, not potential anymore
 	delete_potential_user(&username, conn)?;
 
-	Ok(new_user)
+	Ok(User::from(new_user))
 }
 
 pub fn delete_potential_user(username: &str, conn: &PgConnect) -> Result<(), Error> {
