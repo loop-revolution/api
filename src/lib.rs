@@ -4,6 +4,19 @@ extern crate diesel;
 pub mod db;
 pub mod graphql;
 pub use graphql::Error;
+use rand::distributions::Alphanumeric;
+use rand::{thread_rng, Rng};
+use std::iter;
+
+/// Generates a random string of length provided
+pub fn rand_string(length: usize) -> String {
+	let mut rng = thread_rng();
+	iter::repeat(())
+		.map(|()| rng.sample(Alphanumeric))
+		.map(char::from)
+		.take(length)
+		.collect()
+}
 
 #[cfg(test)]
 mod test {

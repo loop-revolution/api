@@ -1,13 +1,13 @@
-use std::{fmt, time::SystemTimeError};
-
 use juniper::{FieldError, IntoFieldError};
+use std::{fmt, time::SystemTimeError};
 
 #[derive(Debug, Clone)]
 pub enum Error {
 	NameConflict(String),
-	DatabaseTimeout,
 	GenericError,
 	PasswordTooShort,
+	EmailConfirmError(EmailConfirmError),
+	InternalError(InternalError),
 }
 
 impl<S> IntoFieldError<S> for Error {
@@ -26,12 +26,10 @@ impl fmt::Display for Error {
 			Error::NameConflict(name) => {
 				write!(f, "[unc] Username '{}' is already in use.", name)
 			}
-			Error::DatabaseTimeout => write!(
-				f,
-				"[sd] There was an issue with connecting to the database."
-			),
 			Error::PasswordTooShort => write!(f, "[ups] The provided password was too short."),
 			Error::GenericError => write!(f, "[g] Something unspecified went wrong."),
+			Error::EmailConfirmError(err) => write!(f, "{}", err.to_string()),
+			Error::InternalError(err) => write!(f, "{}", err.to_string()),
 		}
 	}
 }
@@ -47,7 +45,7 @@ impl From<diesel::result::Error> for Error {
 impl From<r2d2::Error> for Error {
 	fn from(e: r2d2::Error) -> Self {
 		match e {
-			_ => Error::DatabaseTimeout,
+			_ => Error::InternalError(InternalError::DatabaseTimeout),
 		}
 	}
 }
@@ -64,6 +62,73 @@ impl From<argon2::Error> for Error {
 	fn from(e: argon2::Error) -> Self {
 		match e {
 			_ => Error::GenericError,
+		}
+	}
+}
+
+impl From<InternalError> for Error {
+	fn from(e: InternalError) -> Self {
+		match e {
+			_ => Error::InternalError(e),
+		}
+	}
+}
+
+impl From<EmailConfirmError> for Error {
+	fn from(e: EmailConfirmError) -> Self {
+		match e {
+			_ => Error::EmailConfirmError(e),
+		}
+	}
+}
+
+#[derive(Debug, Clone)]
+pub enum EmailConfirmError {
+	NotFound(String),
+	Expired,
+	Invalid,
+}
+
+impl fmt::Display for EmailConfirmError {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		match self {
+			EmailConfirmError::NotFound(name) => write!(
+				f,
+				"[uecn] An email confirmation with the username \"{}\" was not found.",
+				name
+			),
+			EmailConfirmError::Invalid => write!(
+				f,
+				"[ueci] The verification code and/or session code were incorrect.",
+			),
+			EmailConfirmError::Expired => write!(
+				f,
+				"[uece] The email confirmation has expired because more than 5 minutes has passed since its creation.",
+			),
+		}
+	}
+}
+
+#[derive(Debug, Clone)]
+pub enum InternalError {
+	DatabaseTimeout,
+	GenericInternalError,
+	EmailError,
+}
+
+impl fmt::Display for InternalError {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		match self {
+			InternalError::DatabaseTimeout => write!(
+				f,
+				"[idt] There was an issue with connecting to the database."
+			),
+			InternalError::GenericInternalError => {
+				write!(f, "[ig] Something unspecified went wrong internally.",)
+			}
+			InternalError::EmailError => {
+				write!(f, "[img] Something went wrong with Loop's emailing system.")
+			}
 		}
 	}
 }
