@@ -37,10 +37,13 @@ mod test {
 	}
 
 	/// Makes a Schema & Context instance for integration tests
-	pub fn gen_exec() -> (Context, Schema) {
+	pub fn gen_exec(token: Option<String>) -> (Context, Schema) {
 		let schema = create_schema();
 		let pool = get_pool(&env_db());
-		let context = Context { pool: pool.clone() };
+		let context = Context {
+			pool: pool.clone(),
+			auth_token: token,
+		};
 		(context, schema)
 	}
 

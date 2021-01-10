@@ -1,6 +1,6 @@
-use crate::graphql::{query::user_by_id, user_logic::user::User, Context, Error};
+use crate::graphql::{query::user_by_id, user_logic::user::User, Context, Error, UserError};
 use chrono::{prelude::*, Duration};
-use jsonwebtoken::{encode, EncodingKey, Header};
+use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use juniper::graphql_object;
 use log::error;
 use serde::{Deserialize, Serialize};
@@ -29,6 +29,13 @@ impl AuthPayload {
 	}
 }
 
+pub fn require_token(context: &Context) -> Result<String, UserError> {
+	match &context.auth_token {
+		None => Err(UserError::NeedAuth),
+		Some(token) => Ok(token.clone()),
+	}
+}
+
 fn create_token(user_id: i32) -> String {
 	let claims = Claims {
 		sub: user_id.to_string(),
@@ -36,20 +43,33 @@ fn create_token(user_id: i32) -> String {
 		exp: (Utc::now() + Duration::days(21)).timestamp() as usize,
 	};
 
-	encode(&Header::default(), &claims, &get_encoding_key()).unwrap()
+	encode(
+		&Header::default(),
+		&claims,
+		&EncodingKey::from_secret(get_secret().as_ref()),
+	)
+	.unwrap()
 }
 
-fn get_encoding_key() -> EncodingKey {
+pub fn validate_token(token: String) -> Result<i32, UserError> {
+	let token = decode::<Claims>(
+		&token,
+		&DecodingKey::from_secret(get_secret().as_ref()),
+		&Validation::default(),
+	)?;
+
+	Ok(token.claims.sub.parse()?)
+}
+
+fn get_secret() -> String {
 	dotenv::dotenv().ok();
-	let session_secret = match std::env::var("SESSION_SECRET") {
+	match std::env::var("SESSION_SECRET") {
 		Ok(scrt) => scrt,
 		Err(_) => {
 			error!("A 'SESSION_SECRET' environment variable is required.");
 			panic!()
 		}
-	};
-
-	EncodingKey::from_secret(session_secret.as_ref())
+	}
 }
 
 #[derive(Debug, Serialize, Deserialize)]

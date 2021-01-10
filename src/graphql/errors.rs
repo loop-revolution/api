@@ -96,6 +96,8 @@ pub enum UserError {
 	NameNonexist(String),
 	NameConflict(String),
 	JWTGeneric,
+	NoAccess(NoAccessSubject),
+	NeedAuth,
 }
 
 impl fmt::Display for UserError {
@@ -118,6 +120,39 @@ impl fmt::Display for UserError {
 				f,
 				"[ujg] Something unspecified went wrong with user sessions."
 			),
+			UserError::NoAccess(scope) => {
+				write!(f, "[uad] Access to {} was denied.", scope.to_string())
+			}
+			UserError::NeedAuth => write!(f, "[uar] Authentication headers are required."),
+		}
+	}
+}
+
+#[derive(Debug, Clone)]
+pub enum NoAccessSubject {
+	OtherUserCredits,
+}
+
+impl fmt::Display for NoAccessSubject {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		match self {
+			NoAccessSubject::OtherUserCredits => write!(f, "another user's credits"),
+		}
+	}
+}
+
+impl From<jsonwebtoken::errors::Error> for UserError {
+	fn from(e: jsonwebtoken::errors::Error) -> Self {
+		match e {
+			_ => UserError::JWTGeneric,
+		}
+	}
+}
+
+impl From<std::num::ParseIntError> for UserError {
+	fn from(e: std::num::ParseIntError) -> Self {
+		match e {
+			_ => UserError::JWTGeneric,
 		}
 	}
 }

@@ -21,9 +21,21 @@ async fn main() {
 	});
 
 	// Create a database pool to Postgres
-	let pool = get_pool(&env_db());
+	let private_pool = get_pool(&env_db());
+	let public_pool = get_pool(&env_db());
 	// This creates the graphql context for each request
-	let state = warp::any().map(move || Context { pool: pool.clone() });
+	let state = warp::any()
+		.and(
+			warp::header::<String>("authorization").map(move |mut bearer_token: String| Context {
+				pool: private_pool.clone(),
+				auth_token: Some(bearer_token.split_off(7)),
+			}),
+		)
+		.or(warp::any().map(move || Context {
+			pool: public_pool.clone(),
+			auth_token: None,
+		}))
+		.unify();
 	// This is the connection to Juniper, using the schema & context
 	let graphql_filter = juniper_warp::make_graphql_filter(create_schema(), state.boxed());
 	let cors = warp::cors()

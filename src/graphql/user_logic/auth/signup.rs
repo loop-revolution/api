@@ -144,7 +144,7 @@ mod test {
 
 	#[tokio::test]
 	async fn password_too_short() {
-		let (context, schema) = gen_exec();
+		let (context, schema) = gen_exec(None);
 
 		// Try to signup with a short password
 		let query = "mutation { signup (
