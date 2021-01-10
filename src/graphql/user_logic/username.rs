@@ -1,5 +1,6 @@
 use crate::{
 	db::{schema::users::dsl, PgConnect},
+	graphql::UserError,
 	Error,
 };
 use diesel::prelude::*;
@@ -18,7 +19,9 @@ pub fn verify_username<'a>(localuname: &'a str, conn: &PgConnect) -> Result<(), 
 	))
 	.get_result(conn)?;
 	if name_exists {
-		return Err(Error::NameConflict(localuname.to_string()));
+		return Err(Error::UserError(UserError::NameConflict(
+			localuname.to_string(),
+		)));
 	};
 	Ok(())
 }

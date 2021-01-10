@@ -26,3 +26,5 @@ rand = "0.8.1"
 regex = "1.4.2"
 lettre = "0.10.0-alpha.4"
 chrono = "0.4.19"
+jsonwebtoken = "7"
+serde = { version = "1.0", features = ["derive"] }

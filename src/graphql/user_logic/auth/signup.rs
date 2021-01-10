@@ -1,25 +1,13 @@
-use std::time::SystemTime;
-
-use super::{
-	email::{make_mailer, verification_code_email},
-	hash_pwd, localize_username,
-	user::User,
-	verify_pwd, verify_username,
-};
-use crate::{
-	db::{
-		schema::{potential_users, users},
-		PgConnect,
-	},
-	graphql::{
+use super::{auth_payload::AuthPayload, email::{make_mailer, verification_code_email}};
+use crate::{db::{PgConnect, schema::{potential_users, users}}, graphql::{
 		models::{EmailConfirm, NewPotentialUser, NewUser, PotentialUser, UserD},
-		Context, EmailConfirmError, InternalError,
-	},
-	rand_string, Error,
-};
+		user_logic::{hash_pwd, localize_username, user::User, validate_pwd, verify_username},
+		Context, EmailConfirmError, Error, InternalError,
+	}, rand_string};
 use diesel::prelude::*;
 use lettre::Transport;
 use rand::{thread_rng, Rng};
+use std::time::SystemTime;
 
 pub async fn signup(
 	context: &Context,
@@ -27,7 +15,7 @@ pub async fn signup(
 	password: String,
 	email: String,
 ) -> Result<EmailConfirm, Error> {
-	verify_pwd(&password)?;
+	validate_pwd(&password)?;
 	// Hash the password
 	let hash = hash_pwd(password)?;
 
@@ -80,7 +68,7 @@ pub async fn confirm_email(
 	username: String,
 	session_code: String,
 	verification_code: String,
-) -> Result<User, Error> {
+) -> Result<AuthPayload, Error> {
 	let localuname = &localize_username(&username);
 
 	let conn = &context.pool.get()?;
@@ -95,11 +83,7 @@ pub async fn confirm_email(
 
 	// Match potential errors
 	let potential = match potential {
-		None => {
-			return Err(Error::EmailConfirmError(EmailConfirmError::NotFound(
-				username,
-			)))
-		}
+		None => return Err(EmailConfirmError::NotFound(username).into()),
 		Some(usr) => usr,
 	};
 
@@ -109,12 +93,12 @@ pub async fn confirm_email(
 		> 300
 	{
 		delete_potential_user(&username, conn)?;
-		return Err(Error::EmailConfirmError(EmailConfirmError::Expired));
+		return Err(EmailConfirmError::Expired.into());
 	}
 
 	// Check that the session codes and verification codes work
 	if potential.session_code != session_code || potential.verification_code != verification_code {
-		return Err(Error::EmailConfirmError(EmailConfirmError::Invalid));
+		return Err(EmailConfirmError::Invalid.into());
 	}
 
 	// The email is confirmed! Add the user to the DB
@@ -133,7 +117,7 @@ pub async fn confirm_email(
 	// User is created, not potential anymore
 	delete_potential_user(&username, conn)?;
 
-	Ok(User::from(new_user))
+	Ok(AuthPayload::new(new_user.id))
 }
 
 pub fn delete_potential_user(username: &str, conn: &PgConnect) -> Result<(), Error> {

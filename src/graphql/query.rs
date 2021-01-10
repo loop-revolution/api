@@ -16,7 +16,12 @@ impl Query {
 	}
 
 	async fn user_by_id(context: &Context, id: i32) -> Result<Option<User>, Error> {
-		let conn = &context.pool.get()?;
+		user_by_id(context, id).await
+	}
+}
+
+pub async fn user_by_id(context: &Context, id: i32) -> Result<Option<User>, Error> {
+	let conn = &context.pool.get()?;
 
 		let usr: Option<UserD> = users::dsl::users
 			.filter(users::id.eq(id))
@@ -28,5 +33,4 @@ impl Query {
 			None => Ok(None),
 			Some(usr) => Ok(Some(User::from(usr))),
 		}
-	}
 }

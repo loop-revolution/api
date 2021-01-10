@@ -1,12 +1,4 @@
-use super::{
-	context::Context,
-	models::EmailConfirm,
-	user_logic::{
-		auth::{confirm_email, signup},
-		user::User,
-	},
-	Error,
-};
+use super::{Error, context::Context, models::{EmailConfirm}, user_logic::{auth::{auth_payload::AuthPayload, login::login, signup::{confirm_email, signup}}, user::User}};
 use juniper::graphql_object;
 
 /// Struct for GraphQL Mutations
@@ -31,7 +23,15 @@ impl Mutation {
 		username: String,
 		session_code: String,
 		verification_code: String,
-	) -> Result<User, Error> {
+	) -> Result<AuthPayload, Error> {
 		confirm_email(context, username, session_code, verification_code).await
+	}
+
+	async fn login(
+		context: &Context,
+		username: String,
+		password: String,
+	) -> Result<AuthPayload, Error> {
+		login(context, username, password).await
 	}
 }

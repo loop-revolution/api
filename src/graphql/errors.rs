@@ -3,11 +3,9 @@ use std::{fmt, time::SystemTimeError};
 
 #[derive(Debug, Clone)]
 pub enum Error {
-	NameConflict(String),
 	GenericError,
-	PasswordTooShort,
-	EmailConfirmError(EmailConfirmError),
 	InternalError(InternalError),
+	UserError(UserError)
 }
 
 impl<S> IntoFieldError<S> for Error {
@@ -16,20 +14,12 @@ impl<S> IntoFieldError<S> for Error {
 	}
 }
 
-pub fn jfe(error: Error) -> FieldError {
-	FieldError::from(error)
-}
-
 impl fmt::Display for Error {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match self {
-			Error::NameConflict(name) => {
-				write!(f, "[unc] Username '{}' is already in use.", name)
-			}
-			Error::PasswordTooShort => write!(f, "[ups] The provided password was too short."),
 			Error::GenericError => write!(f, "[g] Something unspecified went wrong."),
-			Error::EmailConfirmError(err) => write!(f, "{}", err.to_string()),
 			Error::InternalError(err) => write!(f, "{}", err.to_string()),
+			Error::UserError(err) => write!(f, "{}", err.to_string()),
 		}
 	}
 }
@@ -74,10 +64,53 @@ impl From<InternalError> for Error {
 	}
 }
 
+impl From<UserError> for Error {
+	fn from(e: UserError) -> Self {
+		match e {
+			_ => Error::UserError(e),
+		}
+	}
+}
+
 impl From<EmailConfirmError> for Error {
 	fn from(e: EmailConfirmError) -> Self {
 		match e {
-			_ => Error::EmailConfirmError(e),
+			_ => UserError::EmailConfirmError(e).into(),
+		}
+	}
+}
+
+impl From<jsonwebtoken::errors::Error> for Error {
+	fn from(e: jsonwebtoken::errors::Error) -> Self {
+		match e {
+			_ => UserError::JWTGeneric.into(),
+		}
+	}
+}
+
+#[derive(Debug, Clone)]
+pub enum UserError {
+	PasswordTooShort,
+	PasswordMatch,
+	EmailConfirmError(EmailConfirmError),
+	NameNonexist(String),
+	NameConflict(String),
+	JWTGeneric,
+}
+
+impl fmt::Display for UserError {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		match self {
+			UserError::NameConflict(name) => {
+				write!(f, "[unc] Username '{}' is already in use.", name)
+			},
+			UserError::NameNonexist(name) => {
+				write!(f, "[une] A user with the username '{}' was not found.", name)
+			},
+			UserError::PasswordTooShort => write!(f, "[ups] The password provided was too short."),
+			UserError::PasswordMatch => write!(f, "[upm] The password provided is not correct."),
+			UserError::EmailConfirmError(err) => write!(f, "{}", err.to_string()),
+			UserError::JWTGeneric => write!(f, "[ujg] Something unspecified went wrong with user sessions.")
 		}
 	}
 }

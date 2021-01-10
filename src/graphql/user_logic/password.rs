@@ -1,4 +1,4 @@
-use crate::graphql::Error;
+use crate::graphql::{Error, UserError};
 use rand::Rng;
 
 /// Takes the rawtext password and hashes it
@@ -11,10 +11,18 @@ pub fn hash_pwd(password: String) -> Result<String, argon2::Error> {
 	argon2::hash_encoded(password, &salt, &argon_config)
 }
 
-pub fn verify_pwd(password: &str) -> Result<(), Error> {
+pub fn validate_pwd(password: &str) -> Result<(), Error> {
 	if password.len() < 8 {
-		return Err(Error::PasswordTooShort);
+		return Err(UserError::PasswordTooShort.into());
 	};
 
 	Ok(())
+}
+
+pub fn verify_pwd(password: &str, hash: &str) -> Result<bool, Error> {
+	validate_pwd(password)?;
+
+	let password = password.as_bytes();
+
+	Ok(argon2::verify_encoded(hash, password)?)
 }
