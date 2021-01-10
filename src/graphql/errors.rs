@@ -5,7 +5,7 @@ use std::{fmt, time::SystemTimeError};
 pub enum Error {
 	GenericError,
 	InternalError(InternalError),
-	UserError(UserError)
+	UserError(UserError),
 }
 
 impl<S> IntoFieldError<S> for Error {
@@ -103,14 +103,21 @@ impl fmt::Display for UserError {
 		match self {
 			UserError::NameConflict(name) => {
 				write!(f, "[unc] Username '{}' is already in use.", name)
-			},
+			}
 			UserError::NameNonexist(name) => {
-				write!(f, "[une] A user with the username '{}' was not found.", name)
-			},
+				write!(
+					f,
+					"[une] A user with the username '{}' was not found.",
+					name
+				)
+			}
 			UserError::PasswordTooShort => write!(f, "[ups] The password provided was too short."),
 			UserError::PasswordMatch => write!(f, "[upm] The password provided is not correct."),
 			UserError::EmailConfirmError(err) => write!(f, "{}", err.to_string()),
-			UserError::JWTGeneric => write!(f, "[ujg] Something unspecified went wrong with user sessions.")
+			UserError::JWTGeneric => write!(
+				f,
+				"[ujg] Something unspecified went wrong with user sessions."
+			),
 		}
 	}
 }

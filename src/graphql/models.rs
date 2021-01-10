@@ -55,4 +55,3 @@ pub struct NewPotentialUser<'a> {
 	pub password: &'a str,
 	pub created_at: SystemTime,
 }
-

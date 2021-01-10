@@ -23,14 +23,14 @@ impl Query {
 pub async fn user_by_id(context: &Context, id: i32) -> Result<Option<User>, Error> {
 	let conn = &context.pool.get()?;
 
-		let usr: Option<UserD> = users::dsl::users
-			.filter(users::id.eq(id))
-			.limit(1)
-			.get_result(conn)
-			.optional()?;
+	let usr: Option<UserD> = users::dsl::users
+		.filter(users::id.eq(id))
+		.limit(1)
+		.get_result(conn)
+		.optional()?;
 
-		match usr {
-			None => Ok(None),
-			Some(usr) => Ok(Some(User::from(usr))),
-		}
+	match usr {
+		None => Ok(None),
+		Some(usr) => Ok(Some(User::from(usr))),
+	}
 }
