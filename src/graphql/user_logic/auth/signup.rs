@@ -1,9 +1,19 @@
-use super::{auth_payload::AuthPayload, email::{make_mailer, verification_code_email}};
-use crate::{db::{PgConnect, schema::{potential_users, users}}, graphql::{
+use super::{
+	auth_payload::AuthPayload,
+	email::{make_mailer, verification_code_email},
+};
+use crate::{
+	db::{
+		schema::{potential_users, users},
+		PgConnect,
+	},
+	graphql::{
 		models::{EmailConfirm, NewPotentialUser, NewUser, PotentialUser, UserD},
-		user_logic::{hash_pwd, localize_username, user::User, validate_pwd, verify_username},
+		user_logic::{hash_pwd, localize_username, validate_pwd, verify_username},
 		Context, EmailConfirmError, Error, InternalError,
-	}, rand_string};
+	},
+	rand_string,
+};
 use diesel::prelude::*;
 use lettre::Transport;
 use rand::{thread_rng, Rng};

@@ -1,9 +1,9 @@
 use crate::graphql::{query::user_by_id, user_logic::user::User, Context, Error};
+use chrono::{prelude::*, Duration};
+use jsonwebtoken::{encode, EncodingKey, Header};
 use juniper::graphql_object;
-use serde::{Serialize, Deserialize};
 use log::error;
-use jsonwebtoken::{encode, decode, Header, Algorithm, Validation, EncodingKey, DecodingKey};
-use chrono::{Duration, prelude::*};
+use serde::{Deserialize, Serialize};
 
 pub struct AuthPayload {
 	pub token: String,
@@ -40,7 +40,7 @@ fn create_token(user_id: i32) -> String {
 }
 
 fn get_encoding_key() -> EncodingKey {
-	dotenv::dotenv();
+	dotenv::dotenv().ok();
 	let session_secret = match std::env::var("SESSION_SECRET") {
 		Ok(scrt) => scrt,
 		Err(_) => {
@@ -54,7 +54,7 @@ fn get_encoding_key() -> EncodingKey {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Claims {
-    sub: String,
-    exp: usize,
-		iat: usize,
+	sub: String,
+	exp: usize,
+	iat: usize,
 }

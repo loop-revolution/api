@@ -1,4 +1,13 @@
-use super::{Error, context::Context, models::{EmailConfirm}, user_logic::{auth::{auth_payload::AuthPayload, login::login, signup::{confirm_email, signup}}, user::User}};
+use super::{
+	context::Context,
+	models::EmailConfirm,
+	user_logic::auth::{
+		auth_payload::AuthPayload,
+		login::login,
+		signup::{confirm_email, signup},
+	},
+	Error,
+};
 use juniper::graphql_object;
 
 /// Struct for GraphQL Mutations
