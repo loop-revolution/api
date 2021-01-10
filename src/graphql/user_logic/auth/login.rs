@@ -33,6 +33,5 @@ pub async fn login(
 		return Err(UserError::PasswordMatch.into());
 	}
 
-	// TODO: Generate token
 	Ok(AuthPayload::new(user.id))
 }
