@@ -95,6 +95,7 @@ pub enum UserError {
 	EmailConfirmError(EmailConfirmError),
 	NameNonexist(String),
 	NameConflict(String),
+	NameTooShort(String),
 	JWTGeneric,
 	NoAccess(NoAccessSubject),
 	NeedAuth,
@@ -114,6 +115,9 @@ impl fmt::Display for UserError {
 				)
 			}
 			UserError::PasswordTooShort => write!(f, "[ups] The password provided was too short."),
+			UserError::NameTooShort(name) => {
+				write!(f, "[uns] The username `{}` provided was too short.", name)
+			}
 			UserError::PasswordMatch => write!(f, "[upm] The password provided is not correct."),
 			UserError::EmailConfirmError(err) => write!(f, "{}", err.to_string()),
 			UserError::JWTGeneric => write!(

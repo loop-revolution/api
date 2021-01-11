@@ -13,15 +13,16 @@ pub fn localize_username<'a>(username: &'a str) -> String {
 }
 
 pub fn verify_username<'a>(localuname: &'a str, conn: &PgConnect) -> Result<(), Error> {
+	if localuname.len() < 3 {
+		return Err(UserError::NameTooShort(localuname.to_string()).into());
+	}
 	// A user with that name should not exist!
 	let name_exists: bool = select(diesel::dsl::exists(
 		dsl::users.filter(dsl::localuname.eq(localuname)),
 	))
 	.get_result(conn)?;
 	if name_exists {
-		return Err(Error::UserError(UserError::NameConflict(
-			localuname.to_string(),
-		)));
+		return Err(UserError::NameConflict(localuname.to_string()).into());
 	};
 	Ok(())
 }
