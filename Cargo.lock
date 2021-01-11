@@ -953,7 +953,7 @@ dependencies = [
 
 [[package]]
 name = "loop_api"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "chrono",
  "diesel",

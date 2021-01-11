@@ -2,7 +2,7 @@
 authors = ["Louis Birla <louis.birla@gmail.com>"]
 edition = "2018"
 name = "loop_api"
-version = "0.0.1"
+version = "0.0.2"
 
 [dependencies]
 # Server
