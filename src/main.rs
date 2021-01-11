@@ -39,9 +39,9 @@ async fn main() {
 	// This is the connection to Juniper, using the schema & context
 	let graphql_filter = juniper_warp::make_graphql_filter(create_schema(), state.boxed());
 	let cors = warp::cors()
-		.allow_methods(&[Method::GET, Method::POST])
+		.allow_methods(&[Method::GET, Method::POST, Method::OPTIONS])
 		.allow_any_origin()
-		.allow_headers(&[header::CONTENT_TYPE]);
+		.allow_headers(&[header::CONTENT_TYPE, header::AUTHORIZATION]);
 	// Filter `/graphql` to the GraphQL API
 	let api = warp::path("graphql").and(graphql_filter);
 	// The interactive GraphQL playground present at `/play`
