@@ -2,11 +2,12 @@ use diesel::pg::PgConnection;
 use diesel::r2d2::ConnectionManager;
 use dotenv::dotenv;
 use log::error;
-use r2d2::Pool;
+use r2d2::{Pool, PooledConnection};
 use std::env;
 
 /// Type for the access to the DB
 pub type PostgresPool = Pool<ConnectionManager<PgConnection>>;
+pub type PgConnect = PooledConnection<ConnectionManager<PgConnection>>;
 
 /// Makes a connection to the DB
 pub fn get_pool(url: &str) -> PostgresPool {
