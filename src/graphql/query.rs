@@ -1,4 +1,11 @@
-use super::{context::Context, models::UserD, user_logic::user::User};
+use super::{
+	context::Context,
+	models::UserD,
+	user_logic::{
+		auth::auth_payload::{require_token, validate_token},
+		user::User,
+	},
+};
 use crate::{db::schema::users, Error};
 use diesel::prelude::*;
 use juniper::{graphql_object, FieldResult};
@@ -17,6 +24,13 @@ impl Query {
 
 	async fn user_by_id(context: &Context, id: i32) -> Result<Option<User>, Error> {
 		user_by_id(context, id).await
+	}
+
+	async fn whoami(context: &Context) -> Result<Option<User>, Error> {
+		let token = require_token(context)?;
+		let user_id = validate_token(token)?;
+
+		user_by_id(context, user_id).await
 	}
 }
 
