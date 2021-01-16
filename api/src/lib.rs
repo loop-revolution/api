@@ -1,9 +1,7 @@
-#[macro_use]
-extern crate diesel;
-
-pub mod db;
+pub mod error_impl;
 pub mod graphql;
-pub use graphql::Error;
+pub mod user_logic;
+pub use error_impl::Error;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use std::iter;
@@ -20,11 +18,9 @@ pub fn rand_string(length: usize) -> String {
 
 #[cfg(test)]
 mod test {
-	use crate::{
-		db::{env_db, get_pool},
-		graphql::{create_schema, Context, Schema},
-		Error,
-	};
+	use crate::graphql::{create_schema, Context, Schema};
+	use db::{env_db, get_pool};
+	use errors::Error;
 	use juniper::{DefaultScalarValue, ExecutionError, Value, Variables};
 	use std::time::SystemTime;
 

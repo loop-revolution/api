@@ -1,5 +1,4 @@
-use crate::db::schema::{potential_users, users};
-use juniper::GraphQLObject;
+use super::schema::{potential_users, users};
 use std::time::SystemTime;
 
 #[derive(Queryable)]
@@ -37,12 +36,6 @@ pub struct PotentialUser {
 	pub username: String,
 	pub password: String,
 	pub created_at: SystemTime,
-}
-
-#[derive(GraphQLObject)]
-pub struct EmailConfirm {
-	pub email: String,
-	pub session_code: String,
 }
 
 #[derive(Insertable)]

@@ -3,8 +3,5 @@ pub use context::*;
 pub mod models;
 pub mod schema;
 pub use schema::*;
-pub mod errors;
-pub use errors::*;
 pub mod mutation;
 pub mod query;
-pub mod user_logic;

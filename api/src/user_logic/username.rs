@@ -1,10 +1,10 @@
-use crate::{
-	db::{schema::users::dsl, PgConnect},
-	graphql::UserError,
-	Error,
+use crate::Error;
+use db::{
+	dsl::{prelude::*, select},
+	schema::users::dsl,
+	PgConnect,
 };
-use diesel::prelude::*;
-use diesel::select;
+use errors::UserError;
 use regex::Regex;
 
 pub fn localize_username<'a>(username: &'a str) -> String {
@@ -17,7 +17,7 @@ pub fn verify_username<'a>(localuname: &'a str, conn: &PgConnect) -> Result<(), 
 		return Err(UserError::NameTooShort(localuname.to_string()).into());
 	}
 	// A user with that name should not exist!
-	let name_exists: bool = select(diesel::dsl::exists(
+	let name_exists: bool = select(db::dsl::dsl::exists(
 		dsl::users.filter(dsl::localuname.eq(localuname)),
 	))
 	.get_result(conn)?;

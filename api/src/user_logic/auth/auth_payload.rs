@@ -1,5 +1,10 @@
-use crate::graphql::{query::user_by_id, user_logic::user::User, Context, Error, UserError};
+use crate::{
+	graphql::{query::user_by_id, Context},
+	user_logic::user::User,
+	Error,
+};
 use chrono::{prelude::*, Duration};
+use errors::UserError;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use juniper::graphql_object;
 use log::error;
@@ -51,7 +56,7 @@ fn create_token(user_id: i32) -> String {
 	.unwrap()
 }
 
-pub fn validate_token(token: String) -> Result<i32, UserError> {
+pub fn validate_token(token: String) -> Result<i32, Error> {
 	let token = decode::<Claims>(
 		&token,
 		&DecodingKey::from_secret(get_secret().as_ref()),

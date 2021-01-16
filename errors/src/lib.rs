@@ -1,4 +1,3 @@
-use juniper::{FieldError, IntoFieldError};
 use std::{fmt, time::SystemTimeError};
 
 #[derive(Debug, Clone)]
@@ -6,12 +5,6 @@ pub enum Error {
 	GenericError,
 	InternalError(InternalError),
 	UserError(UserError),
-}
-
-impl<S> IntoFieldError<S> for Error {
-	fn into_field_error(self) -> FieldError<S> {
-		FieldError::new(self.to_string(), juniper::Value::Null)
-	}
 }
 
 impl fmt::Display for Error {
@@ -24,32 +17,8 @@ impl fmt::Display for Error {
 	}
 }
 
-impl From<diesel::result::Error> for Error {
-	fn from(e: diesel::result::Error) -> Self {
-		match e {
-			_ => Error::GenericError,
-		}
-	}
-}
-
-impl From<r2d2::Error> for Error {
-	fn from(e: r2d2::Error) -> Self {
-		match e {
-			_ => Error::InternalError(InternalError::DatabaseTimeout),
-		}
-	}
-}
-
 impl From<SystemTimeError> for Error {
 	fn from(e: SystemTimeError) -> Self {
-		match e {
-			_ => Error::GenericError,
-		}
-	}
-}
-
-impl From<argon2::Error> for Error {
-	fn from(e: argon2::Error) -> Self {
 		match e {
 			_ => Error::GenericError,
 		}
@@ -76,14 +45,6 @@ impl From<EmailConfirmError> for Error {
 	fn from(e: EmailConfirmError) -> Self {
 		match e {
 			_ => UserError::EmailConfirmError(e).into(),
-		}
-	}
-}
-
-impl From<jsonwebtoken::errors::Error> for Error {
-	fn from(e: jsonwebtoken::errors::Error) -> Self {
-		match e {
-			_ => UserError::JWTGeneric.into(),
 		}
 	}
 }
@@ -141,14 +102,6 @@ impl fmt::Display for NoAccessSubject {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match self {
 			NoAccessSubject::OtherUserCredits => write!(f, "another user's credits"),
-		}
-	}
-}
-
-impl From<jsonwebtoken::errors::Error> for UserError {
-	fn from(e: jsonwebtoken::errors::Error) -> Self {
-		match e {
-			_ => UserError::JWTGeneric,
 		}
 	}
 }

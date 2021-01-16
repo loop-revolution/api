@@ -3,18 +3,19 @@ use super::{
 	email::{make_mailer, verification_code_email},
 };
 use crate::{
-	db::{
-		schema::{potential_users, users},
-		PgConnect,
-	},
-	graphql::{
-		models::{EmailConfirm, NewPotentialUser, NewUser, PotentialUser, UserD},
-		user_logic::{hash_pwd, localize_username, validate_pwd, verify_username},
-		Context, EmailConfirmError, Error, InternalError,
-	},
+	graphql::{models::EmailConfirm, Context},
 	rand_string,
+	user_logic::{hash_pwd, localize_username, validate_pwd, verify_username},
+	Error,
 };
-use diesel::prelude::*;
+use db::{
+	dsl,
+	dsl::prelude::*,
+	models::{NewPotentialUser, NewUser, PotentialUser, UserD},
+	schema::{potential_users, users},
+	PgConnect,
+};
+use errors::{EmailConfirmError, InternalError};
 use lettre::Transport;
 use rand::{thread_rng, Rng};
 use std::time::SystemTime;
@@ -63,7 +64,7 @@ pub async fn signup(
 		.map_err(|_| InternalError::EmailError)?;
 
 	// Preform the insertion to the DB
-	let potential_user: PotentialUser = diesel::insert_into(potential_users::table)
+	let potential_user: PotentialUser = dsl::insert_into(potential_users::table)
 		.values(&new_potential)
 		.get_result(conn)?;
 
@@ -120,7 +121,7 @@ pub async fn confirm_email(
 		credits: 0,
 	};
 
-	let new_user: UserD = diesel::insert_into(users::table)
+	let new_user: UserD = dsl::insert_into(users::table)
 		.values(&new_user)
 		.get_result(conn)?;
 
@@ -131,7 +132,7 @@ pub async fn confirm_email(
 }
 
 pub fn delete_potential_user(username: &str, conn: &PgConnect) -> Result<(), Error> {
-	diesel::delete(
+	dsl::delete(
 		potential_users::dsl::potential_users.filter(potential_users::username.eq(username)),
 	)
 	.execute(conn)?;

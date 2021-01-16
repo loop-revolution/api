@@ -1,5 +1,7 @@
-use crate::graphql::{Error, UserError};
+use errors::UserError;
 use rand::Rng;
+
+use crate::Error;
 
 /// Takes the rawtext password and hashes it
 pub fn hash_pwd(password: String) -> Result<String, argon2::Error> {

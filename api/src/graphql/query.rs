@@ -1,14 +1,15 @@
-use super::{
-	context::Context,
-	models::UserD,
+use super::context::Context;
+use crate::{
 	user_logic::{
 		auth::auth_payload::{require_token, validate_token},
 		user::User,
 	},
+	Error,
 };
-use crate::{db::schema::users, Error};
-use diesel::prelude::*;
+use db::dsl::prelude::*;
+use db::{models::UserD, schema::users};
 use juniper::{graphql_object, FieldResult};
+
 /// Struct for Juniper to take Query resolvers
 pub struct Query;
 

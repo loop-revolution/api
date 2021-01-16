@@ -1,0 +1,5 @@
+[package]
+name = "errors"
+version = "0.1.0"
+authors = ["Louis Birla <louis.birla@gmail.com>"]
+edition = "2018"

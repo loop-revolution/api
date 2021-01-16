@@ -1,13 +1,11 @@
 use super::auth_payload::AuthPayload;
 use crate::{
-	db::schema::users,
-	graphql::{
-		models::UserD,
-		user_logic::{localize_username, verify_pwd},
-		Context, Error, UserError,
-	},
+	graphql::Context,
+	user_logic::{localize_username, verify_pwd},
+	Error,
 };
-use diesel::prelude::*;
+use db::{dsl::prelude::*, models::UserD, schema::users};
+use errors::UserError;
 
 pub async fn login(
 	context: &Context,

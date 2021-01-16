@@ -1,10 +1,6 @@
 use super::auth::auth_payload::{require_token, validate_token};
-use crate::{
-	db::schema::users,
-	graphql::{models::UserD, Context},
-	Error,
-};
-use diesel::prelude::*;
+use crate::{graphql::Context, Error};
+use db::{dsl::prelude::*, models::UserD, schema::users};
 use juniper::graphql_object;
 
 pub struct User {

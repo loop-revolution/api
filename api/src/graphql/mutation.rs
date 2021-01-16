@@ -1,6 +1,5 @@
-use super::{
-	context::Context,
-	models::EmailConfirm,
+use super::{context::Context, models::EmailConfirm};
+use crate::{
 	user_logic::auth::{
 		auth_payload::AuthPayload,
 		login::login,

@@ -1,7 +1,5 @@
-use loop_api::{
-	db::{env_db, get_pool},
-	graphql::{create_schema, Context},
-};
+use db::{env_db, get_pool};
+use loop_api::graphql::{create_schema, Context};
 use std::env;
 use warp::{
 	http::{header, Method},

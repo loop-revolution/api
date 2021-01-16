@@ -1,4 +1,4 @@
-use super::super::db::PostgresPool;
+use db::PostgresPool;
 
 /// The context to share among GraphQL requests
 pub struct Context {
