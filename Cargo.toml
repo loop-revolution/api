@@ -2,5 +2,6 @@
 members = [
 	"db",
 	"api",
-	"errors"
+	"errors",
+	"block-tools"
 ]
