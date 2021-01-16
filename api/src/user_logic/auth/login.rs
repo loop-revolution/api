@@ -4,8 +4,7 @@ use crate::{
 	user_logic::{localize_username, verify_pwd},
 	Error,
 };
-use db::{dsl::prelude::*, models::UserD, schema::users};
-use errors::UserError;
+use block_tools::{dsl::prelude::*, models::UserD, schema::users, UserError};
 
 pub async fn login(
 	context: &Context,

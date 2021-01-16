@@ -19,8 +19,7 @@ pub fn rand_string(length: usize) -> String {
 #[cfg(test)]
 mod test {
 	use crate::graphql::{create_schema, Context, Schema};
-	use db::{env_db, get_pool};
-	use errors::Error;
+	use block_tools::{env_db, get_pool, Error};
 	use juniper::{DefaultScalarValue, ExecutionError, Value, Variables};
 	use std::time::SystemTime;
 

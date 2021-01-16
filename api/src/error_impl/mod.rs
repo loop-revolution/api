@@ -1,5 +1,5 @@
-use db::{DieselError, R2D2Error};
-use errors::{EmailConfirmError, Error as RootError, InternalError, UserError};
+use block_tools::{DieselError, R2D2Error};
+use block_tools::{EmailConfirmError, Error as RootError, InternalError, UserError};
 use juniper::{FieldError, IntoFieldError};
 use std::{fmt, time::SystemTimeError};
 

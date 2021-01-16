@@ -1,7 +1,5 @@
 [workspace]
 members = [
-	"db",
 	"api",
-	"errors",
 	"block-tools"
 ]

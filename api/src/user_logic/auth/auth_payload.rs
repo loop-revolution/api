@@ -3,8 +3,8 @@ use crate::{
 	user_logic::user::User,
 	Error,
 };
+use block_tools::UserError;
 use chrono::{prelude::*, Duration};
-use errors::UserError;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use juniper::graphql_object;
 use log::error;

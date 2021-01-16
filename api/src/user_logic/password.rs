@@ -1,4 +1,4 @@
-use errors::UserError;
+use block_tools::UserError;
 use rand::Rng;
 
 use crate::Error;

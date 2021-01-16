@@ -1,4 +1,4 @@
-use db::{env_db, get_pool};
+use block_tools::{env_db, get_pool};
 use loop_api::graphql::{create_schema, Context};
 use std::env;
 use warp::{

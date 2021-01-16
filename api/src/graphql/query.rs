@@ -6,8 +6,7 @@ use crate::{
 	},
 	Error,
 };
-use db::dsl::prelude::*;
-use db::{models::UserD, schema::users};
+use block_tools::{dsl::prelude::*, models::UserD, schema::users};
 use juniper::{graphql_object, FieldResult};
 
 /// Struct for Juniper to take Query resolvers

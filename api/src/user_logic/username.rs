@@ -1,10 +1,9 @@
 use crate::Error;
-use db::{
+use block_tools::{
 	dsl::{prelude::*, select},
 	schema::users::dsl,
-	PgConnect,
+	PgConnect, UserError,
 };
-use errors::UserError;
 use regex::Regex;
 
 pub fn localize_username<'a>(username: &'a str) -> String {
@@ -17,7 +16,7 @@ pub fn verify_username<'a>(localuname: &'a str, conn: &PgConnect) -> Result<(), 
 		return Err(UserError::NameTooShort(localuname.to_string()).into());
 	}
 	// A user with that name should not exist!
-	let name_exists: bool = select(db::dsl::dsl::exists(
+	let name_exists: bool = select(block_tools::dsl::dsl::exists(
 		dsl::users.filter(dsl::localuname.eq(localuname)),
 	))
 	.get_result(conn)?;

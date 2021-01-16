@@ -8,14 +8,14 @@ use crate::{
 	user_logic::{hash_pwd, localize_username, validate_pwd, verify_username},
 	Error,
 };
-use db::{
+use block_tools::{
 	dsl,
 	dsl::prelude::*,
 	models::{NewPotentialUser, NewUser, PotentialUser, UserD},
 	schema::{potential_users, users},
 	PgConnect,
 };
-use errors::{EmailConfirmError, InternalError};
+use block_tools::{EmailConfirmError, InternalError};
 use lettre::Transport;
 use rand::{thread_rng, Rng};
 use std::time::SystemTime;

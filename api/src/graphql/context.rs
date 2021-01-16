@@ -1,4 +1,4 @@
-use db::PostgresPool;
+use block_tools::PostgresPool;
 
 /// The context to share among GraphQL requests
 pub struct Context {

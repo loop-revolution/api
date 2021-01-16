@@ -142,8 +142,10 @@ dependencies = [
 name = "block-tools"
 version = "0.1.0"
 dependencies = [
- "db",
- "errors",
+ "diesel",
+ "dotenv",
+ "log",
+ "r2d2",
 ]
 
 [[package]]
@@ -289,16 +291,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "db"
-version = "0.1.0"
-dependencies = [
- "diesel",
- "dotenv",
- "log",
- "r2d2",
-]
-
-[[package]]
 name = "derive_utils"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -382,10 +374,6 @@ dependencies = [
  "regex",
  "termcolor",
 ]
-
-[[package]]
-name = "errors"
-version = "0.1.0"
 
 [[package]]
 name = "fake-simd"
@@ -977,10 +965,9 @@ dependencies = [
 name = "loop_api"
 version = "0.0.2"
 dependencies = [
+ "block-tools",
  "chrono",
- "db",
  "dotenv",
- "errors",
  "jsonwebtoken",
  "juniper",
  "juniper_warp",

@@ -9,8 +9,6 @@ version = "0.0.2"
 juniper_warp = "0.6.0"
 warp = "0.2.5"
 tokio = { version = "0.2", features = ["full"] }
-# Database
-db = { path = "../db" }
 dotenv = "0.15.0"
 # Logging
 log = "0.4.13"
@@ -27,4 +25,4 @@ lettre = "0.10.0-alpha.4"
 chrono = "0.4.19"
 jsonwebtoken = "7"
 serde = { version = "1.0", features = ["derive"] }
-errors = { path = "../errors" }
+block-tools = { path = "../block-tools" }
