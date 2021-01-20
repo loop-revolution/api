@@ -21,7 +21,7 @@ juniper = "0.15.2"
 serde_json = "1.0.61"
 # Passwords
 rust-argon2 = "0.8.3"
-rand = "0.8.1"
+rand = "0.8.2"
 # Users
 regex = "1.4.3"
 lettre = "0.10.0-alpha.4"
