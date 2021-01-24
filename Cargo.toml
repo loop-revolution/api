@@ -6,8 +6,8 @@ version = "0.0.2"
 
 [dependencies]
 # Server
-juniper_warp = "0.6.0"
 warp = "0.3.0"
+juniper_warp = "0.6.1"
 tokio = { version = "0.2", features = ["full"] }
 # Database
 diesel = { version = "1.4.5", features = ["postgres", "r2d2", "chrono"] }

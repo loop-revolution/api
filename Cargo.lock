@@ -930,9 +930,9 @@ dependencies = [
 
 [[package]]
 name = "juniper_warp"
-version = "0.6.0"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9eb2ffd6cf828d1ec4195afdc6d8903aebbcaa8d8b874428ca187685952ad27a"
+checksum = "ca4e8b0aad77fb5029e39ac765fe1fea4c78cca75e979781761338d1c081134e"
 dependencies = [
  "anyhow",
  "bytes 0.5.6",
