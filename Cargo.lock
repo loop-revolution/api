@@ -858,9 +858,9 @@ dependencies = [
 
 [[package]]
 name = "juniper"
-version = "0.15.1"
+version = "0.15.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "19309aa4fd360d59b35edf306a3e1740e9784866bf6e222767fd7217b13d885c"
+checksum = "8d18bea4f6aa903e3176556c45e9d78fed966f8083b324fc35e383f8351a2869"
 dependencies = [
  "async-trait",
  "bson",
@@ -879,9 +879,9 @@ dependencies = [
 
 [[package]]
 name = "juniper_codegen"
-version = "0.15.1"
+version = "0.15.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a57106f1e3bb3f7156d240f062c3eee0c83dece5e7e2ff49c4da980a10def2bf"
+checksum = "ad4272ac0ace346ffe07be22838607d60cea037334d9f16f5dfaac82da778f3a"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -891,9 +891,9 @@ dependencies = [
 
 [[package]]
 name = "juniper_warp"
-version = "0.6.0"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9eb2ffd6cf828d1ec4195afdc6d8903aebbcaa8d8b874428ca187685952ad27a"
+checksum = "ca4e8b0aad77fb5029e39ac765fe1fea4c78cca75e979781761338d1c081134e"
 dependencies = [
  "anyhow",
  "bytes",
@@ -995,7 +995,8 @@ dependencies = [
  "lettre",
  "log",
  "pretty_env_logger",
- "rand 0.8.1",
+ "r2d2",
+ "rand 0.8.2",
  "regex",
  "rust-argon2",
  "serde",
@@ -1499,9 +1500,9 @@ dependencies = [
 
 [[package]]
 name = "rand"
-version = "0.8.1"
+version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c24fcd450d3fa2b592732565aa4f17a27a61c65ece4726353e000939b0edee34"
+checksum = "18519b42a40024d661e1714153e9ad0c3de27cd495760ceb09710920f1098b1e"
 dependencies = [
  "libc",
  "rand_chacha 0.3.0",
@@ -1789,18 +1790,18 @@ dependencies = [
 
 [[package]]
 name = "serde"
-version = "1.0.119"
+version = "1.0.120"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9bdd36f49e35b61d49efd8aa7fc068fd295961fd2286d0b2ee9a4c7a14e99cc3"
+checksum = "166b2349061381baf54a58e4b13c89369feb0ef2eaa57198899e2312aac30aab"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.119"
+version = "1.0.120"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "552954ce79a059ddd5fd68c271592374bd15cab2274970380c000118aeffe1cd"
+checksum = "0ca2a8cb5805ce9e3b95435e3765b7b553cecc762d938d409434338386cb5775"
 dependencies = [
  "proc-macro2",
  "quote",
