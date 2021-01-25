@@ -1,5 +1,9 @@
 use super::context::Context;
 use crate::{
+	block_logic::{
+		block::Block,
+		block_queries::{block_by_id, creation_display},
+	},
 	user_logic::{
 		auth::auth_payload::{require_token, validate_token},
 		user::User,
@@ -22,15 +26,29 @@ impl Query {
 		Ok(num as i32)
 	}
 
+	/// Tries to find a user with a matching ID. Will be null if a user is not found.
 	async fn user_by_id(context: &Context, id: i32) -> Result<Option<User>, Error> {
 		user_by_id(context, id).await
 	}
 
+	/// Tries to find a block with a matching ID. Will be null if a block is not found.
+	async fn block_by_id(context: &Context, id: i32) -> Result<Option<Block>, Error> {
+		block_by_id(context, id).await
+	}
+
+	/// Returns a `User` object corresponding with the authorization token.
 	async fn whoami(context: &Context) -> Result<Option<User>, Error> {
 		let token = require_token(context)?;
 		let user_id = validate_token(token)?;
 
 		user_by_id(context, user_id).await
+	}
+
+	pub async fn block_creation_display(
+		context: &Context,
+		r#type: String,
+	) -> Result<String, Error> {
+		creation_display(context, r#type).await
 	}
 }
 

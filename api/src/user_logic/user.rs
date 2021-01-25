@@ -1,8 +1,11 @@
 use super::auth::auth_payload::{require_token, validate_token};
-use crate::{graphql::Context, Error};
-use block_tools::{dsl::prelude::*, models::UserD, schema::users};
+use crate::{block_logic::block::Block, graphql::Context, Error};
+use block_tools::{
+	dsl::prelude::*,
+	models::{BlockD, UserD},
+	schema::{blocks, users},
+};
 use juniper::graphql_object;
-
 pub struct User {
 	/// Auto-incrementing unique ID for a user
 	pub id: i32,
@@ -35,6 +38,19 @@ impl User {
 
 	fn username(&self) -> String {
 		self.username.clone()
+	}
+
+	async fn blocks(&self, context: &Context) -> Result<Vec<Block>, Error> {
+		let conn = &context.pool.get()?;
+
+		let blocks: Vec<Block> = blocks::dsl::blocks
+			.filter(blocks::dsl::owner_id.eq(self.id))
+			.load::<BlockD>(conn)?
+			.iter()
+			.map(|blockd| Block::from(blockd))
+			.collect();
+
+		Ok(blocks)
 	}
 }
 

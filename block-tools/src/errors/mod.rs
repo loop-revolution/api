@@ -5,6 +5,7 @@ pub enum Error {
 	GenericError,
 	InternalError(InternalError),
 	UserError(UserError),
+	BlockError(BlockError),
 }
 
 impl fmt::Display for Error {
@@ -13,6 +14,7 @@ impl fmt::Display for Error {
 			Error::GenericError => write!(f, "[g] Something unspecified went wrong."),
 			Error::InternalError(err) => write!(f, "{}", err.to_string()),
 			Error::UserError(err) => write!(f, "{}", err.to_string()),
+			Error::BlockError(err) => write!(f, "{}", err.to_string()),
 		}
 	}
 }
@@ -45,6 +47,37 @@ impl From<EmailConfirmError> for Error {
 	fn from(e: EmailConfirmError) -> Self {
 		match e {
 			_ => UserError::EmailConfirmError(e).into(),
+		}
+	}
+}
+
+impl From<diesel::result::Error> for Error {
+	fn from(e: diesel::result::Error) -> Self {
+		match e {
+			_ => Error::GenericError,
+		}
+	}
+}
+
+impl From<r2d2::Error> for Error {
+	fn from(e: r2d2::Error) -> Self {
+		match e {
+			_ => InternalError::DatabaseTimeout.into(),
+		}
+	}
+}
+
+#[derive(Debug, Clone)]
+pub enum BlockError {
+	TypeExist(String),
+}
+
+impl fmt::Display for BlockError {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		match self {
+			BlockError::TypeExist(name) => {
+				write!(f, "[bte] A block type called '{}' was not found.", name)
+			}
 		}
 	}
 }

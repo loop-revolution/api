@@ -46,22 +46,6 @@ impl From<std::num::ParseIntError> for Error {
 	}
 }
 
-impl From<DieselError> for Error {
-	fn from(e: DieselError) -> Self {
-		match e {
-			_ => Error::RootError(RootError::GenericError),
-		}
-	}
-}
-
-impl From<R2D2Error> for Error {
-	fn from(e: R2D2Error) -> Self {
-		match e {
-			_ => Error::RootError(RootError::InternalError(InternalError::DatabaseTimeout)),
-		}
-	}
-}
-
 impl From<RootError> for Error {
 	fn from(e: RootError) -> Self {
 		match e {
@@ -96,6 +80,28 @@ impl From<EmailConfirmError> for Error {
 
 impl From<SystemTimeError> for Error {
 	fn from(e: SystemTimeError) -> Self {
+		match e {
+			_ => Error::RootError(e.into()),
+		}
+	}
+}
+
+impl From<serde_json::Error> for Error {
+	fn from(_: serde_json::Error) -> Self {
+		Error::RootError(RootError::GenericError)
+	}
+}
+
+impl From<DieselError> for Error {
+	fn from(e: DieselError) -> Self {
+		match e {
+			_ => Error::RootError(e.into()),
+		}
+	}
+}
+
+impl From<R2D2Error> for Error {
+	fn from(e: R2D2Error) -> Self {
 		match e {
 			_ => Error::RootError(e.into()),
 		}

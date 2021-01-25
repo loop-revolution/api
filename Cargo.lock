@@ -142,10 +142,13 @@ dependencies = [
 name = "block-tools"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
  "diesel",
  "dotenv",
+ "erased-serde",
  "log",
  "r2d2",
+ "serde",
 ]
 
 [[package]]
@@ -291,6 +294,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "data-block"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "block-tools",
+]
+
+[[package]]
 name = "derive_utils"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -373,6 +384,15 @@ dependencies = [
  "log",
  "regex",
  "termcolor",
+]
+
+[[package]]
+name = "erased-serde"
+version = "0.3.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0465971a8cc1fa2455c8465aaa377131e1f1cf4983280f474a13e68793aa770c"
+dependencies = [
+ "serde",
 ]
 
 [[package]]
@@ -967,6 +987,7 @@ version = "0.0.2"
 dependencies = [
  "block-tools",
  "chrono",
+ "data-block",
  "dotenv",
  "jsonwebtoken",
  "juniper",

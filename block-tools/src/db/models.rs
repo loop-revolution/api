@@ -1,4 +1,4 @@
-use super::schema::{potential_users, users};
+use super::schema::{blocks, potential_users, properties, users};
 use std::time::SystemTime;
 
 #[derive(Queryable)]
@@ -14,6 +14,25 @@ pub struct UserD {
 	pub credits: i32,
 }
 
+#[derive(Queryable)]
+pub struct BlockD {
+	pub id: i32,
+	pub block_type: String,
+	pub created_at: SystemTime,
+	pub updated_at: SystemTime,
+	pub block_data: Option<String>,
+	pub owner_id: i32,
+}
+
+#[derive(Queryable)]
+pub struct PropertyD {
+	pub id: i32,
+	pub property_name: String,
+	pub parent_id: i32,
+	pub value_id: i32,
+	pub annotation: Option<String>,
+}
+
 #[derive(Insertable)]
 #[table_name = "users"]
 pub struct NewUser<'a> {
@@ -25,6 +44,25 @@ pub struct NewUser<'a> {
 	pub password: &'a str,
 	pub email: &'a str,
 	pub credits: i32,
+}
+
+#[derive(Insertable)]
+#[table_name = "blocks"]
+pub struct NewBlock<'a> {
+	pub block_type: &'a str,
+	pub created_at: SystemTime,
+	pub updated_at: SystemTime,
+	pub block_data: Option<&'a str>,
+	pub owner_id: i32,
+}
+
+#[derive(Insertable)]
+#[table_name = "properties"]
+pub struct NewProperty<'a> {
+	pub property_name: &'a str,
+	pub parent_id: i32,
+	pub value_id: i32,
+	pub annotation: Option<&'a str>,
 }
 
 #[derive(Queryable)]

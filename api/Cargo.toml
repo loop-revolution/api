@@ -26,4 +26,6 @@ lettre = "0.10.0-alpha.4"
 chrono = "0.4.19"
 jsonwebtoken = "7"
 serde = { version = "1.0", features = ["derive"] }
+# Blocks
 block-tools = { path = "../block-tools" }
+data-block = { path = "../blocks/data-block" }

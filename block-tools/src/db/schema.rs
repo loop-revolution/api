@@ -1,4 +1,15 @@
 table! {
+	blocks (id) {
+		id -> Int4,
+		block_type -> Varchar,
+		created_at -> Timestamp,
+		updated_at -> Timestamp,
+		block_data -> Nullable<Text>,
+		owner_id -> Int4,
+	}
+}
+
+table! {
 	potential_users (id) {
 		id -> Int4,
 		email -> Varchar,
@@ -7,6 +18,16 @@ table! {
 		username -> Varchar,
 		password -> Varchar,
 		created_at -> Timestamp,
+	}
+}
+
+table! {
+	properties (id) {
+		id -> Int4,
+		property_name -> Varchar,
+		parent_id -> Int4,
+		value_id -> Int4,
+		annotation -> Nullable<Varchar>,
 	}
 }
 
@@ -21,4 +42,6 @@ table! {
 	}
 }
 
-allow_tables_to_appear_in_same_query!(potential_users, users,);
+joinable!(blocks -> users (owner_id));
+
+allow_tables_to_appear_in_same_query!(blocks, potential_users, properties, users,);

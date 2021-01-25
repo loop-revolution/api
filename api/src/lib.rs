@@ -2,6 +2,7 @@ pub mod error_impl;
 pub mod graphql;
 pub mod user_logic;
 pub use error_impl::Error;
+pub mod block_logic;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use std::iter;

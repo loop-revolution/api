@@ -1,5 +1,6 @@
 use super::{context::Context, models::EmailConfirm};
 use crate::{
+	block_logic::{block::Block, block_queries::create_block},
 	user_logic::auth::{
 		auth_payload::AuthPayload,
 		login::login,
@@ -41,5 +42,13 @@ impl Mutation {
 		password: String,
 	) -> Result<AuthPayload, Error> {
 		login(context, username, password).await
+	}
+
+	pub async fn create_block(
+		context: &Context,
+		r#type: String,
+		input: String,
+	) -> Result<Block, Error> {
+		create_block(context, r#type, input).await
 	}
 }

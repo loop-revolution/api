@@ -12,7 +12,10 @@ extern crate log;
 #[tokio::main]
 async fn main() {
 	// Logging
-	env::set_var("RUST_LOG", "loop_api=info,loop_api=debug");
+	env::set_var(
+		"RUST_LOG",
+		"loop_api=info,loop_api=debug,block_tools=info,block_tools=debug",
+	);
 	pretty_env_logger::init();
 	let log = warp::log::custom(|info| {
 		info!("{} in {:?}", info.status(), info.elapsed());

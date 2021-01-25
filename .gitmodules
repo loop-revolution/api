@@ -1,0 +1,3 @@
+[submodule "blocks/data-block"]
+	path = blocks/data-block
+	url = git@github.com:loop-revolution/data-block.git
