@@ -995,7 +995,6 @@ dependencies = [
  "lettre",
  "log",
  "pretty_env_logger",
- "r2d2",
  "rand 0.8.2",
  "regex",
  "rust-argon2",
