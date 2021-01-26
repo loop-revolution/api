@@ -1,12 +1,11 @@
 use super::delegation::{delegate_embed_display, delegate_page_display};
 use crate::{
-	graphql::{query::user_by_id, Context},
-	user_logic::user::User,
-	Error,
+	graphql::ContextData,
+	user_logic::user::{user_by_id, User},
 };
+use async_graphql::*;
 use block_tools::models::BlockD;
 use chrono::{DateTime, Utc};
-use juniper::graphql_object;
 use std::time::SystemTime;
 
 pub struct Block {
@@ -18,40 +17,43 @@ pub struct Block {
 	pub owner_id: i32,
 }
 
-#[graphql_object(context = Context)]
+#[Object]
 impl Block {
-	fn id(&self) -> i32 {
+	async fn id(&self) -> i32 {
 		self.id
 	}
 
-	fn data(&self) -> Option<String> {
+	async fn data(&self) -> Option<String> {
 		self.block_data.clone()
 	}
 
-	fn r#type(&self) -> String {
+	async fn r#type(&self) -> String {
 		self.block_type.clone()
 	}
 
-	fn created_at(&self) -> DateTime<Utc> {
+	async fn created_at(&self) -> DateTime<Utc> {
 		self.created_at.into()
 	}
 
-	fn updated_at(&self) -> DateTime<Utc> {
+	async fn updated_at(&self) -> DateTime<Utc> {
 		self.updated_at.into()
 	}
 
-	async fn owner(&self, context: &Context) -> Result<User, Error> {
+	async fn owner(&self, context: &Context<'_>) -> Result<User, Error> {
+		let context = &context.data::<ContextData>()?;
 		let user = user_by_id(context, self.owner_id).await?;
 
 		Ok(user.unwrap())
 	}
 
-	async fn page_display(&self, context: &Context) -> Result<String, Error> {
+	async fn page_display(&self, context: &Context<'_>) -> Result<String, Error> {
+		let context = &context.data::<ContextData>()?;
 		let display = delegate_page_display(self, context).await?;
 		Ok(serde_json::to_string(&display)?)
 	}
 
-	async fn embed_display(&self, context: &Context) -> Result<String, Error> {
+	async fn embed_display(&self, context: &Context<'_>) -> Result<String, Error> {
+		let context = &context.data::<ContextData>()?;
 		let display = delegate_embed_display(self, context).await?;
 		Ok(serde_json::to_string(&display)?)
 	}

@@ -1,12 +1,11 @@
 use crate::{
-	graphql::{query::user_by_id, Context},
-	user_logic::user::User,
-	Error,
+	graphql::ContextData,
+	user_logic::user::{user_by_id, User},
 };
+use async_graphql::*;
 use block_tools::UserError;
 use chrono::{prelude::*, Duration};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
-use juniper::graphql_object;
 use log::error;
 use serde::{Deserialize, Serialize};
 
@@ -15,12 +14,13 @@ pub struct AuthPayload {
 	pub user_id: i32,
 }
 
-#[graphql_object(context = Context)]
+#[Object]
 impl AuthPayload {
-	pub async fn user(&self, context: &Context) -> Result<Option<User>, Error> {
-		user_by_id(context, self.user_id).await
+	pub async fn user(&self, context: &Context<'_>) -> Result<Option<User>, Error> {
+		let context = context.data::<ContextData>()?;
+		Ok(user_by_id(context, self.user_id).await?)
 	}
-	fn token(&self) -> String {
+	async fn token(&self) -> String {
 		self.token.clone()
 	}
 }
@@ -34,7 +34,7 @@ impl AuthPayload {
 	}
 }
 
-pub fn require_token(context: &Context) -> Result<String, UserError> {
+pub fn require_token(context: &ContextData) -> Result<String, UserError> {
 	match &context.auth_token {
 		None => Err(UserError::NeedAuth),
 		Some(token) => Ok(token.clone()),

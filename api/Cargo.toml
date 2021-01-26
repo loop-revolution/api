@@ -7,16 +7,16 @@ publish = false
 
 [dependencies]
 # Server
-juniper_warp = "0.6.0"
-warp = "0.2.5"
-tokio = { version = "0.2", features = ["full"] }
+async-graphql-warp = "2.5.1"
+warp = "0.3.0"
+tokio = { version = "1.1.0", features = ["full"] }
 dotenv = "0.15.0"
 # Logging
 log = "0.4.13"
 pretty_env_logger = "0.4.0"
 # GraphQL
-juniper = "0.15.1"
-serde_json = "1.0.58"
+serde_json = "1.0"
+async-graphql = "2.5.1"
 # Passwords
 rust-argon2 = "0.8.3"
 rand = "0.8.1"
@@ -26,6 +26,7 @@ lettre = "0.10.0-alpha.4"
 chrono = "0.4.19"
 jsonwebtoken = "7"
 serde = { version = "1.0", features = ["derive"] }
+futures = "0.3"
 # Blocks
 block-tools = { path = "../block-tools" }
 data-block = { path = "../blocks/data-block" }

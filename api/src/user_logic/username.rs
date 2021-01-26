@@ -1,4 +1,4 @@
-use crate::Error;
+use async_graphql::Error;
 use block_tools::{
 	dsl::{prelude::*, select},
 	schema::users::dsl,
@@ -6,12 +6,12 @@ use block_tools::{
 };
 use regex::Regex;
 
-pub fn localize_username<'a>(username: &'a str) -> String {
+pub fn localize_username(username: &'_ str) -> String {
 	let re = Regex::new(r"[^a-zA-Z\d]").unwrap();
 	re.replace_all(username, "").to_string().to_lowercase()
 }
 
-pub fn verify_username<'a>(localuname: &'a str, conn: &PgConnect) -> Result<(), Error> {
+pub fn verify_username(localuname: &'_ str, conn: &PgConnect) -> Result<(), Error> {
 	if localuname.len() < 3 {
 		return Err(UserError::NameTooShort(localuname.to_string()).into());
 	}
