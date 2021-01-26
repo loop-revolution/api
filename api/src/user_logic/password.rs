@@ -1,7 +1,6 @@
+use async_graphql::Error;
 use block_tools::UserError;
 use rand::Rng;
-
-use crate::Error;
 
 /// Takes the rawtext password and hashes it
 pub fn hash_pwd(password: String) -> Result<String, argon2::Error> {

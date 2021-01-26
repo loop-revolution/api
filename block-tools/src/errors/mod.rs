@@ -20,50 +20,38 @@ impl fmt::Display for Error {
 }
 
 impl From<SystemTimeError> for Error {
-	fn from(e: SystemTimeError) -> Self {
-		match e {
-			_ => Error::GenericError,
-		}
+	fn from(_: SystemTimeError) -> Self {
+		Error::GenericError
 	}
 }
 
 impl From<InternalError> for Error {
 	fn from(e: InternalError) -> Self {
-		match e {
-			_ => Error::InternalError(e),
-		}
+		Error::InternalError(e)
 	}
 }
 
 impl From<UserError> for Error {
 	fn from(e: UserError) -> Self {
-		match e {
-			_ => Error::UserError(e),
-		}
+		Error::UserError(e)
 	}
 }
 
 impl From<EmailConfirmError> for Error {
 	fn from(e: EmailConfirmError) -> Self {
-		match e {
-			_ => UserError::EmailConfirmError(e).into(),
-		}
+		UserError::EmailConfirmError(e).into()
 	}
 }
 
 impl From<diesel::result::Error> for Error {
-	fn from(e: diesel::result::Error) -> Self {
-		match e {
-			_ => Error::GenericError,
-		}
+	fn from(_: diesel::result::Error) -> Self {
+		Error::GenericError
 	}
 }
 
 impl From<r2d2::Error> for Error {
-	fn from(e: r2d2::Error) -> Self {
-		match e {
-			_ => InternalError::DatabaseTimeout.into(),
-		}
+	fn from(_: r2d2::Error) -> Self {
+		InternalError::DatabaseTimeout.into()
 	}
 }
 

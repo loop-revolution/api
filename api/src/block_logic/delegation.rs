@@ -1,7 +1,4 @@
-use crate::{
-	graphql::{other_context, Context},
-	Error,
-};
+use crate::graphql::{other_context, ContextData};
 use block_tools::{
 	display_api::{
 		component::{text::TextComponent, DisplayComponent},
@@ -12,13 +9,13 @@ use block_tools::{
 };
 
 use super::block::{to_blockd, Block};
-
+use async_graphql::Error;
 use block_tools::blocks::BlockType;
 use data_block::DataBlock;
 
 pub async fn delegate_page_display(
 	block: &Block,
-	context: &Context,
+	context: &ContextData,
 ) -> Result<DisplayObject, Error> {
 	let block_type: BlockTypes = block.block_type.clone().into();
 	let wrapped = match block_type {
@@ -39,7 +36,7 @@ pub async fn delegate_page_display(
 
 pub async fn delegate_embed_display(
 	block: &Block,
-	context: &Context,
+	context: &ContextData,
 ) -> Result<Box<dyn DisplayComponent>, Error> {
 	let block_type: BlockTypes = block.block_type.clone().into();
 	match block_type {
@@ -57,7 +54,7 @@ pub async fn delegate_embed_display(
 pub async fn delegate_create(
 	block_type: &str,
 	input: String,
-	context: &Context,
+	context: &ContextData,
 	user_id: i32,
 ) -> Result<BlockD, Error> {
 	let bt: BlockTypes = block_type.to_string().into();
@@ -71,7 +68,7 @@ pub async fn delegate_create(
 }
 
 pub async fn delegate_creation_display(
-	context: &Context,
+	context: &ContextData,
 	block_type: &str,
 	user_id: i32,
 ) -> Result<CreationObject, Error> {

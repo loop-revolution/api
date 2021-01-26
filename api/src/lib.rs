@@ -1,8 +1,6 @@
-pub mod error_impl;
+pub mod block_logic;
 pub mod graphql;
 pub mod user_logic;
-pub use error_impl::Error;
-pub mod block_logic;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use std::iter;
@@ -19,39 +17,14 @@ pub fn rand_string(length: usize) -> String {
 
 #[cfg(test)]
 mod test {
-	use crate::graphql::{create_schema, Context, Schema};
-	use block_tools::{env_db, get_pool, Error};
-	use juniper::{DefaultScalarValue, ExecutionError, Value, Variables};
+	use async_graphql::Error;
 	use std::time::SystemTime;
 
 	/// Generates a "random" username based on time
-	pub fn rand_username() -> Result<String, Error> {
+	pub fn _rand_username() -> Result<String, Error> {
 		Ok(SystemTime::now()
 			.duration_since(SystemTime::UNIX_EPOCH)?
 			.as_millis()
 			.to_string())
-	}
-
-	/// Makes a Schema & Context instance for integration tests
-	pub fn gen_exec(token: Option<String>) -> (Context, Schema) {
-		let schema = create_schema();
-		let pool = get_pool(&env_db());
-		let context = Context {
-			pool: pool.clone(),
-			auth_token: token,
-		};
-		(context, schema)
-	}
-
-	pub async fn easy_exec<'a>(
-		query: &'a str,
-		pair: (&Schema, &Context),
-	) -> (
-		Value<DefaultScalarValue>,
-		Vec<ExecutionError<DefaultScalarValue>>,
-	) {
-		juniper::execute(query, None, pair.0, &Variables::new(), pair.1)
-			.await
-			.unwrap()
 	}
 }
