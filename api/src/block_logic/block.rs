@@ -9,7 +9,7 @@ use chrono::{DateTime, Utc};
 use std::time::SystemTime;
 
 pub struct Block {
-	pub id: i32,
+	pub id: i64,
 	pub block_data: Option<String>,
 	pub created_at: SystemTime,
 	pub updated_at: SystemTime,
@@ -19,7 +19,7 @@ pub struct Block {
 
 #[Object]
 impl Block {
-	async fn id(&self) -> i32 {
+	async fn id(&self) -> i64 {
 		self.id
 	}
 

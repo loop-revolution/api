@@ -7,9 +7,9 @@ use crate::{
 	user_logic::auth::auth_payload::{require_token, validate_token},
 };
 use async_graphql::{Context, Error, Object};
-use block_tools::{dsl::prelude::*, models::BlockD, schema::blocks};
+use block_tools::{dsl::prelude::*, models::BlockD, schema::blocks, NoAccessSubject, UserError};
 
-pub async fn block_by_id(context: &ContextData, id: i32) -> Result<Option<Block>, Error> {
+pub async fn block_by_id(context: &ContextData, id: i64) -> Result<Option<Block>, Error> {
 	let conn = &context.pool.get()?;
 
 	let block: Option<BlockD> = blocks::dsl::blocks
@@ -37,6 +37,24 @@ impl BlockMutations {
 	) -> Result<Block, Error> {
 		let context = &context.data::<ContextData>()?;
 		create_block(context, r#type, input).await
+	}
+
+	pub async fn delete_block(&self, context: &Context<'_>, block_id: i64) -> Result<i64, Error> {
+		let context = &context.data::<ContextData>()?;
+		let user_id = validate_token(require_token(context)?)?;
+		let conn = &context.pool.get()?;
+		match block_tools::dsl::delete(
+			blocks::dsl::blocks
+				.filter(blocks::id.eq(block_id))
+				.filter(blocks::owner_id.eq(user_id)),
+		)
+		.execute(conn)?
+		{
+			0 => Err(Error::from(UserError::NoAccess(
+				NoAccessSubject::DeleteBlock,
+			))),
+			_ => Ok(block_id),
+		}
 	}
 }
 
@@ -66,7 +84,7 @@ impl BlockQueries {
 		create_block(context, r#type, input).await
 	}
 	/// Tries to find a block with a matching ID. Will be null if a block is not found.
-	async fn block_by_id(&self, context: &Context<'_>, id: i32) -> Result<Option<Block>, Error> {
+	async fn block_by_id(&self, context: &Context<'_>, id: i64) -> Result<Option<Block>, Error> {
 		let context = &context.data::<ContextData>()?;
 		block_by_id(context, id).await
 	}

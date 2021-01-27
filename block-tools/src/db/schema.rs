@@ -1,6 +1,6 @@
 table! {
 	blocks (id) {
-		id -> Int4,
+		id -> Int8,
 		block_type -> Varchar,
 		created_at -> Timestamp,
 		updated_at -> Timestamp,
@@ -23,10 +23,10 @@ table! {
 
 table! {
 	properties (id) {
-		id -> Int4,
+		id -> Int8,
 		property_name -> Varchar,
-		parent_id -> Int4,
-		value_id -> Int4,
+		parent_id -> Int8,
+		value_id -> Int8,
 		annotation -> Nullable<Varchar>,
 	}
 }

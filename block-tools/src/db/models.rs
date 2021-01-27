@@ -16,7 +16,7 @@ pub struct UserD {
 
 #[derive(Queryable)]
 pub struct BlockD {
-	pub id: i32,
+	pub id: i64,
 	pub block_type: String,
 	pub created_at: SystemTime,
 	pub updated_at: SystemTime,
@@ -26,10 +26,10 @@ pub struct BlockD {
 
 #[derive(Queryable)]
 pub struct PropertyD {
-	pub id: i32,
+	pub id: i64,
 	pub property_name: String,
-	pub parent_id: i32,
-	pub value_id: i32,
+	pub parent_id: i64,
+	pub value_id: i64,
 	pub annotation: Option<String>,
 }
 
@@ -60,8 +60,8 @@ pub struct NewBlock<'a> {
 #[table_name = "properties"]
 pub struct NewProperty<'a> {
 	pub property_name: &'a str,
-	pub parent_id: i32,
-	pub value_id: i32,
+	pub parent_id: i64,
+	pub value_id: i64,
 	pub annotation: Option<&'a str>,
 }
 
