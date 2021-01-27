@@ -117,12 +117,14 @@ impl fmt::Display for UserError {
 #[derive(Debug, Clone)]
 pub enum NoAccessSubject {
 	OtherUserCredits,
+	DeleteBlock,
 }
 
 impl fmt::Display for NoAccessSubject {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match self {
 			NoAccessSubject::OtherUserCredits => write!(f, "another user's credits"),
+			NoAccessSubject::DeleteBlock => write!(f, "deleting the block"),
 		}
 	}
 }
