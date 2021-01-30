@@ -1,6 +1,6 @@
-use crate::{Error};
+use super::{super::schema::blocks, NewProperty};
+use crate::Error;
 use diesel::prelude::*;
-use super::{super::schema::{blocks}, NewProperty};
 use std::time::SystemTime;
 
 #[derive(Queryable)]

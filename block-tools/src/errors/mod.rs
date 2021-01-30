@@ -31,8 +31,10 @@ impl fmt::Display for BlockError {
 		match self {
 			BlockError::TypeExist(name) => {
 				write!(f, "[bte] A block type called '{}' was not found.", name)
-			},
-			BlockError::InputParse => write!(f, "[bip] The input string could not be parsed properly.")
+			}
+			BlockError::InputParse => {
+				write!(f, "[bip] The input string could not be parsed properly.")
+			}
 		}
 	}
 }

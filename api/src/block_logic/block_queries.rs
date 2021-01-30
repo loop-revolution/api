@@ -84,7 +84,11 @@ impl BlockQueries {
 		create_block(context, r#type, input).await
 	}
 	/// Tries to find a block with a matching ID. Will be null if a block is not found.
-	async fn block_by_id(&self, context: &Context<'_>, id: i64) -> Result<Option<BlockObject>, Error> {
+	async fn block_by_id(
+		&self,
+		context: &Context<'_>,
+		id: i64,
+	) -> Result<Option<BlockObject>, Error> {
 		let context = &context.data::<ContextData>()?;
 		block_by_id(context, id).await
 	}

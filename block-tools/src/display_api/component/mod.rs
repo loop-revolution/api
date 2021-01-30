@@ -39,8 +39,6 @@ pub struct WrappedComponent {
 
 impl WrappedComponent {
 	pub fn from(component: Box<dyn DisplayComponent>) -> Self {
-		WrappedComponent {
-			component,
-		}
+		WrappedComponent { component }
 	}
 }

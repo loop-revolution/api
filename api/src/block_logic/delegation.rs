@@ -22,13 +22,13 @@ pub async fn delegate_page_display(
 	let wrapped = match block_type {
 		BlockTypes::Data => {
 			DataBlock::page_display(&to_blockd(block), &other_context(context)).await
-		},
+		}
 		BlockTypes::Text => {
 			TextBlock::page_display(&to_blockd(block), &other_context(context)).await
-		},
-		BlockTypes::Invalid => {
-			Ok(DisplayObject::new(Box::new(TextComponent::new("Invalid block type").color("#ff0000"))))
-		},
+		}
+		BlockTypes::Invalid => Ok(DisplayObject::new(Box::new(
+			TextComponent::new("Invalid block type").color("#ff0000"),
+		))),
 	};
 	Ok(wrapped?)
 }

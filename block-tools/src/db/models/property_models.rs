@@ -1,7 +1,7 @@
 use diesel::{prelude::*, PgConnection};
 
-use crate::Error;
 use super::super::schema::properties;
+use crate::Error;
 
 #[derive(Queryable)]
 pub struct Property {

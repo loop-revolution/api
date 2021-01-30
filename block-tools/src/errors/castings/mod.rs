@@ -53,6 +53,6 @@ impl From<std::num::ParseIntError> for UserError {
 
 impl From<serde_json::Error> for BlockError {
 	fn from(_: serde_json::Error) -> Self {
-			BlockError::InputParse
+		BlockError::InputParse
 	}
 }
