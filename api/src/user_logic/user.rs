@@ -1,12 +1,12 @@
 use super::auth::auth_payload::{require_token, validate_token};
-use crate::{block_logic::block::Block, graphql::ContextData};
+use crate::{block_logic::block::BlockObject, graphql::ContextData};
 use async_graphql::*;
 use block_tools::{
 	dsl::prelude::*,
-	models::{BlockD, UserD},
+	models::{Block, User},
 	schema::{blocks, users},
 };
-pub struct User {
+pub struct QLUser {
 	/// Auto-incrementing unique ID for a user
 	pub id: i32,
 	/// Unique alphanumeric username for easy identification
@@ -14,7 +14,7 @@ pub struct User {
 }
 
 #[Object]
-impl User {
+impl QLUser {
 	/// How many users there are in the database
 	async fn credits(&self, context: &Context<'_>) -> Result<Option<i32>, Error> {
 		let context = &context.data::<ContextData>()?;
@@ -41,33 +41,33 @@ impl User {
 		self.username.clone()
 	}
 
-	async fn blocks(&self, context: &Context<'_>) -> Result<Vec<Block>, Error> {
+	async fn blocks(&self, context: &Context<'_>) -> Result<Vec<BlockObject>, Error> {
 		let conn = &context.data::<ContextData>()?.pool.get()?;
 
-		let blocks: Vec<Block> = blocks::dsl::blocks
+		let blocks: Vec<BlockObject> = blocks::dsl::blocks
 			.filter(blocks::dsl::owner_id.eq(self.id))
-			.load::<BlockD>(conn)?
+			.load::<Block>(conn)?
 			.iter()
-			.map(Block::from)
+			.map(BlockObject::from)
 			.collect();
 
 		Ok(blocks)
 	}
 }
 
-impl From<UserD> for User {
-	fn from(userd: UserD) -> Self {
-		User {
+impl From<User> for QLUser {
+	fn from(userd: User) -> Self {
+		QLUser {
 			id: userd.id,
 			username: userd.username,
 		}
 	}
 }
 
-pub async fn user_by_id(context: &ContextData, id: i32) -> Result<Option<User>, Error> {
+pub async fn user_by_id(context: &ContextData, id: i32) -> Result<Option<QLUser>, Error> {
 	let conn = &context.pool.get()?;
 
-	let usr: Option<UserD> = users::dsl::users
+	let usr: Option<User> = users::dsl::users
 		.filter(users::id.eq(id))
 		.limit(1)
 		.get_result(conn)
@@ -75,7 +75,7 @@ pub async fn user_by_id(context: &ContextData, id: i32) -> Result<Option<User>, 
 
 	match usr {
 		None => Ok(None),
-		Some(usr) => Ok(Some(User::from(usr))),
+		Some(usr) => Ok(Some(QLUser::from(usr))),
 	}
 }
 
@@ -93,13 +93,13 @@ impl UserQueries {
 	}
 
 	/// Tries to find a user with a matching ID. Will be null if a user is not found.
-	async fn user_by_id(&self, context: &Context<'_>, id: i32) -> Result<Option<User>, Error> {
+	async fn user_by_id(&self, context: &Context<'_>, id: i32) -> Result<Option<QLUser>, Error> {
 		let context = &context.data::<ContextData>()?;
 		user_by_id(context, id).await
 	}
 
 	/// Returns a `User` object corresponding with the authorization token.
-	async fn whoami(&self, context: &Context<'_>) -> Result<Option<User>, Error> {
+	async fn whoami(&self, context: &Context<'_>) -> Result<Option<QLUser>, Error> {
 		let context = &context.data::<ContextData>()?;
 		let token = require_token(context)?;
 		let user_id = validate_token(token)?;

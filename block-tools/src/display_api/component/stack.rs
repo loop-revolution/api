@@ -18,6 +18,24 @@ impl DisplayComponent for StackComponent {
 	}
 }
 
+impl StackComponent {
+	pub fn new(direction: StackDirection) -> Self {
+		StackComponent {
+			direction,
+			items: Vec::new(),
+		}
+	}
+
+	pub fn add(self, component: Box<dyn DisplayComponent>) -> Self {
+		let mut items = self.items;
+		items.push(WrappedComponent::from(component));
+		StackComponent {
+			direction: self.direction,
+			items,
+		}
+	}
+}
+
 #[derive(Serialize)]
 pub enum StackDirection {
 	Horizontal,

@@ -1,5 +1,5 @@
 use super::{
-	block::Block,
+	block::BlockObject,
 	delegation::{delegate_create, delegate_creation_display},
 };
 use crate::{
@@ -7,12 +7,12 @@ use crate::{
 	user_logic::auth::auth_payload::{require_token, validate_token},
 };
 use async_graphql::{Context, Error, Object};
-use block_tools::{dsl::prelude::*, models::BlockD, schema::blocks, NoAccessSubject, UserError};
+use block_tools::{dsl::prelude::*, models::Block, schema::blocks, NoAccessSubject, UserError};
 
-pub async fn block_by_id(context: &ContextData, id: i64) -> Result<Option<Block>, Error> {
+pub async fn block_by_id(context: &ContextData, id: i64) -> Result<Option<BlockObject>, Error> {
 	let conn = &context.pool.get()?;
 
-	let block: Option<BlockD> = blocks::dsl::blocks
+	let block: Option<Block> = blocks::dsl::blocks
 		.filter(blocks::id.eq(id))
 		.limit(1)
 		.get_result(conn)
@@ -34,7 +34,7 @@ impl BlockMutations {
 		context: &Context<'_>,
 		r#type: String,
 		input: String,
-	) -> Result<Block, Error> {
+	) -> Result<BlockObject, Error> {
 		let context = &context.data::<ContextData>()?;
 		create_block(context, r#type, input).await
 	}
@@ -62,10 +62,10 @@ pub async fn create_block(
 	context: &ContextData,
 	r#type: String,
 	input: String,
-) -> Result<Block, Error> {
+) -> Result<BlockObject, Error> {
 	let user_id = validate_token(require_token(context)?)?;
 
-	Ok(Block::from(
+	Ok(BlockObject::from(
 		delegate_create(r#type.as_str(), input, context, user_id).await?,
 	))
 }
@@ -79,12 +79,12 @@ impl BlockQueries {
 		context: &Context<'_>,
 		r#type: String,
 		input: String,
-	) -> Result<Block, Error> {
+	) -> Result<BlockObject, Error> {
 		let context = &context.data::<ContextData>()?;
 		create_block(context, r#type, input).await
 	}
 	/// Tries to find a block with a matching ID. Will be null if a block is not found.
-	async fn block_by_id(&self, context: &Context<'_>, id: i64) -> Result<Option<Block>, Error> {
+	async fn block_by_id(&self, context: &Context<'_>, id: i64) -> Result<Option<BlockObject>, Error> {
 		let context = &context.data::<ContextData>()?;
 		block_by_id(context, id).await
 	}

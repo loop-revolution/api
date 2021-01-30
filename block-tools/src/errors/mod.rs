@@ -1,4 +1,5 @@
-use std::{fmt, time::SystemTimeError};
+use std::fmt;
+mod castings;
 
 #[derive(Debug, Clone)]
 pub enum Error {
@@ -19,45 +20,10 @@ impl fmt::Display for Error {
 	}
 }
 
-impl From<SystemTimeError> for Error {
-	fn from(_: SystemTimeError) -> Self {
-		Error::GenericError
-	}
-}
-
-impl From<InternalError> for Error {
-	fn from(e: InternalError) -> Self {
-		Error::InternalError(e)
-	}
-}
-
-impl From<UserError> for Error {
-	fn from(e: UserError) -> Self {
-		Error::UserError(e)
-	}
-}
-
-impl From<EmailConfirmError> for Error {
-	fn from(e: EmailConfirmError) -> Self {
-		UserError::EmailConfirmError(e).into()
-	}
-}
-
-impl From<diesel::result::Error> for Error {
-	fn from(_: diesel::result::Error) -> Self {
-		Error::GenericError
-	}
-}
-
-impl From<r2d2::Error> for Error {
-	fn from(_: r2d2::Error) -> Self {
-		InternalError::DatabaseTimeout.into()
-	}
-}
-
 #[derive(Debug, Clone)]
 pub enum BlockError {
 	TypeExist(String),
+	InputParse,
 }
 
 impl fmt::Display for BlockError {
@@ -65,7 +31,8 @@ impl fmt::Display for BlockError {
 		match self {
 			BlockError::TypeExist(name) => {
 				write!(f, "[bte] A block type called '{}' was not found.", name)
-			}
+			},
+			BlockError::InputParse => write!(f, "[bip] The input string could not be parsed properly.")
 		}
 	}
 }
@@ -125,14 +92,6 @@ impl fmt::Display for NoAccessSubject {
 		match self {
 			NoAccessSubject::OtherUserCredits => write!(f, "another user's credits"),
 			NoAccessSubject::DeleteBlock => write!(f, "deleting the block"),
-		}
-	}
-}
-
-impl From<std::num::ParseIntError> for UserError {
-	fn from(e: std::num::ParseIntError) -> Self {
-		match e {
-			_ => UserError::JWTGeneric,
 		}
 	}
 }

@@ -36,3 +36,11 @@ impl fmt::Debug for dyn DisplayComponent {
 pub struct WrappedComponent {
 	pub component: Box<dyn DisplayComponent>,
 }
+
+impl WrappedComponent {
+	pub fn from(component: Box<dyn DisplayComponent>) -> Self {
+		WrappedComponent {
+			component,
+		}
+	}
+}

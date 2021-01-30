@@ -1,6 +1,6 @@
 use crate::{
 	display_api::{component::DisplayComponent, CreationObject, DisplayObject},
-	models::BlockD,
+	models::Block,
 	Error, PostgresPool,
 };
 use async_trait::async_trait;
@@ -15,10 +15,10 @@ pub struct Context {
 #[async_trait]
 pub trait BlockType {
 	fn name(&self) -> &str;
-	async fn create(input: String, context: &Context, user_id: i32) -> Result<BlockD, Error>;
-	async fn page_display(block: &BlockD, context: &Context) -> Result<DisplayObject, Error>;
+	async fn create(input: String, context: &Context, user_id: i32) -> Result<Block, Error>;
+	async fn page_display(block: &Block, context: &Context) -> Result<DisplayObject, Error>;
 	async fn embed_display(
-		block: &BlockD,
+		block: &Block,
 		context: &Context,
 	) -> Result<Box<dyn DisplayComponent>, Error>;
 	async fn create_display(context: &Context, user_id: i32) -> Result<CreationObject, Error>;

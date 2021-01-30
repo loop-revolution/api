@@ -1,8 +1,8 @@
-use super::schema::{blocks, potential_users, properties, users};
+use super::super::schema::{potential_users, users};
 use std::time::SystemTime;
 
 #[derive(Queryable)]
-pub struct UserD {
+pub struct User {
 	/// Auto-incrementing unique ID for a user
 	pub id: i32,
 	/// Unique alphanumeric username for easy identification
@@ -12,25 +12,6 @@ pub struct UserD {
 	pub password: String,
 	pub email: String,
 	pub credits: i32,
-}
-
-#[derive(Queryable)]
-pub struct BlockD {
-	pub id: i64,
-	pub block_type: String,
-	pub created_at: SystemTime,
-	pub updated_at: SystemTime,
-	pub block_data: Option<String>,
-	pub owner_id: i32,
-}
-
-#[derive(Queryable)]
-pub struct PropertyD {
-	pub id: i64,
-	pub property_name: String,
-	pub parent_id: i64,
-	pub value_id: i64,
-	pub annotation: Option<String>,
 }
 
 #[derive(Insertable)]
@@ -44,25 +25,6 @@ pub struct NewUser<'a> {
 	pub password: &'a str,
 	pub email: &'a str,
 	pub credits: i32,
-}
-
-#[derive(Insertable)]
-#[table_name = "blocks"]
-pub struct NewBlock<'a> {
-	pub block_type: &'a str,
-	pub created_at: SystemTime,
-	pub updated_at: SystemTime,
-	pub block_data: Option<&'a str>,
-	pub owner_id: i32,
-}
-
-#[derive(Insertable)]
-#[table_name = "properties"]
-pub struct NewProperty<'a> {
-	pub property_name: &'a str,
-	pub parent_id: i64,
-	pub value_id: i64,
-	pub annotation: Option<&'a str>,
 }
 
 #[derive(Queryable)]

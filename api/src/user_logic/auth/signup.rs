@@ -11,7 +11,7 @@ use async_graphql::*;
 use block_tools::{
 	dsl,
 	dsl::prelude::*,
-	models::{NewPotentialUser, NewUser, PotentialUser, UserD},
+	models::{NewPotentialUser, NewUser, PotentialUser, User},
 	schema::{potential_users, users},
 	PgConnect,
 };
@@ -133,7 +133,7 @@ impl SignupMutations {
 			credits: 0,
 		};
 
-		let new_user: UserD = dsl::insert_into(users::table)
+		let new_user: User = dsl::insert_into(users::table)
 			.values(&new_user)
 			.get_result(conn)?;
 

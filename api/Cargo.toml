@@ -30,3 +30,4 @@ futures = "0.3"
 # Blocks
 block-tools = { path = "../block-tools" }
 data-block = { path = "../blocks/data-block" }
+text-block = { path = "../blocks/text-block" }

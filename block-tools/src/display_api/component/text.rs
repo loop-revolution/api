@@ -20,6 +20,30 @@ impl DisplayComponent for TextComponent {
 	}
 }
 
+impl TextComponent {
+	pub fn new(text: &str) -> Self {
+		TextComponent {
+			text: text.to_string(),
+			color: None,
+			preset: None,
+		}
+	}
+
+	pub fn color(self, color_code: &str) -> Self {
+		TextComponent {
+			color: Some(color_code.clone().into()),
+			..self
+		}
+	}
+
+	pub fn preset(self, preset: TextPreset) -> Self {
+		TextComponent {
+			preset: Some(preset),
+			..self
+		}
+	}
+}
+
 #[derive(Serialize)]
 pub enum TextPreset {
 	Heading,

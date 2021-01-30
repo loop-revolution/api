@@ -4,7 +4,7 @@ use crate::{
 	user_logic::{localize_username, verify_pwd},
 };
 use async_graphql::*;
-use block_tools::{dsl::prelude::*, models::UserD, schema::users, UserError};
+use block_tools::{dsl::prelude::*, models::User, schema::users, UserError};
 
 #[derive(Default)]
 pub struct LoginMutations;
@@ -20,7 +20,7 @@ impl LoginMutations {
 		let conn = &context.data::<ContextData>()?.pool.get()?;
 		let localuname = &localize_username(&username);
 
-		let user: Option<UserD> = users::dsl::users
+		let user: Option<User> = users::dsl::users
 			.filter(users::localuname.eq(localuname))
 			.first(conn)
 			.optional()?;

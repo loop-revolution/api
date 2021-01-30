@@ -1,14 +1,14 @@
 use super::delegation::{delegate_embed_display, delegate_page_display};
 use crate::{
 	graphql::ContextData,
-	user_logic::user::{user_by_id, User},
+	user_logic::user::{user_by_id, QLUser},
 };
 use async_graphql::*;
-use block_tools::models::BlockD;
+use block_tools::models::Block;
 use chrono::{DateTime, Utc};
 use std::time::SystemTime;
 
-pub struct Block {
+pub struct BlockObject {
 	pub id: i64,
 	pub block_data: Option<String>,
 	pub created_at: SystemTime,
@@ -18,7 +18,7 @@ pub struct Block {
 }
 
 #[Object]
-impl Block {
+impl BlockObject {
 	async fn id(&self) -> i64 {
 		self.id
 	}
@@ -39,7 +39,7 @@ impl Block {
 		self.updated_at.into()
 	}
 
-	async fn owner(&self, context: &Context<'_>) -> Result<User, Error> {
+	async fn owner(&self, context: &Context<'_>) -> Result<QLUser, Error> {
 		let context = &context.data::<ContextData>()?;
 		let user = user_by_id(context, self.owner_id).await?;
 
@@ -59,9 +59,9 @@ impl Block {
 	}
 }
 
-impl From<BlockD> for Block {
-	fn from(blockd: BlockD) -> Self {
-		Block {
+impl From<Block> for BlockObject {
+	fn from(blockd: Block) -> Self {
+		BlockObject {
 			id: blockd.id,
 			created_at: blockd.created_at,
 			updated_at: blockd.updated_at,
@@ -72,9 +72,9 @@ impl From<BlockD> for Block {
 	}
 }
 
-impl From<&BlockD> for Block {
-	fn from(blockd: &BlockD) -> Self {
-		Block {
+impl From<&Block> for BlockObject {
+	fn from(blockd: &Block) -> Self {
+		BlockObject {
 			id: blockd.id,
 			created_at: blockd.created_at,
 			updated_at: blockd.updated_at,
@@ -85,8 +85,8 @@ impl From<&BlockD> for Block {
 	}
 }
 
-pub fn to_blockd(block: &Block) -> BlockD {
-	BlockD {
+pub fn to_blockd(block: &BlockObject) -> Block {
+	Block {
 		id: block.id,
 		created_at: block.created_at,
 		updated_at: block.updated_at,

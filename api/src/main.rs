@@ -57,7 +57,7 @@ async fn main() {
 	let routes = graphql_playground.or(graphql_post).with(log).with(cors);
 
 	// Announce the server is online
-	log::info!("API running on 0.0.0.0:{}", port);
+	log::info!("API running on http://0.0.0.0:{}", port);
 
 	warp::serve(routes).run(([0, 0, 0, 0], port)).await;
 }

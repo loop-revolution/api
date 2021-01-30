@@ -8,15 +8,67 @@ pub struct DisplayObject {
 	pub meta: Option<DisplayMeta>,
 }
 
+impl DisplayObject {
+	pub fn new(component: Box<dyn DisplayComponent>) -> Self {
+		DisplayObject {
+			display: component,
+			meta: None,
+		}
+	}
+
+	pub fn meta(self, meta: DisplayMeta) -> Self {
+		DisplayObject {
+			meta: Some(meta),
+			..self
+		}
+	}
+}
+
 #[derive(Serialize, Debug)]
 pub struct DisplayMeta {
 	pub page: Option<PageMeta>,
+}
+
+impl DisplayMeta {
+	pub fn new() -> Self {
+		DisplayMeta { page: None }
+	}
+
+	pub fn page(self, page: PageMeta) -> Self {
+		DisplayMeta {
+			page: Some(page),
+			..self
+		}
+	}
 }
 
 #[derive(Serialize, Debug)]
 pub struct PageMeta {
 	pub title: Option<String>,
 	pub header: Option<String>,
+}
+
+impl PageMeta {
+	pub fn new() -> Self {
+		PageMeta {
+			title: None,
+			header: None,
+		}
+	}
+
+	pub fn title(self, title: &str) -> Self {
+		PageMeta {
+			title: Some(title.to_string()),
+			..self
+		}
+	}
+
+	pub fn header(self, header: &str) -> Self {
+		PageMeta {
+			header: Some(header.to_string()),
+			..self
+		}
+	}
 }
 
 pub type HexCode = String;
