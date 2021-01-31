@@ -1,8 +1,8 @@
 [package]
 authors = ["Louis Birla <louis.birla@gmail.com>"]
 edition = "2018"
-name = "loop_api"
-version = "0.0.3"
+name = "loop-api"
+version = "0.0.5"
 publish = false
 
 [dependencies]
@@ -30,3 +30,4 @@ futures = "0.3"
 block-tools = { path = "../block-tools" }
 data-block = { path = "../blocks/data-block" }
 text-block = { path = "../blocks/text-block" }
+strsim = "0.10.0"

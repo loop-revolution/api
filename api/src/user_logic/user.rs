@@ -6,11 +6,14 @@ use block_tools::{
 	models::{Block, User},
 	schema::{blocks, users},
 };
+use strsim::jaro_winkler;
+
 pub struct QLUser {
 	/// Auto-incrementing unique ID for a user
 	pub id: i32,
 	/// Unique alphanumeric username for easy identification
 	pub username: String,
+	pub display_name: Option<String>,
 }
 
 #[Object]
@@ -41,6 +44,10 @@ impl QLUser {
 		self.username.clone()
 	}
 
+	async fn display_name(&self) -> Option<String> {
+		self.display_name.clone()
+	}
+
 	async fn blocks(&self, context: &Context<'_>) -> Result<Vec<BlockObject>, Error> {
 		let conn = &context.data::<ContextData>()?.pool.get()?;
 
@@ -60,6 +67,7 @@ impl From<User> for QLUser {
 		QLUser {
 			id: userd.id,
 			username: userd.username,
+			display_name: userd.display_name,
 		}
 	}
 }
@@ -106,4 +114,43 @@ impl UserQueries {
 
 		user_by_id(context, user_id).await
 	}
+
+	async fn search_users(
+		&self,
+		context: &Context<'_>,
+		query: String,
+	) -> Result<Vec<QLUser>, Error> {
+		let context = &context.data::<ContextData>()?;
+		let conn = &context.pool.get()?;
+
+		let mut helpers: Vec<UserSortHelper> = users::dsl::users
+			.load::<User>(conn)?
+			.into_iter()
+			.map(|user| {
+				let username_sim = jaro_winkler(&user.username, &query);
+				let display_name = user.display_name.clone();
+				let display_sim = display_name
+					.and_then(|name| Some(jaro_winkler(&name, &query)))
+					.unwrap_or(0.);
+				UserSortHelper {
+					user,
+					strsim: username_sim.max(display_sim),
+				}
+			})
+			.filter(|helper| helper.strsim != 0.)
+			.collect();
+		helpers.sort_by(|a, b| b.strsim.partial_cmp(&a.strsim).unwrap());
+
+		let users: Vec<QLUser> = helpers
+			.into_iter()
+			.map(|helper| helper.user.into())
+			.collect();
+
+		Ok(users)
+	}
+}
+
+struct UserSortHelper {
+	user: User,
+	strsim: f64,
 }
