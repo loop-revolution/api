@@ -39,6 +39,7 @@ table! {
 		password -> Varchar,
 		email -> Varchar,
 		credits -> Int4,
+		display_name -> Nullable<Varchar>,
 	}
 }
 

@@ -7,8 +7,10 @@ use crate::{
 };
 use async_graphql::{EmptySubscription, MergedObject, Schema as GraphQLSchema};
 
+use super::misc_queries::MiscQueries;
+
 #[derive(MergedObject, Default)]
-pub struct Query(UserQueries, BlockQueries);
+pub struct Query(UserQueries, BlockQueries, MiscQueries);
 
 #[derive(MergedObject, Default)]
 pub struct Mutation(SignupMutations, LoginMutations, BlockMutations);
