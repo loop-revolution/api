@@ -1,0 +1,22 @@
+[package]
+version = "0.1.1"
+name = "block-tools"
+description = "Tools for block types on Loop"
+authors = ["Louis Birla <louis.birla@gmail.com>"]
+edition = "2018"
+homepage = "https://loop.page"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/loop-revolution/api"
+
+[dependencies]
+log = "0.4.13"
+diesel = { version = "1.4.5", features = ["postgres", "r2d2", "chrono"] }
+dotenv = "0.15.0"
+r2d2 = "0.8.9"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+erased-serde = "0.3"
+async-trait = "0.1.42"
+chrono = "0.4.19"
+jsonwebtoken = "7"

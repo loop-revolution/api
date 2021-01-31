@@ -31,6 +31,8 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.AUTOTHINGS_TOKEN }}
+          submodules: true
+
       - name: Install node (for wait-on)
         uses: actions/setup-node@v2
         with:
