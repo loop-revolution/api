@@ -1126,7 +1126,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "loop_api"
+name = "loop-api"
 version = "0.0.4"
 dependencies = [
  "async-graphql",
