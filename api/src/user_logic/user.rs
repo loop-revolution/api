@@ -13,6 +13,7 @@ pub struct QLUser {
 	pub id: i32,
 	/// Unique alphanumeric username for easy identification
 	pub username: String,
+	pub display_name: Option<String>,
 }
 
 #[Object]
@@ -43,6 +44,10 @@ impl QLUser {
 		self.username.clone()
 	}
 
+	async fn display_name(&self) -> Option<String> {
+		self.display_name.clone()
+	}
+
 	async fn blocks(&self, context: &Context<'_>) -> Result<Vec<BlockObject>, Error> {
 		let conn = &context.data::<ContextData>()?.pool.get()?;
 
@@ -62,6 +67,7 @@ impl From<User> for QLUser {
 		QLUser {
 			id: userd.id,
 			username: userd.username,
+			display_name: userd.display_name,
 		}
 	}
 }
