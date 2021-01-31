@@ -30,3 +30,4 @@ futures = "0.3"
 block-tools = { path = "../block-tools" }
 data-block = { path = "../blocks/data-block" }
 text-block = { path = "../blocks/text-block" }
+strsim = "0.10.0"

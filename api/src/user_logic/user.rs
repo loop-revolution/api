@@ -6,6 +6,8 @@ use block_tools::{
 	models::{Block, User},
 	schema::{blocks, users},
 };
+use strsim::jaro_winkler;
+
 pub struct QLUser {
 	/// Auto-incrementing unique ID for a user
 	pub id: i32,
@@ -106,4 +108,44 @@ impl UserQueries {
 
 		user_by_id(context, user_id).await
 	}
+
+	async fn search_users(
+		&self,
+		context: &Context<'_>,
+		query: String,
+	) -> Result<Vec<QLUser>, Error> {
+		let context = &context.data::<ContextData>()?;
+		let conn = &context.pool.get()?;
+
+		let mut helpers: Vec<UserSortHelper> = users::dsl::users
+			.load::<User>(conn)?
+			.into_iter()
+			.map(|user| {
+				let username_sim = jaro_winkler(&user.username, &query);
+				let display_name = user.display_name.clone();
+				let display_sim = display_name
+					.and_then(|name| Some(jaro_winkler(&name, &query)))
+					.unwrap_or(0.);
+				println!("{} diff {}", user.username, username_sim);
+				UserSortHelper {
+					user,
+					strsim: username_sim.max(display_sim),
+				}
+			})
+			.filter(|helper| helper.strsim != 0.)
+			.collect();
+		helpers.sort_by(|a, b| b.strsim.partial_cmp(&a.strsim).unwrap());
+
+		let users: Vec<QLUser> = helpers
+			.into_iter()
+			.map(|helper| helper.user.into())
+			.collect();
+
+		Ok(users)
+	}
+}
+
+struct UserSortHelper {
+	user: User,
+	strsim: f64,
 }

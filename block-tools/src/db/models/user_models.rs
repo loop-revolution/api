@@ -1,7 +1,7 @@
 use super::super::schema::{potential_users, users};
 use std::time::SystemTime;
 
-#[derive(Queryable)]
+#[derive(Queryable, Clone)]
 pub struct User {
 	/// Auto-incrementing unique ID for a user
 	pub id: i32,
