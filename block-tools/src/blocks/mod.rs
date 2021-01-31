@@ -14,7 +14,7 @@ pub struct Context {
 
 #[async_trait]
 pub trait BlockType {
-	fn name(&self) -> &str;
+	fn name() -> String;
 	async fn create(input: String, context: &Context, user_id: i32) -> Result<Block, Error>;
 	async fn page_display(block: &Block, context: &Context) -> Result<DisplayObject, Error>;
 	async fn embed_display(
@@ -22,4 +22,10 @@ pub trait BlockType {
 		context: &Context,
 	) -> Result<Box<dyn DisplayComponent>, Error>;
 	async fn create_display(context: &Context, user_id: i32) -> Result<CreationObject, Error>;
+	async fn method_delegate(
+		context: &Context,
+		name: String,
+		block_id: i64,
+		args: String,
+	) -> Result<Block, Error>;
 }

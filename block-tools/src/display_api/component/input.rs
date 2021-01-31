@@ -63,9 +63,12 @@ impl InputComponent {
 		}
 	}
 
-	pub fn cc_options(self, options: ConfirmCancelOptions) -> Self {
+	pub fn with_confirm(self, on_confirm: WrappedMethod) -> Self {
 		InputComponent {
-			confirm_cancel: Some(options),
+			confirm_cancel: Some(ConfirmCancelOptions {
+				enabled: true,
+				on_confirm,
+			}),
 			..self
 		}
 	}

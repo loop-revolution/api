@@ -87,6 +87,12 @@ pub struct WrappedMethod {
 	pub method: MethodObject,
 }
 
+impl From<MethodObject> for WrappedMethod {
+	fn from(object: MethodObject) -> Self {
+		WrappedMethod { method: object }
+	}
+}
+
 #[derive(Serialize, Debug)]
 pub struct CreationObject {
 	pub header_component: Box<dyn DisplayComponent>,

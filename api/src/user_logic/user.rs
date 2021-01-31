@@ -1,7 +1,7 @@
-use super::auth::auth_payload::{require_token, validate_token};
 use crate::{block_logic::block::BlockObject, graphql::ContextData};
 use async_graphql::*;
 use block_tools::{
+	auth::{require_token, validate_token},
 	dsl::prelude::*,
 	models::{Block, User},
 	schema::{blocks, users},
@@ -19,7 +19,7 @@ impl QLUser {
 	async fn credits(&self, context: &Context<'_>) -> Result<Option<i32>, Error> {
 		let context = &context.data::<ContextData>()?;
 		let conn = &context.pool.get()?;
-		let token = require_token(context)?;
+		let token = require_token(&context.other())?;
 
 		if self.id != validate_token(token)? {
 			return Ok(None);
@@ -101,7 +101,7 @@ impl UserQueries {
 	/// Returns a `User` object corresponding with the authorization token.
 	async fn whoami(&self, context: &Context<'_>) -> Result<Option<QLUser>, Error> {
 		let context = &context.data::<ContextData>()?;
-		let token = require_token(context)?;
+		let token = require_token(&context.other())?;
 		let user_id = validate_token(token)?;
 
 		user_by_id(context, user_id).await

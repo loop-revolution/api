@@ -7,9 +7,11 @@ pub struct ContextData {
 	pub auth_token: Option<String>,
 }
 
-pub fn other_context(context: &ContextData) -> ToolsContext {
-	ToolsContext {
-		pool: context.pool.clone(),
-		auth_token: context.auth_token.clone(),
+impl ContextData {
+	pub fn other(&self) -> ToolsContext {
+		ToolsContext {
+			pool: self.pool.clone(),
+			auth_token: self.auth_token.clone(),
+		}
 	}
 }

@@ -23,7 +23,11 @@ impl fmt::Display for Error {
 #[derive(Debug, Clone)]
 pub enum BlockError {
 	TypeExist(String),
+	TypeGenericError(String),
 	InputParse,
+	/// Error for when a block method does not exist
+	/// for a certain block type. (Name, Type)
+	MethodExist(String, String),
 }
 
 impl fmt::Display for BlockError {
@@ -31,6 +35,16 @@ impl fmt::Display for BlockError {
 		match self {
 			BlockError::TypeExist(name) => {
 				write!(f, "[bte] A block type called '{}' was not found.", name)
+			}
+			BlockError::MethodExist(name, block_type) => {
+				write!(
+					f,
+					"[bme] A method called '{}' was not found for the {} block type.",
+					name, block_type
+				)
+			}
+			BlockError::TypeGenericError(err) => {
+				write!(f, "[btg] {}", err)
 			}
 			BlockError::InputParse => {
 				write!(f, "[bip] The input string could not be parsed properly.")
@@ -86,14 +100,14 @@ impl fmt::Display for UserError {
 #[derive(Debug, Clone)]
 pub enum NoAccessSubject {
 	OtherUserCredits,
-	DeleteBlock,
+	DeleteBlock(i64),
 }
 
 impl fmt::Display for NoAccessSubject {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match self {
 			NoAccessSubject::OtherUserCredits => write!(f, "another user's credits"),
-			NoAccessSubject::DeleteBlock => write!(f, "deleting the block"),
+			NoAccessSubject::DeleteBlock(id) => write!(f, "deleting block {}", id),
 		}
 	}
 }

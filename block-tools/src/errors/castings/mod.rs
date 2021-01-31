@@ -56,3 +56,9 @@ impl From<serde_json::Error> for BlockError {
 		BlockError::InputParse
 	}
 }
+
+impl From<jsonwebtoken::errors::Error> for UserError {
+	fn from(_: jsonwebtoken::errors::Error) -> Self {
+		UserError::JWTGeneric
+	}
+}

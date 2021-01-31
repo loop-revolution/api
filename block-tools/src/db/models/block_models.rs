@@ -22,6 +22,25 @@ impl Block {
 			annotation: None,
 		}
 	}
+
+	pub fn by_id(block_id: i64, conn: &PgConnection) -> Result<Option<Self>, Error> {
+		Ok(blocks::dsl::blocks
+			.filter(blocks::id.eq(block_id))
+			.limit(1)
+			.get_result(conn)
+			.optional()?)
+	}
+
+	pub fn update_data(&self, new_data: &str, conn: &PgConnection) -> Result<Block, Error> {
+		Ok(
+			diesel::update(blocks::dsl::blocks.filter(blocks::id.eq(self.id)))
+				.set((
+					blocks::block_data.eq(Some(new_data)),
+					blocks::updated_at.eq(std::time::SystemTime::now()),
+				))
+				.get_result(conn)?,
+		)
+	}
 }
 
 #[derive(Insertable)]
