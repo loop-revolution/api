@@ -126,7 +126,6 @@ impl UserQueries {
 				let display_sim = display_name
 					.and_then(|name| Some(jaro_winkler(&name, &query)))
 					.unwrap_or(0.);
-				println!("{} diff {}", user.username, username_sim);
 				UserSortHelper {
 					user,
 					strsim: username_sim.max(display_sim),
