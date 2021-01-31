@@ -279,7 +279,7 @@ dependencies = [
 
 [[package]]
 name = "block-tools"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "async-trait",
  "chrono",
@@ -1127,7 +1127,7 @@ dependencies = [
 
 [[package]]
 name = "loop_api"
-version = "0.0.3"
+version = "0.0.4"
 dependencies = [
  "async-graphql",
  "async-graphql-warp",

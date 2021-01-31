@@ -12,19 +12,21 @@ pub struct User {
 	pub password: String,
 	pub email: String,
 	pub credits: i32,
+	pub display_name: Option<String>,
 }
 
 #[derive(Insertable)]
 #[table_name = "users"]
-pub struct NewUser<'a> {
+pub struct NewUser {
 	/// Username must be unique
-	pub username: &'a str,
+	pub username: String,
 	/// Localized username, must be unique
-	pub localuname: &'a str,
+	pub localuname: String,
 	/// Will be securely stored
-	pub password: &'a str,
-	pub email: &'a str,
+	pub password: String,
+	pub email: String,
 	pub credits: i32,
+	pub display_name: Option<String>,
 }
 
 #[derive(Queryable)]

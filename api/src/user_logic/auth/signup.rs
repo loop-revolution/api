@@ -91,10 +91,10 @@ impl SignupMutations {
 		session_code: String,
 		verification_code: String,
 	) -> Result<AuthPayload, Error> {
-		let localuname = &localize_username(&username);
+		let localuname = localize_username(&username);
 
 		let conn = &context.data::<ContextData>()?.pool.get()?;
-		verify_username(localuname, conn)?;
+		verify_username(&localuname, conn)?;
 
 		// Find this user in the potential user table
 		let potential: Option<PotentialUser> = potential_users::dsl::potential_users
@@ -126,11 +126,12 @@ impl SignupMutations {
 
 		// The email is confirmed! Add the user to the DB
 		let new_user = NewUser {
-			username: &potential.username,
+			username: potential.username,
 			localuname,
-			password: &potential.password,
-			email: &potential.email,
+			password: potential.password,
+			email: potential.email,
 			credits: 0,
+			display_name: None,
 		};
 
 		let new_user: User = dsl::insert_into(users::table)
