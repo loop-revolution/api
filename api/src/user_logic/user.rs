@@ -8,6 +8,8 @@ use block_tools::{
 };
 use strsim::jaro_winkler;
 
+use super::localize_username;
+
 pub struct QLUser {
 	/// Auto-incrementing unique ID for a user
 	pub id: i32,
@@ -104,6 +106,29 @@ impl UserQueries {
 	async fn user_by_id(&self, context: &Context<'_>, id: i32) -> Result<Option<QLUser>, Error> {
 		let context = &context.data::<ContextData>()?;
 		user_by_id(context, id).await
+	}
+
+	/// Tries to find a user with a matching ID. Will be null if a user is not found.
+	async fn user_by_name(
+		&self,
+		context: &Context<'_>,
+		username: String,
+	) -> Result<Option<QLUser>, Error> {
+		let context = &context.data::<ContextData>()?;
+		let conn = &context.pool.get()?;
+
+		let localname = localize_username(&username);
+
+		let usr: Option<User> = users::dsl::users
+			.filter(users::localuname.eq(localname))
+			.limit(1)
+			.get_result(conn)
+			.optional()?;
+
+		match usr {
+			None => Ok(None),
+			Some(usr) => Ok(Some(QLUser::from(usr))),
+		}
 	}
 
 	/// Returns a `User` object corresponding with the authorization token.
