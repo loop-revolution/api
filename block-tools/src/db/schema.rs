@@ -18,6 +18,7 @@ table! {
 		username -> Varchar,
 		password -> Varchar,
 		created_at -> Timestamp,
+		display_name -> Nullable<Varchar>,
 	}
 }
 

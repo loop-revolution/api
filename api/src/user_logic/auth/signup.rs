@@ -34,6 +34,7 @@ impl SignupMutations {
 		username: String,
 		password: String,
 		email: String,
+		display_name: Option<String>,
 	) -> Result<EmailConfirm, Error> {
 		validate_pwd(&password)?;
 		// Hash the password
@@ -54,6 +55,7 @@ impl SignupMutations {
 			verification_code: &verification_code,
 			session_code: &session_code,
 			created_at: std::time::SystemTime::now(),
+			display_name: display_name.clone(),
 		};
 
 		let conn = &context.data::<ContextData>()?.pool.get()?;
@@ -68,7 +70,7 @@ impl SignupMutations {
 		mailer
 			.send(&verification_code_email(
 				&email,
-				&username,
+				&display_name.unwrap_or(username.clone()),
 				&verification_code,
 			))
 			.map_err(|_| InternalError::EmailError)?;
@@ -131,7 +133,7 @@ impl SignupMutations {
 			password: potential.password,
 			email: potential.email,
 			credits: 0,
-			display_name: None,
+			display_name: potential.display_name,
 		};
 
 		let new_user: User = dsl::insert_into(users::table)

@@ -38,6 +38,7 @@ pub struct PotentialUser {
 	pub username: String,
 	pub password: String,
 	pub created_at: SystemTime,
+	pub display_name: Option<String>,
 }
 
 #[derive(Insertable)]
@@ -49,4 +50,5 @@ pub struct NewPotentialUser<'a> {
 	pub username: &'a str,
 	pub password: &'a str,
 	pub created_at: SystemTime,
+	pub display_name: Option<String>,
 }
