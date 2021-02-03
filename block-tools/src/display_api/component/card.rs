@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::display_api::HexCode;
 
 use super::DisplayComponent;
@@ -24,16 +26,22 @@ impl DisplayComponent for CardComponent {
 #[derive(Serialize)]
 pub struct CardHeader {
 	pub title: String,
-	pub icon: Option<CardIcon>,
+	pub icon: Option<Icon>,
 	pub block_id: Option<String>,
 }
 
-#[derive(Serialize)]
-pub enum CardIcon {
+#[derive(Serialize, Debug)]
+pub enum Icon {
 	Folder,
 	TaskComplete,
 	Message,
 	Box,
 	Type,
 	Feed,
+}
+
+impl fmt::Display for Icon {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		write!(f, "{:?}", self)
+	}
 }

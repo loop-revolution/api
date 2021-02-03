@@ -1,5 +1,6 @@
 use super::{
 	block::BlockObject,
+	block_types::{type_list, BlockType},
 	delegation::{delegate_create, delegate_creation_display, delegate_method},
 };
 use crate::graphql::ContextData;
@@ -51,7 +52,11 @@ impl BlockMutations {
 
 	/// Deletes a block from the database. Currently does not delete everything,
 	/// still has artifacts that may exist in the form of data blocks.
-	pub async fn delete_block(&self, context: &Context<'_>, #[graphql(desc = "ID of the block to delete.")] block_id: i64) -> Result<i64, Error> {
+	pub async fn delete_block(
+		&self,
+		context: &Context<'_>,
+		#[graphql(desc = "ID of the block to delete.")] block_id: i64,
+	) -> Result<i64, Error> {
 		let context = &context.data::<ContextData>()?;
 		let user_id = validate_token(require_token(&context.other())?)?;
 		let conn = &context.pool.get()?;
@@ -107,6 +112,10 @@ impl BlockQueries {
 	) -> Result<String, Error> {
 		let context = &context.data::<ContextData>()?;
 		creation_display(context, r#type).await
+	}
+
+	async fn block_types(&self) -> Vec<BlockType> {
+		type_list()
 	}
 }
 

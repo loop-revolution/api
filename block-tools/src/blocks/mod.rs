@@ -1,5 +1,8 @@
 use crate::{
-	display_api::{component::DisplayComponent, CreationObject, DisplayObject},
+	display_api::{
+		component::{card::Icon, DisplayComponent},
+		CreationObject, DisplayObject,
+	},
 	models::Block,
 	Error, PostgresPool,
 };
@@ -10,6 +13,12 @@ pub struct Context {
 	/// Gives the GraphQL operations access to the DB
 	pub pool: PostgresPool,
 	pub auth_token: Option<String>,
+}
+
+pub struct TypeInfo {
+	pub name: String,
+	pub desc: String,
+	pub icon: Icon,
 }
 
 #[async_trait]
@@ -28,4 +37,5 @@ pub trait BlockType {
 		block_id: i64,
 		args: String,
 	) -> Result<Block, Error>;
+	fn info() -> TypeInfo;
 }
