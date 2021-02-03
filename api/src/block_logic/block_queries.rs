@@ -78,15 +78,6 @@ pub async fn create_block(
 pub struct BlockQueries;
 #[Object]
 impl BlockQueries {
-	async fn create_block(
-		&self,
-		context: &Context<'_>,
-		r#type: String,
-		input: String,
-	) -> Result<BlockObject, Error> {
-		let context = &context.data::<ContextData>()?;
-		create_block(context, r#type, input).await
-	}
 	/// Tries to find a block with a matching ID. Will be null if a block is not found.
 	async fn block_by_id(
 		&self,
