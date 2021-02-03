@@ -17,23 +17,29 @@ pub struct BlockMutations;
 
 #[Object]
 impl BlockMutations {
+	/// This mutation attempts to create a block of the block type specified.
+	/// An authorization header is required to authenticate the creation, and
+	/// a JSON input string should be passed based on the block type.
 	pub async fn create_block(
 		&self,
 		context: &Context<'_>,
-		r#type: String,
-		input: String,
+		#[graphql(desc = "Name of the block type to create.")] r#type: String,
+		#[graphql(desc = "JSON string to specify what to create.")] input: String,
 	) -> Result<BlockObject, Error> {
 		let context = &context.data::<ContextData>()?;
 		create_block(context, r#type, input).await
 	}
 
+	/// Executes a specific method created by a block type. Takes
+	/// method name, block type, block id, and arguments for the
+	/// method. Method name and args determine on the block type
 	pub async fn block_method(
 		&self,
 		context: &Context<'_>,
-		r#type: String,
-		args: String,
-		method_name: String,
-		block_id: i64,
+		#[graphql(desc = "The block type that determines the method")] r#type: String,
+		#[graphql(desc = "Arguments to help the method")] args: String,
+		#[graphql(desc = "Name of the method on the block type")] method_name: String,
+		#[graphql(desc = "ID of the block to act on")] block_id: i64,
 	) -> Result<BlockObject, Error> {
 		let context = &context.data::<ContextData>()?;
 		Ok(
@@ -43,7 +49,9 @@ impl BlockMutations {
 		)
 	}
 
-	pub async fn delete_block(&self, context: &Context<'_>, block_id: i64) -> Result<i64, Error> {
+	/// Deletes a block from the database. Currently does not delete everything,
+	/// still has artifacts that may exist in the form of data blocks.
+	pub async fn delete_block(&self, context: &Context<'_>, #[graphql(desc = "ID of the block to delete.")] block_id: i64) -> Result<i64, Error> {
 		let context = &context.data::<ContextData>()?;
 		let user_id = validate_token(require_token(&context.other())?)?;
 		let conn = &context.pool.get()?;
@@ -82,17 +90,20 @@ impl BlockQueries {
 	async fn block_by_id(
 		&self,
 		context: &Context<'_>,
-		id: i64,
+		#[graphql(desc = "ID of the block to try to find.")] id: i64,
 	) -> Result<Option<BlockObject>, Error> {
 		let context = &context.data::<ContextData>()?;
 		let conn = &context.pool.get()?;
 		Ok(Block::by_id(id, conn)?.and_then(|block| Some(BlockObject::from(block))))
 	}
 
+	/// Returns a creation object based on the block type
+	/// that is queried. Will have a template string to send
+	/// back with the createBlock mutation
 	async fn block_creation_display(
 		&self,
 		context: &Context<'_>,
-		r#type: String,
+		#[graphql(desc = "Name of the block type to create.")] r#type: String,
 	) -> Result<String, Error> {
 		let context = &context.data::<ContextData>()?;
 		creation_display(context, r#type).await
