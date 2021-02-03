@@ -8,7 +8,10 @@ use block_tools::{
 	BlockError,
 };
 
-use super::block::{to_blockd, BlockObject};
+use super::{
+	block::{to_blockd, BlockObject},
+	block_types::BlockTypes,
+};
 use async_graphql::Error;
 use block_tools::blocks::BlockType;
 use data_block::DataBlock;
@@ -86,20 +89,4 @@ pub async fn delegate_creation_display(
 		BlockTypes::Text => TextBlock::create_display(&context.other(), user_id).await?,
 		BlockTypes::Invalid(name) => return Err(BlockError::TypeExist(name).into()),
 	})
-}
-
-pub enum BlockTypes {
-	Data,
-	Text,
-	Invalid(String),
-}
-
-impl From<String> for BlockTypes {
-	fn from(s: String) -> Self {
-		match s.as_str() {
-			"data" => BlockTypes::Data,
-			"text" => BlockTypes::Text,
-			_ => BlockTypes::Invalid(s),
-		}
-	}
 }
