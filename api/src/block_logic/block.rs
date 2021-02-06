@@ -1,10 +1,10 @@
-use super::delegation::{delegate_embed_display, delegate_page_display};
 use crate::{
 	graphql::ContextData,
 	user_logic::user::{user_by_id, QLUser},
 };
 use async_graphql::*;
 use block_tools::models::Block;
+use block_types::delegation::display::{delegate_embed_display, delegate_page_display};
 use chrono::{DateTime, Utc};
 use std::time::SystemTime;
 
@@ -48,13 +48,13 @@ impl BlockObject {
 
 	async fn page_display(&self, context: &Context<'_>) -> Result<String, Error> {
 		let context = &context.data::<ContextData>()?;
-		let display = delegate_page_display(self, context).await?;
+		let display = delegate_page_display(&to_blockd(self), &context.other()).await?;
 		Ok(serde_json::to_string(&display)?)
 	}
 
 	async fn embed_display(&self, context: &Context<'_>) -> Result<String, Error> {
 		let context = &context.data::<ContextData>()?;
-		let display = delegate_embed_display(self, context).await?;
+		let display = delegate_embed_display(&to_blockd(self), &context.other());
 		Ok(serde_json::to_string(&display)?)
 	}
 }

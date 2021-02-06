@@ -1,27 +1,12 @@
 use async_graphql::*;
 use block_tools::blocks::{BlockType as ToolsBlockType, TypeInfo};
+use block_types::blocks::*;
 
 #[derive(SimpleObject)]
 pub struct BlockType {
 	pub name: String,
 	pub icon: String,
 	pub desc: String,
-}
-
-pub enum BlockTypes {
-	Data,
-	Text,
-	Invalid(String),
-}
-
-impl From<String> for BlockTypes {
-	fn from(s: String) -> Self {
-		match s.as_str() {
-			data_block::BLOCK_NAME => BlockTypes::Data,
-			text_block::BLOCK_NAME => BlockTypes::Text,
-			_ => BlockTypes::Invalid(s),
-		}
-	}
 }
 
 impl From<TypeInfo> for BlockType {

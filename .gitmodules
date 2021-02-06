@@ -1,6 +1,9 @@
-[submodule "blocks/data-block"]
-	path = blocks/data-block
+[submodule "block-types/src/blocks/data_block"]
+	path = block-types/src/blocks/data_block
 	url = git@github.com:loop-revolution/data-block.git
-[submodule "blocks/text-block"]
-	path = blocks/text-block
+[submodule "block-types/src/blocks/group_block"]
+	path = block-types/src/blocks/group_block
+	url = git@github.com:loop-revolution/group-block.git
+[submodule "block-types/src/blocks/text_block"]
+	path = block-types/src/blocks/text_block
 	url = git@github.com:loop-revolution/text-block.git
