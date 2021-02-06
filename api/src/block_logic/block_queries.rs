@@ -47,8 +47,7 @@ impl BlockMutations {
 	) -> Result<BlockObject, Error> {
 		let context = &context.data::<ContextData>()?;
 		Ok(
-			delegate_method(&context.other(), r#type, args, method_name, block_id)
-				.await?
+			delegate_method(&context.other(), r#type, args, method_name, block_id)?
 				.into(),
 		)
 	}
@@ -86,7 +85,7 @@ pub async fn create_block(
 	let user_id = validate_token(require_token(&context.other())?)?;
 
 	Ok(BlockObject::from(
-		delegate_create(r#type.as_str(), input, &context.other(), user_id).await?,
+		delegate_create(r#type.as_str(), input, &context.other(), user_id)?,
 	))
 }
 
@@ -114,7 +113,7 @@ impl BlockQueries {
 		#[graphql(desc = "Name of the block type to create.")] r#type: String,
 	) -> Result<String, Error> {
 		let context = &context.data::<ContextData>()?;
-		creation_display(context, r#type).await
+		creation_display(context, r#type)
 	}
 
 	async fn block_types(&self) -> Vec<BlockType> {
@@ -122,9 +121,9 @@ impl BlockQueries {
 	}
 }
 
-pub async fn creation_display(context: &ContextData, r#type: String) -> Result<String, Error> {
+pub fn creation_display(context: &ContextData, r#type: String) -> Result<String, Error> {
 	let user_id = validate_token(require_token(&context.other())?)?;
 
-	let display = delegate_creation_display(&context.other(), &r#type, user_id).await?;
+	let display = delegate_creation_display(&context.other(), &r#type, user_id)?;
 	Ok(serde_json::to_string(&display)?)
 }

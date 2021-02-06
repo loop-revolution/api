@@ -11,7 +11,7 @@ use block_tools::{
 	BlockError, Error,
 };
 
-pub async fn delegate_page_display(
+pub fn delegate_page_display(
 	block: &Block,
 	context: &Context,
 ) -> Result<DisplayObject, Error> {
@@ -38,7 +38,7 @@ pub fn delegate_embed_display(block: &Block, context: &Context) -> Box<dyn Displ
 	}
 }
 
-pub async fn delegate_creation_display(
+pub fn delegate_creation_display(
 	context: &Context,
 	block_type: &str,
 	user_id: i32,
@@ -48,6 +48,20 @@ pub async fn delegate_creation_display(
 		BlockTypes::Data => data_block::DataBlock::create_display(context, user_id),
 		BlockTypes::Text => text_block::TextBlock::create_display(context, user_id),
 		BlockTypes::Group => group_block::GroupBlock::create_display(context, user_id),
+		BlockTypes::Invalid(name) => return Err(BlockError::TypeExist(name).into()),
+	}
+}
+
+pub fn delegate_block_name(
+	context: &Context,
+	block_type: &str,
+	block: &Block,
+) -> Result<String, Error> {
+	let block_type: BlockTypes = block_type.to_string().into();
+	match block_type {
+		BlockTypes::Data => data_block::DataBlock::block_name(block, context),
+		BlockTypes::Text => text_block::TextBlock::block_name(block, context),
+		BlockTypes::Group => group_block::GroupBlock::block_name(block, context),
 		BlockTypes::Invalid(name) => return Err(BlockError::TypeExist(name).into()),
 	}
 }

@@ -3,7 +3,7 @@ use crate::types::BlockTypes;
 use block_tools::blocks::BlockType;
 use block_tools::{blocks::Context, models::Block, BlockError, Error};
 
-pub async fn delegate_create(
+pub fn delegate_create(
 	block_type: &str,
 	input: String,
 	context: &Context,
@@ -18,7 +18,7 @@ pub async fn delegate_create(
 	}
 }
 
-pub async fn delegate_method(
+pub fn delegate_method(
 	context: &Context,
 	block_type: String,
 	args: String,

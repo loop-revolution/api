@@ -35,10 +35,5 @@ pub trait BlockType {
 		args: String,
 	) -> Result<Block, Error>;
 	fn info() -> TypeInfo;
-}
-
-pub struct BlockCrumb<'a> {
-	block_id: i64,
-	name: String,
-	before: Option<&'a BlockCrumb<'a>>,
+	fn block_name(block: &Block, context: &Context) -> Result<String, Error>;
 }

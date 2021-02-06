@@ -8,6 +8,8 @@ use block_types::delegation::display::{delegate_embed_display, delegate_page_dis
 use chrono::{DateTime, Utc};
 use std::time::SystemTime;
 
+use super::breadcrumb::{BreadCrumb, gen_breadcrumb};
+
 pub struct BlockObject {
 	pub id: i64,
 	pub block_data: Option<String>,
@@ -48,7 +50,7 @@ impl BlockObject {
 
 	async fn page_display(&self, context: &Context<'_>) -> Result<String, Error> {
 		let context = &context.data::<ContextData>()?;
-		let display = delegate_page_display(&to_blockd(self), &context.other()).await?;
+		let display = delegate_page_display(&to_blockd(self), &context.other())?;
 		Ok(serde_json::to_string(&display)?)
 	}
 
@@ -56,6 +58,11 @@ impl BlockObject {
 		let context = &context.data::<ContextData>()?;
 		let display = delegate_embed_display(&to_blockd(self), &context.other());
 		Ok(serde_json::to_string(&display)?)
+	}
+
+	async fn breadcrumb(&self, context: &Context<'_>) -> Result<Vec<BreadCrumb>, Error> {
+		let context = &context.data::<ContextData>()?;
+		Ok(gen_breadcrumb(&context.other(), &to_blockd(self))?)
 	}
 }
 
