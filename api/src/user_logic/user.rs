@@ -1,14 +1,6 @@
 use crate::{block_logic::block::BlockObject, graphql::ContextData};
 use async_graphql::*;
-use block_tools::{
-	auth::{
-		optional_token, optional_validate_token, permissions::can_view, require_token,
-		validate_token,
-	},
-	dsl::prelude::*,
-	models::{Block, User},
-	schema::{blocks, users},
-};
+use block_tools::{auth::{optional_token, optional_validate_token, permissions::{can_view, maybe_use_view}, require_token, validate_token}, dsl::prelude::*, models::{Block, User}, schema::{blocks, users}};
 use strsim::jaro_winkler;
 
 use super::localize_username;
@@ -19,6 +11,7 @@ pub struct QLUser {
 	/// Unique alphanumeric username for easy identification
 	pub username: String,
 	pub display_name: Option<String>,
+	pub root_id: Option<i64>,
 }
 
 #[Object]
@@ -69,6 +62,18 @@ impl QLUser {
 
 		Ok(blocks)
 	}
+
+	async fn root(&self, context: &Context<'_>) -> Result<Option<BlockObject>> {
+		let root_id = match self.root_id {
+			Some(id) => id,
+			None => return Ok(None)
+		};
+		let context = &context.data::<ContextData>()?.other();
+		let conn = &context.pool.get()?;
+		let root = Block::by_id(root_id, conn)?;
+		println!("Root: {}", root_id);
+		Ok(maybe_use_view(context, root)?.and_then(|block| Some(block.into())))
+	}
 }
 
 impl From<User> for QLUser {
@@ -77,6 +82,7 @@ impl From<User> for QLUser {
 			id: userd.id,
 			username: userd.username,
 			display_name: userd.display_name,
+			root_id: userd.root_id,
 		}
 	}
 }
