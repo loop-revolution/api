@@ -2,5 +2,5 @@
 members = [
 	"api",
 	"block-tools",
-	"blocks/*"
+	"block-types",
 ]

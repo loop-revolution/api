@@ -28,6 +28,5 @@ serde = { version = "1.0", features = ["derive"] }
 futures = "0.3"
 # Blocks
 block-tools = { path = "../block-tools" }
-data-block = { path = "../blocks/data-block" }
-text-block = { path = "../blocks/text-block" }
 strsim = "0.10.0"
+block-types = { path = "../block-types" }

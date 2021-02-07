@@ -13,6 +13,7 @@ pub struct User {
 	pub email: String,
 	pub credits: i32,
 	pub display_name: Option<String>,
+	pub root_id: Option<i64>,
 }
 
 #[derive(Insertable)]

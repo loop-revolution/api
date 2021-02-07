@@ -41,9 +41,8 @@ table! {
 		email -> Varchar,
 		credits -> Int4,
 		display_name -> Nullable<Varchar>,
+		root_id -> Nullable<Int8>,
 	}
 }
-
-joinable!(blocks -> users (owner_id));
 
 allow_tables_to_appear_in_same_query!(blocks, potential_users, properties, users,);
