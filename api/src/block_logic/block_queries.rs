@@ -1,5 +1,5 @@
 use super::{
-	block::{to_blockd, BlockObject},
+	block::BlockObject,
 	block_types::{type_list, BlockType},
 	breadcrumb::{gen_breadcrumb, BreadCrumb},
 };

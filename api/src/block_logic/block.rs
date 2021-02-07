@@ -41,7 +41,7 @@ impl BlockObject {
 	async fn updated_at(&self) -> DateTime<Utc> {
 		self.updated_at.into()
 	}
-	
+
 	async fn public(&self) -> bool {
 		self.public
 	}

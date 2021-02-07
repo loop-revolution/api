@@ -108,7 +108,9 @@ impl fmt::Display for NoAccessSubject {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match self {
 			NoAccessSubject::OtherUserCredits => write!(f, "another user's credits"),
-			NoAccessSubject::UpdatePermissions(id) => write!(f, "updating block {}'s permissions", id),
+			NoAccessSubject::UpdatePermissions(id) => {
+				write!(f, "updating block {}'s permissions", id)
+			}
 			NoAccessSubject::DeleteBlock(id) => write!(f, "deleting block {}", id),
 		}
 	}
