@@ -102,6 +102,7 @@ pub enum NoAccessSubject {
 	OtherUserCredits,
 	DeleteBlock(i64),
 	UpdatePermissions(i64),
+	ViewBlock(i64),
 }
 
 impl fmt::Display for NoAccessSubject {
@@ -112,6 +113,7 @@ impl fmt::Display for NoAccessSubject {
 				write!(f, "updating block {}'s permissions", id)
 			}
 			NoAccessSubject::DeleteBlock(id) => write!(f, "deleting block {}", id),
+			NoAccessSubject::ViewBlock(id) => write!(f, "viewing block {}", id),
 		}
 	}
 }

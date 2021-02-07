@@ -6,7 +6,11 @@ use super::{
 use crate::graphql::ContextData;
 use async_graphql::{Context, Error, Object};
 use block_tools::{
-	auth::{require_token, validate_token},
+	auth::{
+		optional_token, optional_validate_token,
+		permissions::{can_view, maybe_use_view},
+		require_token, validate_token,
+	},
 	dsl::prelude::*,
 	models::Block,
 	schema::blocks,
@@ -122,9 +126,11 @@ impl BlockQueries {
 		context: &Context<'_>,
 		#[graphql(desc = "ID of the block to try to find.")] id: i64,
 	) -> Result<Option<BlockObject>, Error> {
-		let context = &context.data::<ContextData>()?;
+		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
-		Ok(Block::by_id(id, conn)?.and_then(|block| Some(BlockObject::from(block))))
+		let block = maybe_use_view(context, Block::by_id(id, conn)?)?;
+		let block = block.and_then(|block| Some(BlockObject::from(block)));
+		Ok(block)
 	}
 
 	/// Returns a creation object based on the block type
@@ -148,13 +154,16 @@ impl BlockQueries {
 		context: &Context<'_>,
 		query: String,
 	) -> Result<Vec<Vec<BreadCrumb>>, Error> {
-		let context = &context.data::<ContextData>()?;
+		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
+		let user_id = optional_validate_token(optional_token(context))?;
+
 		let mut helpers = blocks::dsl::blocks
 			.load::<Block>(conn)?
 			.into_iter()
+			.filter(|block| can_view(user_id, block))
 			.map(|block| {
-				let crumbs = gen_breadcrumb(&context.other(), &block).unwrap_or(vec![]);
+				let crumbs = gen_breadcrumb(context, &block).unwrap_or(vec![]);
 				let crumb_string = crumbs
 					.iter()
 					.map(|crumb| crumb.name.as_str())

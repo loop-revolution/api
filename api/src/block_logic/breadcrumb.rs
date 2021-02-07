@@ -1,5 +1,5 @@
 use async_graphql::*;
-use block_tools::use_diesel::prelude::*;
+use block_tools::{auth::permissions::maybe_use_view, use_diesel::prelude::*};
 use block_tools::{
 	blocks::Context,
 	models::{Block, Property},
@@ -33,18 +33,21 @@ fn cycle(
 		.into_iter()
 		.filter(|prop: &Property| !blocks_added.contains(&prop.parent_id))
 		.collect();
-	if parent_props.len() == 0 {
+	let (parent_prop, parent) = allowed_parent(parent_props, context)?;
+	let add_this = |mut crumbs: Vec<BreadCrumb>, blocks_added: Vec<i64>| {
 		crumbs.push(BreadCrumb {
 			block_id: block.id,
 			name: delegate_block_name(context, &block.block_type, block)?,
 		});
-		return Ok((crumbs, blocks_added));
-	}
-	let parent_prop = &parent_props[0];
-	let parent = Block::by_id(parent_prop.parent_id, conn)?;
+		Ok((crumbs, blocks_added))
+	};
 	let parent = match parent {
 		Some(parent) => parent,
-		None => return Ok((crumbs, blocks_added)),
+		None => return add_this(crumbs, blocks_added),
+	};
+	let parent_prop = match parent_prop {
+		Some(prop) => prop,
+		None => return add_this(crumbs, blocks_added),
 	};
 	if parent.block_type == group_block::BLOCK_NAME {
 		crumbs.push(BreadCrumb {
@@ -60,4 +63,24 @@ fn cycle(
 	blocks_added.push(block.id);
 	let next_cycle = cycle(context, &parent, crumbs, blocks_added)?;
 	Ok((next_cycle.0, next_cycle.1))
+}
+
+fn allowed_parent(
+	parent_props: Vec<Property>,
+	context: &Context,
+) -> Result<(Option<Property>, Option<Block>), Error> {
+	let conn = &context.pool.get()?;
+	let mut parent: Option<Block> = None;
+	let mut parent_prop: Option<Property> = None;
+	for candidate in parent_props {
+		let block = Block::by_id(candidate.parent_id, conn)?;
+		let block = maybe_use_view(context, block)?;
+		if let Some(block) = block {
+			parent = Some(block);
+			parent_prop = Some(candidate);
+			break;
+		}
+	}
+
+	Ok((parent_prop, parent))
 }

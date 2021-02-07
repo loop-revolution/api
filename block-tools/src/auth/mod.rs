@@ -3,12 +3,17 @@ use chrono::{prelude::*, Duration};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use log::error;
 use serde::{Deserialize, Serialize};
+pub mod permissions;
 
 pub fn require_token(context: &Context) -> Result<String, UserError> {
-	match &context.auth_token {
+	match optional_token(context) {
 		None => Err(UserError::NeedAuth),
-		Some(token) => Ok(token.clone()),
+		Some(token) => Ok(token),
 	}
+}
+
+pub fn optional_token(context: &Context) -> Option<String> {
+	context.auth_token.clone()
 }
 
 pub fn create_token(user_id: i32) -> String {
@@ -34,6 +39,13 @@ pub fn validate_token(token: String) -> Result<i32, UserError> {
 	)?;
 
 	Ok(token.claims.sub.parse()?)
+}
+
+pub fn optional_validate_token(token: Option<String>) -> Result<Option<i32>, UserError> {
+	match token {
+		Some(token) => Ok(Some(validate_token(token)?)),
+		None => Ok(None),
+	}
 }
 
 pub fn get_secret() -> String {
