@@ -8,7 +8,7 @@ use block_types::delegation::display::{delegate_embed_display, delegate_page_dis
 use chrono::{DateTime, Utc};
 use std::time::SystemTime;
 
-use super::breadcrumb::{BreadCrumb, gen_breadcrumb};
+use super::breadcrumb::{gen_breadcrumb, BreadCrumb};
 
 pub struct BlockObject {
 	pub id: i64,

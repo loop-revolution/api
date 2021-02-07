@@ -8,10 +8,10 @@ use block_tools::{
 };
 use block_types::{blocks::group_block, delegation::display::delegate_block_name};
 
-#[derive(SimpleObject)]
+#[derive(SimpleObject, Clone)]
 pub struct BreadCrumb {
-	block_id: i64,
-	name: String,
+	pub block_id: i64,
+	pub name: String,
 }
 
 pub fn gen_breadcrumb(context: &Context, block: &Block) -> Result<Vec<BreadCrumb>, Error> {

@@ -1,6 +1,7 @@
 use super::{
 	block::BlockObject,
 	block_types::{type_list, BlockType},
+	breadcrumb::{gen_breadcrumb, BreadCrumb},
 };
 use crate::graphql::ContextData;
 use async_graphql::{Context, Error, Object};
@@ -15,6 +16,7 @@ use block_types::delegation::{
 	display::delegate_creation_display,
 	methods::{delegate_create, delegate_method},
 };
+use strsim::normalized_levenshtein;
 
 #[derive(Default)]
 pub struct BlockMutations;
@@ -46,10 +48,7 @@ impl BlockMutations {
 		#[graphql(desc = "ID of the block to act on")] block_id: i64,
 	) -> Result<BlockObject, Error> {
 		let context = &context.data::<ContextData>()?;
-		Ok(
-			delegate_method(&context.other(), r#type, args, method_name, block_id)?
-				.into(),
-		)
+		Ok(delegate_method(&context.other(), r#type, args, method_name, block_id)?.into())
 	}
 
 	/// Deletes a block from the database. Currently does not delete everything,
@@ -84,9 +83,12 @@ pub async fn create_block(
 ) -> Result<BlockObject, Error> {
 	let user_id = validate_token(require_token(&context.other())?)?;
 
-	Ok(BlockObject::from(
-		delegate_create(r#type.as_str(), input, &context.other(), user_id)?,
-	))
+	Ok(BlockObject::from(delegate_create(
+		r#type.as_str(),
+		input,
+		&context.other(),
+		user_id,
+	)?))
 }
 
 #[derive(Default)]
@@ -119,6 +121,48 @@ impl BlockQueries {
 	async fn block_types(&self) -> Vec<BlockType> {
 		type_list()
 	}
+
+	async fn search_blocks(
+		&self,
+		context: &Context<'_>,
+		query: String,
+	) -> Result<Vec<Vec<BreadCrumb>>, Error> {
+		let context = &context.data::<ContextData>()?;
+		let conn = &context.pool.get()?;
+		let mut helpers = blocks::dsl::blocks
+			.load::<Block>(conn)?
+			.into_iter()
+			.map(|block| {
+				let crumbs = gen_breadcrumb(&context.other(), &block).unwrap_or(vec![]);
+				let crumb_string = crumbs
+					.iter()
+					.map(|crumb| crumb.name.as_str())
+					.collect::<Vec<&str>>()
+					.join("/");
+				let mut sim = normalized_levenshtein(&crumb_string, &query);
+				if block.block_type == "data" {
+					sim = sim / 2.;
+				}
+				println!("Sim of {} and {} is {}", crumb_string, query, sim);
+				BlockSortHelper {
+					breadcrumb: crumbs,
+					strsim: sim,
+				}
+			})
+			.filter(|helper| helper.strsim != 0.)
+			.collect::<Vec<BlockSortHelper>>();
+		helpers.sort_by(|a, b| b.strsim.partial_cmp(&a.strsim).unwrap());
+		let crumb_list: Vec<Vec<BreadCrumb>> = helpers
+			.into_iter()
+			.map(|helper| helper.breadcrumb)
+			.collect();
+		Ok(crumb_list)
+	}
+}
+
+struct BlockSortHelper {
+	breadcrumb: Vec<BreadCrumb>,
+	strsim: f64,
 }
 
 pub fn creation_display(context: &ContextData, r#type: String) -> Result<String, Error> {

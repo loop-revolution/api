@@ -11,10 +11,7 @@ use block_tools::{
 	BlockError, Error,
 };
 
-pub fn delegate_page_display(
-	block: &Block,
-	context: &Context,
-) -> Result<DisplayObject, Error> {
+pub fn delegate_page_display(block: &Block, context: &Context) -> Result<DisplayObject, Error> {
 	let block_type: BlockTypes = block.block_type.clone().into();
 	match block_type {
 		BlockTypes::Data => data_block::DataBlock::page_display(block, context),
