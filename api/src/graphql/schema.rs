@@ -1,6 +1,6 @@
 use crate::{
 	block_logic::block_queries::{BlockMutations, BlockQueries},
-	notifications::{NotificationMutations, Notifications},
+	notifications::{queries::NotificationQueries, sub::Notifications, NotificationMutations},
 	user_logic::{
 		auth::{login::LoginMutations, signup::SignupMutations},
 		user::UserQueries,
@@ -11,7 +11,7 @@ use async_graphql::{MergedObject, Schema as GraphQLSchema};
 use super::misc_queries::MiscQueries;
 
 #[derive(MergedObject, Default)]
-pub struct Query(UserQueries, BlockQueries, MiscQueries);
+pub struct Query(UserQueries, BlockQueries, MiscQueries, NotificationQueries);
 
 #[derive(MergedObject, Default)]
 pub struct Mutation(

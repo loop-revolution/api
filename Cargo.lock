@@ -286,11 +286,14 @@ dependencies = [
  "diesel",
  "dotenv",
  "erased-serde",
+ "futures",
  "jsonwebtoken",
  "log",
+ "once_cell",
  "r2d2",
  "serde",
  "serde_json",
+ "slab",
 ]
 
 [[package]]
@@ -1138,7 +1141,6 @@ dependencies = [
  "chrono",
  "dotenv",
  "futures",
- "futures-timer",
  "lettre",
  "log",
  "once_cell",
