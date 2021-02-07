@@ -1,5 +1,6 @@
 pub mod block_logic;
 pub mod graphql;
+pub mod notifications;
 pub mod user_logic;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};

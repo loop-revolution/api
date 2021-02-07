@@ -30,3 +30,7 @@ futures = "0.3"
 block-tools = { path = "../block-tools" }
 strsim = "0.10.0"
 block-types = { path = "../block-types" }
+async-stream = "0.3.0"
+futures-timer = "3.0.2"
+once_cell = "1.5.2"
+slab = "0.4.2"
