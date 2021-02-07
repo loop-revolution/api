@@ -14,6 +14,16 @@ table! {
 }
 
 table! {
+	notifications (id) {
+		id -> Int8,
+		name -> Varchar,
+		description -> Varchar,
+		block_link -> Nullable<Int8>,
+		recipients -> Array<Int4>,
+	}
+}
+
+table! {
 	potential_users (id) {
 		id -> Int4,
 		email -> Varchar,
@@ -49,4 +59,4 @@ table! {
 	}
 }
 
-allow_tables_to_appear_in_same_query!(blocks, potential_users, properties, users,);
+allow_tables_to_appear_in_same_query!(blocks, notifications, potential_users, properties, users,);

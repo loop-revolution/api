@@ -286,11 +286,14 @@ dependencies = [
  "diesel",
  "dotenv",
  "erased-serde",
+ "futures",
  "jsonwebtoken",
  "log",
+ "once_cell",
  "r2d2",
  "serde",
  "serde_json",
+ "slab",
 ]
 
 [[package]]
@@ -1132,6 +1135,7 @@ version = "0.0.7"
 dependencies = [
  "async-graphql",
  "async-graphql-warp",
+ "async-stream",
  "block-tools",
  "block-types",
  "chrono",
@@ -1139,12 +1143,14 @@ dependencies = [
  "futures",
  "lettre",
  "log",
+ "once_cell",
  "pretty_env_logger",
  "rand 0.8.3",
  "regex",
  "rust-argon2",
  "serde",
  "serde_json",
+ "slab",
  "strsim 0.10.0",
  "tokio",
  "warp",

@@ -1,5 +1,5 @@
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
-use async_graphql_warp::Response;
+use async_graphql_warp::{graphql_subscription, Response};
 use block_tools::{env_db, get_pool};
 use loop_api::graphql::{build_schema, ContextData, Schema};
 use std::{convert::Infallible, env};
@@ -54,7 +54,11 @@ async fn main() {
 	let cors = build_cors();
 	let port = get_port();
 
-	let routes = graphql_playground.or(graphql_post).with(log).with(cors);
+	let routes = graphql_subscription(schema)
+		.or(graphql_playground)
+		.or(graphql_post)
+		.with(log)
+		.with(cors);
 
 	// Announce the server is online
 	log::info!("API running on http://0.0.0.0:{}", port);
