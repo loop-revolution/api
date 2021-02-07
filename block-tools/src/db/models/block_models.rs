@@ -15,6 +15,8 @@ pub struct Block {
 	pub perm_full: Vec<i32>,
 	pub perm_edit: Vec<i32>,
 	pub perm_view: Vec<i32>,
+	pub stars: Vec<i32>,
+	pub notif_enabled: Vec<i32>,
 }
 
 impl Block {
@@ -89,6 +91,8 @@ pub struct NewBlock {
 	pub perm_full: Vec<i32>,
 	pub perm_edit: Vec<i32>,
 	pub perm_view: Vec<i32>,
+	pub stars: Vec<i32>,
+	pub notif_enabled: Vec<i32>,
 }
 
 pub struct MinNewBlock<'a> {
@@ -108,6 +112,8 @@ impl NewBlock {
 			perm_full: vec![],
 			perm_edit: vec![],
 			perm_view: vec![],
+			stars: vec![],
+			notif_enabled: vec![],
 		}
 	}
 

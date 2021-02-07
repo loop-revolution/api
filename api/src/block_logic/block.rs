@@ -21,6 +21,8 @@ pub struct BlockObject {
 	pub perm_full: Vec<i32>,
 	pub perm_edit: Vec<i32>,
 	pub perm_view: Vec<i32>,
+	pub stars: Vec<i32>,
+	pub notif_enabled: Vec<i32>,
 }
 
 #[Object]
@@ -129,6 +131,8 @@ impl From<Block> for BlockObject {
 			perm_full: blockd.perm_full,
 			perm_edit: blockd.perm_edit,
 			perm_view: blockd.perm_view,
+			stars: blockd.stars,
+			notif_enabled: blockd.notif_enabled,
 		}
 	}
 }
@@ -146,6 +150,8 @@ impl From<&Block> for BlockObject {
 			perm_full: blockd.perm_full.clone(),
 			perm_edit: blockd.perm_edit.clone(),
 			perm_view: blockd.perm_view.clone(),
+			stars: blockd.stars.clone(),
+			notif_enabled: blockd.notif_enabled.clone(),
 		}
 	}
 }
@@ -162,5 +168,7 @@ pub fn to_blockd(block: &BlockObject) -> Block {
 		perm_full: block.perm_full.clone(),
 		perm_edit: block.perm_edit.clone(),
 		perm_view: block.perm_view.clone(),
+		stars: block.stars.clone(),
+		notif_enabled: block.notif_enabled.clone(),
 	}
 }
