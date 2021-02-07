@@ -56,6 +56,25 @@ impl Block {
 				.get_result(conn)?,
 		)
 	}
+
+	pub fn update_perms(
+		&self,
+		perm_full: Vec<i32>,
+		perm_edit: Vec<i32>,
+		perm_view: Vec<i32>,
+		conn: &PgConnection,
+	) -> Result<Block, Error> {
+		Ok(
+			diesel::update(blocks::dsl::blocks.filter(blocks::id.eq(self.id)))
+				.set((
+					blocks::perm_full.eq(perm_full),
+					blocks::perm_edit.eq(perm_edit),
+					blocks::perm_view.eq(perm_view),
+					blocks::updated_at.eq(std::time::SystemTime::now()),
+				))
+				.get_result(conn)?,
+		)
+	}
 }
 
 #[derive(Insertable)]
