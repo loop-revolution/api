@@ -143,7 +143,6 @@ impl BlockQueries {
 				if block.block_type == "data" {
 					sim = sim / 2.;
 				}
-				println!("Sim of {} and {} is {}", crumb_string, query, sim);
 				BlockSortHelper {
 					breadcrumb: crumbs,
 					strsim: sim,
