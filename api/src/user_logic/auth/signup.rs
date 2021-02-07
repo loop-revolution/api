@@ -16,7 +16,6 @@ use block_tools::{
 	PgConnect,
 };
 use block_tools::{EmailConfirmError, InternalError};
-use block_types::blocks::group_block::GroupBlock;
 use lettre::Transport;
 use rand::{thread_rng, Rng};
 use std::time::SystemTime;
@@ -140,8 +139,6 @@ impl SignupMutations {
 		let new_user: User = dsl::insert_into(users::table)
 			.values(&new_user)
 			.get_result(conn)?;
-
-		GroupBlock::new(conn, new_user.id)?;
 
 		// User is created, not potential anymore
 		delete_potential_user(&username, conn)?;
