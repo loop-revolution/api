@@ -1,6 +1,15 @@
 use crate::{block_logic::block::BlockObject, graphql::ContextData};
 use async_graphql::*;
-use block_tools::{auth::{optional_token, optional_validate_token, permissions::{can_view, maybe_use_view}, require_token, validate_token}, dsl::prelude::*, models::{Block, User}, schema::{blocks, users}};
+use block_tools::{
+	auth::{
+		optional_token, optional_validate_token,
+		permissions::{can_view, maybe_use_view},
+		require_token, validate_token,
+	},
+	dsl::prelude::*,
+	models::{Block, User},
+	schema::{blocks, users},
+};
 use strsim::jaro_winkler;
 
 use super::localize_username;
@@ -66,7 +75,7 @@ impl QLUser {
 	async fn root(&self, context: &Context<'_>) -> Result<Option<BlockObject>> {
 		let root_id = match self.root_id {
 			Some(id) => id,
-			None => return Ok(None)
+			None => return Ok(None),
 		};
 		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
