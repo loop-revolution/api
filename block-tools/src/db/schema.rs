@@ -7,6 +7,9 @@ table! {
 		block_data -> Nullable<Text>,
 		owner_id -> Int4,
 		public -> Bool,
+		perm_full -> Array<Int4>,
+		perm_edit -> Array<Int4>,
+		perm_view -> Array<Int4>,
 	}
 }
 

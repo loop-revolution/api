@@ -18,6 +18,9 @@ pub struct BlockObject {
 	pub block_type: String,
 	pub owner_id: i32,
 	pub public: bool,
+	pub perm_full: Vec<i32>,
+	pub perm_edit: Vec<i32>,
+	pub perm_view: Vec<i32>,
 }
 
 #[Object]
@@ -48,9 +51,51 @@ impl BlockObject {
 
 	async fn owner(&self, context: &Context<'_>) -> Result<QLUser, Error> {
 		let context = &context.data::<ContextData>()?;
-		let user = user_by_id(context, self.owner_id).await?;
+		let user = user_by_id(context, self.owner_id)?;
 
 		Ok(user.unwrap())
+	}
+
+	async fn perm_full(&self, context: &Context<'_>) -> Result<Vec<QLUser>, Error> {
+		let context = &context.data::<ContextData>()?;
+		let mut users: Vec<QLUser> = vec![];
+
+		for id in self.perm_full.clone() {
+			let user = user_by_id(context, id)?;
+			if let Some(user) = user {
+				users.push(user);
+			}
+		}
+
+		Ok(users)
+	}
+
+	async fn perm_edit(&self, context: &Context<'_>) -> Result<Vec<QLUser>, Error> {
+		let context = &context.data::<ContextData>()?;
+		let mut users: Vec<QLUser> = vec![];
+
+		for id in self.perm_edit.clone() {
+			let user = user_by_id(context, id)?;
+			if let Some(user) = user {
+				users.push(user);
+			}
+		}
+
+		Ok(users)
+	}
+
+	async fn perm_view(&self, context: &Context<'_>) -> Result<Vec<QLUser>, Error> {
+		let context = &context.data::<ContextData>()?;
+		let mut users: Vec<QLUser> = vec![];
+
+		for id in self.perm_view.clone() {
+			let user = user_by_id(context, id)?;
+			if let Some(user) = user {
+				users.push(user);
+			}
+		}
+
+		Ok(users)
 	}
 
 	async fn page_display(&self, context: &Context<'_>) -> Result<String, Error> {
@@ -81,6 +126,9 @@ impl From<Block> for BlockObject {
 			block_type: blockd.block_type,
 			owner_id: blockd.owner_id,
 			public: blockd.public,
+			perm_full: blockd.perm_full,
+			perm_edit: blockd.perm_edit,
+			perm_view: blockd.perm_view,
 		}
 	}
 }
@@ -95,6 +143,9 @@ impl From<&Block> for BlockObject {
 			block_type: blockd.block_type.clone(),
 			owner_id: blockd.owner_id,
 			public: blockd.public,
+			perm_full: blockd.perm_full.clone(),
+			perm_edit: blockd.perm_edit.clone(),
+			perm_view: blockd.perm_view.clone(),
 		}
 	}
 }
@@ -108,5 +159,8 @@ pub fn to_blockd(block: &BlockObject) -> Block {
 		block_type: block.block_type.clone(),
 		owner_id: block.owner_id,
 		public: block.public,
+		perm_full: block.perm_full.clone(),
+		perm_edit: block.perm_edit.clone(),
+		perm_view: block.perm_view.clone(),
 	}
 }

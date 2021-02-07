@@ -81,7 +81,7 @@ impl From<User> for QLUser {
 	}
 }
 
-pub async fn user_by_id(context: &ContextData, id: i32) -> Result<Option<QLUser>, Error> {
+pub fn user_by_id(context: &ContextData, id: i32) -> Result<Option<QLUser>, Error> {
 	let conn = &context.pool.get()?;
 
 	let usr: Option<User> = users::dsl::users
@@ -112,7 +112,7 @@ impl UserQueries {
 	/// Tries to find a user with a matching ID. Will be null if a user is not found.
 	async fn user_by_id(&self, context: &Context<'_>, id: i32) -> Result<Option<QLUser>, Error> {
 		let context = &context.data::<ContextData>()?;
-		user_by_id(context, id).await
+		user_by_id(context, id)
 	}
 
 	/// Tries to find a user with a matching ID. Will be null if a user is not found.
@@ -144,7 +144,7 @@ impl UserQueries {
 		let token = require_token(&context.other())?;
 		let user_id = validate_token(token)?;
 
-		user_by_id(context, user_id).await
+		user_by_id(context, user_id)
 	}
 
 	async fn search_users(

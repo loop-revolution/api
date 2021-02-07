@@ -14,7 +14,7 @@ pub struct AuthPayload {
 impl AuthPayload {
 	pub async fn user(&self, context: &Context<'_>) -> Result<Option<QLUser>, Error> {
 		let context = context.data::<ContextData>()?;
-		Ok(user_by_id(context, self.user_id).await?)
+		Ok(user_by_id(context, self.user_id)?)
 	}
 	async fn token(&self) -> String {
 		self.token.clone()

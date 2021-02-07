@@ -12,6 +12,9 @@ pub struct Block {
 	pub block_data: Option<String>,
 	pub owner_id: i32,
 	pub public: bool,
+	pub perm_full: Vec<i32>,
+	pub perm_edit: Vec<i32>,
+	pub perm_view: Vec<i32>,
 }
 
 impl Block {
@@ -53,6 +56,25 @@ impl Block {
 				.get_result(conn)?,
 		)
 	}
+
+	pub fn update_perms(
+		&self,
+		perm_full: Vec<i32>,
+		perm_edit: Vec<i32>,
+		perm_view: Vec<i32>,
+		conn: &PgConnection,
+	) -> Result<Block, Error> {
+		Ok(
+			diesel::update(blocks::dsl::blocks.filter(blocks::id.eq(self.id)))
+				.set((
+					blocks::perm_full.eq(perm_full),
+					blocks::perm_edit.eq(perm_edit),
+					blocks::perm_view.eq(perm_view),
+					blocks::updated_at.eq(std::time::SystemTime::now()),
+				))
+				.get_result(conn)?,
+		)
+	}
 }
 
 #[derive(Insertable)]
@@ -64,6 +86,9 @@ pub struct NewBlock {
 	pub block_data: Option<String>,
 	pub owner_id: i32,
 	pub public: bool,
+	pub perm_full: Vec<i32>,
+	pub perm_edit: Vec<i32>,
+	pub perm_view: Vec<i32>,
 }
 
 pub struct MinNewBlock<'a> {
@@ -80,6 +105,9 @@ impl NewBlock {
 			block_data: None,
 			owner_id: minimum.owner_id,
 			public: false,
+			perm_full: vec![],
+			perm_edit: vec![],
+			perm_view: vec![],
 		}
 	}
 
@@ -93,6 +121,27 @@ impl NewBlock {
 	pub fn public(self) -> Self {
 		NewBlock {
 			public: true,
+			..self
+		}
+	}
+
+	pub fn perm_full(self, set: Vec<i32>) -> Self {
+		NewBlock {
+			perm_full: set,
+			..self
+		}
+	}
+
+	pub fn perm_edit(self, set: Vec<i32>) -> Self {
+		NewBlock {
+			perm_edit: set,
+			..self
+		}
+	}
+
+	pub fn perm_view(self, set: Vec<i32>) -> Self {
+		NewBlock {
+			perm_view: set,
 			..self
 		}
 	}

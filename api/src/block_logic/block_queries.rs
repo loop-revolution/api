@@ -8,7 +8,7 @@ use async_graphql::{Context, Error, Object};
 use block_tools::{
 	auth::{
 		optional_token, optional_validate_token,
-		permissions::{can_view, maybe_use_view},
+		permissions::{can_view, has_perm_level, maybe_use_view, PermLevel},
 		require_token, validate_token,
 	},
 	dsl::prelude::*,
@@ -94,10 +94,36 @@ impl BlockMutations {
 			Some(block) => block,
 			None => return Err(access_err),
 		};
-		if block.owner_id != user_id {
+		if !has_perm_level(user_id, &block, PermLevel::Full) {
 			return Err(access_err);
 		}
 		Ok(block.update_public(public, conn)?.into())
+	}
+
+	pub async fn update_perms(
+		&self,
+		context: &Context<'_>,
+		#[graphql(default)] perm_full: Vec<i32>,
+		#[graphql(default)] perm_edit: Vec<i32>,
+		#[graphql(default)] perm_view: Vec<i32>,
+		#[graphql(desc = "ID of the block to update.")] block_id: i64,
+	) -> Result<BlockObject, Error> {
+		let context = &context.data::<ContextData>()?.other();
+		let conn = &context.pool.get()?;
+		let user_id = validate_token(require_token(context)?)?;
+		let access_err: Error =
+			UserError::NoAccess(NoAccessSubject::UpdatePermissions(block_id)).into();
+		let block = match Block::by_id(block_id, conn)? {
+			Some(block) => block,
+			None => return Err(access_err),
+		};
+		if !has_perm_level(user_id, &block, PermLevel::Full) {
+			return Err(access_err);
+		}
+
+		Ok(block
+			.update_perms(perm_full, perm_edit, perm_view, conn)?
+			.into())
 	}
 }
 
