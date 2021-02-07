@@ -11,6 +11,7 @@ pub struct Block {
 	pub updated_at: SystemTime,
 	pub block_data: Option<String>,
 	pub owner_id: i32,
+	pub public: bool,
 }
 
 impl Block {
@@ -41,6 +42,17 @@ impl Block {
 				.get_result(conn)?,
 		)
 	}
+
+	pub fn update_public(&self, public: bool, conn: &PgConnection) -> Result<Block, Error> {
+		Ok(
+			diesel::update(blocks::dsl::blocks.filter(blocks::id.eq(self.id)))
+				.set((
+					blocks::public.eq(public),
+					blocks::updated_at.eq(std::time::SystemTime::now()),
+				))
+				.get_result(conn)?,
+		)
+	}
 }
 
 #[derive(Insertable)]
@@ -51,6 +63,7 @@ pub struct NewBlock {
 	pub updated_at: SystemTime,
 	pub block_data: Option<String>,
 	pub owner_id: i32,
+	pub public: bool,
 }
 
 pub struct MinNewBlock<'a> {
@@ -66,12 +79,20 @@ impl NewBlock {
 			updated_at: std::time::SystemTime::now(),
 			block_data: None,
 			owner_id: minimum.owner_id,
+			public: false,
 		}
 	}
 
 	pub fn data(self, data: &str) -> Self {
 		NewBlock {
 			block_data: Some(data.to_string()),
+			..self
+		}
+	}
+
+	pub fn public(self) -> Self {
+		NewBlock {
+			public: true,
 			..self
 		}
 	}

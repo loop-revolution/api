@@ -1,7 +1,10 @@
 use crate::{block_logic::block::BlockObject, graphql::ContextData};
 use async_graphql::*;
 use block_tools::{
-	auth::{require_token, validate_token},
+	auth::{
+		optional_token, optional_validate_token, permissions::can_view, require_token,
+		validate_token,
+	},
 	dsl::prelude::*,
 	models::{Block, User},
 	schema::{blocks, users},
@@ -51,12 +54,16 @@ impl QLUser {
 	}
 
 	async fn blocks(&self, context: &Context<'_>) -> Result<Vec<BlockObject>, Error> {
-		let conn = &context.data::<ContextData>()?.pool.get()?;
+		let context = &context.data::<ContextData>()?.other();
+		let conn = &context.pool.get()?;
+		let token = optional_token(context);
+		let user_id = optional_validate_token(token)?;
 
 		let blocks: Vec<BlockObject> = blocks::dsl::blocks
 			.filter(blocks::dsl::owner_id.eq(self.id))
 			.load::<Block>(conn)?
 			.iter()
+			.filter(|block| can_view(user_id, block))
 			.map(BlockObject::from)
 			.collect();
 

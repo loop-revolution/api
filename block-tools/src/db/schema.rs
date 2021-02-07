@@ -6,6 +6,7 @@ table! {
 		updated_at -> Timestamp,
 		block_data -> Nullable<Text>,
 		owner_id -> Int4,
+		public -> Bool,
 	}
 }
 

@@ -17,6 +17,7 @@ pub struct BlockObject {
 	pub updated_at: SystemTime,
 	pub block_type: String,
 	pub owner_id: i32,
+	pub public: bool,
 }
 
 #[Object]
@@ -39,6 +40,10 @@ impl BlockObject {
 
 	async fn updated_at(&self) -> DateTime<Utc> {
 		self.updated_at.into()
+	}
+
+	async fn public(&self) -> bool {
+		self.public
 	}
 
 	async fn owner(&self, context: &Context<'_>) -> Result<QLUser, Error> {
@@ -75,6 +80,7 @@ impl From<Block> for BlockObject {
 			block_data: blockd.block_data,
 			block_type: blockd.block_type,
 			owner_id: blockd.owner_id,
+			public: blockd.public,
 		}
 	}
 }
@@ -88,6 +94,7 @@ impl From<&Block> for BlockObject {
 			block_data: blockd.block_data.clone(),
 			block_type: blockd.block_type.clone(),
 			owner_id: blockd.owner_id,
+			public: blockd.public,
 		}
 	}
 }
@@ -100,5 +107,6 @@ pub fn to_blockd(block: &BlockObject) -> Block {
 		block_data: block.block_data.clone(),
 		block_type: block.block_type.clone(),
 		owner_id: block.owner_id,
+		public: block.public,
 	}
 }
