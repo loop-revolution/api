@@ -42,6 +42,17 @@ impl Block {
 				.get_result(conn)?,
 		)
 	}
+
+	pub fn update_public(&self, public: bool, conn: &PgConnection) -> Result<Block, Error> {
+		Ok(
+			diesel::update(blocks::dsl::blocks.filter(blocks::id.eq(self.id)))
+				.set((
+					blocks::public.eq(public),
+					blocks::updated_at.eq(std::time::SystemTime::now()),
+				))
+				.get_result(conn)?,
+		)
+	}
 }
 
 #[derive(Insertable)]

@@ -1,5 +1,5 @@
 use super::{
-	block::BlockObject,
+	block::{to_blockd, BlockObject},
 	block_types::{type_list, BlockType},
 	breadcrumb::{gen_breadcrumb, BreadCrumb},
 };
@@ -73,6 +73,27 @@ impl BlockMutations {
 			))),
 			_ => Ok(block_id),
 		}
+	}
+
+	pub async fn update_visibility(
+		&self,
+		context: &Context<'_>,
+		public: bool,
+		#[graphql(desc = "ID of the block to update.")] block_id: i64,
+	) -> Result<BlockObject, Error> {
+		let context = &context.data::<ContextData>()?.other();
+		let conn = &context.pool.get()?;
+		let user_id = validate_token(require_token(context)?)?;
+		let access_err: Error =
+			UserError::NoAccess(NoAccessSubject::UpdatePermissions(block_id)).into();
+		let block = match Block::by_id(block_id, conn)? {
+			Some(block) => block,
+			None => return Err(access_err),
+		};
+		if block.owner_id != user_id {
+			return Err(access_err);
+		}
+		Ok(block.update_public(public, conn)?.into())
 	}
 }
 
