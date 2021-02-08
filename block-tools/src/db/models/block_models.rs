@@ -59,6 +59,51 @@ impl Block {
 		)
 	}
 
+	pub fn update_starred(
+		&self,
+		starred: bool,
+		user_id: i32,
+		conn: &PgConnection,
+	) -> Result<Block, Error> {
+		let filter = blocks::dsl::blocks.filter(blocks::id.eq(self.id));
+		let mut stars: Vec<i32> = filter.limit(1).select(blocks::stars).get_result(conn)?;
+		if starred {
+			stars.push(user_id);
+		} else {
+			stars = stars.into_iter().filter(|id| id != &user_id).collect();
+		}
+		Ok(diesel::update(filter)
+			.set((
+				blocks::stars.eq(stars),
+				blocks::updated_at.eq(std::time::SystemTime::now()),
+			))
+			.get_result(conn)?)
+	}
+
+	pub fn update_notifs(
+		&self,
+		enable: bool,
+		user_id: i32,
+		conn: &PgConnection,
+	) -> Result<Block, Error> {
+		let filter = blocks::dsl::blocks.filter(blocks::id.eq(self.id));
+		let mut notifs: Vec<i32> = filter
+			.limit(1)
+			.select(blocks::notif_enabled)
+			.get_result(conn)?;
+		if enable {
+			notifs.push(user_id);
+		} else {
+			notifs = notifs.into_iter().filter(|id| id != &user_id).collect();
+		}
+		Ok(diesel::update(filter)
+			.set((
+				blocks::notif_enabled.eq(notifs),
+				blocks::updated_at.eq(std::time::SystemTime::now()),
+			))
+			.get_result(conn)?)
+	}
+
 	pub fn update_perms(
 		&self,
 		perm_full: Vec<i32>,
