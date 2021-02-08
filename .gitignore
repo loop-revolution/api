@@ -11,6 +11,7 @@ pkg
 .cargo/config.toml
 # Editor
 .vscode
+.idea
 # MacOS
 .DS_STORE
 *.icloud
