@@ -10,6 +10,8 @@ table! {
 		perm_full -> Array<Int4>,
 		perm_edit -> Array<Int4>,
 		perm_view -> Array<Int4>,
+		stars -> Array<Int4>,
+		notif_enabled -> Array<Int4>,
 	}
 }
 

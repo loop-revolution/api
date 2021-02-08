@@ -3,7 +3,10 @@ use crate::{
 	user_logic::user::{user_by_id, QLUser},
 };
 use async_graphql::*;
-use block_tools::models::Block;
+use block_tools::{
+	auth::{require_token, validate_token},
+	models::Block,
+};
 use block_types::delegation::display::{delegate_embed_display, delegate_page_display};
 use chrono::{DateTime, Utc};
 use std::time::SystemTime;
@@ -21,6 +24,8 @@ pub struct BlockObject {
 	pub perm_full: Vec<i32>,
 	pub perm_edit: Vec<i32>,
 	pub perm_view: Vec<i32>,
+	pub stars: Vec<i32>,
+	pub notif_enabled: Vec<i32>,
 }
 
 #[Object]
@@ -49,14 +54,30 @@ impl BlockObject {
 		self.public
 	}
 
-	async fn owner(&self, context: &Context<'_>) -> Result<QLUser, Error> {
+	async fn star_count(&self) -> usize {
+		self.stars.len()
+	}
+
+	async fn starred(&self, context: &Context<'_>) -> Result<bool> {
+		let context = &context.data::<ContextData>()?.other();
+		let user_id = validate_token(require_token(context)?)?;
+		Ok(self.stars.contains(&user_id))
+	}
+
+	async fn notif_enabled(&self, context: &Context<'_>) -> Result<bool> {
+		let context = &context.data::<ContextData>()?.other();
+		let user_id = validate_token(require_token(context)?)?;
+		Ok(self.notif_enabled.contains(&user_id))
+	}
+
+	async fn owner(&self, context: &Context<'_>) -> Result<QLUser> {
 		let context = &context.data::<ContextData>()?;
 		let user = user_by_id(context, self.owner_id)?;
 
 		Ok(user.unwrap())
 	}
 
-	async fn perm_full(&self, context: &Context<'_>) -> Result<Vec<QLUser>, Error> {
+	async fn perm_full(&self, context: &Context<'_>) -> Result<Vec<QLUser>> {
 		let context = &context.data::<ContextData>()?;
 		let mut users: Vec<QLUser> = vec![];
 
@@ -70,7 +91,7 @@ impl BlockObject {
 		Ok(users)
 	}
 
-	async fn perm_edit(&self, context: &Context<'_>) -> Result<Vec<QLUser>, Error> {
+	async fn perm_edit(&self, context: &Context<'_>) -> Result<Vec<QLUser>> {
 		let context = &context.data::<ContextData>()?;
 		let mut users: Vec<QLUser> = vec![];
 
@@ -84,7 +105,7 @@ impl BlockObject {
 		Ok(users)
 	}
 
-	async fn perm_view(&self, context: &Context<'_>) -> Result<Vec<QLUser>, Error> {
+	async fn perm_view(&self, context: &Context<'_>) -> Result<Vec<QLUser>> {
 		let context = &context.data::<ContextData>()?;
 		let mut users: Vec<QLUser> = vec![];
 
@@ -98,19 +119,19 @@ impl BlockObject {
 		Ok(users)
 	}
 
-	async fn page_display(&self, context: &Context<'_>) -> Result<String, Error> {
+	async fn page_display(&self, context: &Context<'_>) -> Result<String> {
 		let context = &context.data::<ContextData>()?;
 		let display = delegate_page_display(&to_blockd(self), &context.other())?;
 		Ok(serde_json::to_string(&display)?)
 	}
 
-	async fn embed_display(&self, context: &Context<'_>) -> Result<String, Error> {
+	async fn embed_display(&self, context: &Context<'_>) -> Result<String> {
 		let context = &context.data::<ContextData>()?;
 		let display = delegate_embed_display(&to_blockd(self), &context.other());
 		Ok(serde_json::to_string(&display)?)
 	}
 
-	async fn breadcrumb(&self, context: &Context<'_>) -> Result<Vec<BreadCrumb>, Error> {
+	async fn breadcrumb(&self, context: &Context<'_>) -> Result<Vec<BreadCrumb>> {
 		let context = &context.data::<ContextData>()?;
 		Ok(gen_breadcrumb(&context.other(), &to_blockd(self))?)
 	}
@@ -129,6 +150,8 @@ impl From<Block> for BlockObject {
 			perm_full: blockd.perm_full,
 			perm_edit: blockd.perm_edit,
 			perm_view: blockd.perm_view,
+			stars: blockd.stars,
+			notif_enabled: blockd.notif_enabled,
 		}
 	}
 }
@@ -146,6 +169,8 @@ impl From<&Block> for BlockObject {
 			perm_full: blockd.perm_full.clone(),
 			perm_edit: blockd.perm_edit.clone(),
 			perm_view: blockd.perm_view.clone(),
+			stars: blockd.stars.clone(),
+			notif_enabled: blockd.notif_enabled.clone(),
 		}
 	}
 }
@@ -162,5 +187,7 @@ pub fn to_blockd(block: &BlockObject) -> Block {
 		perm_full: block.perm_full.clone(),
 		perm_edit: block.perm_edit.clone(),
 		perm_view: block.perm_view.clone(),
+		stars: block.stars.clone(),
+		notif_enabled: block.notif_enabled.clone(),
 	}
 }

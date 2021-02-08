@@ -3,13 +3,10 @@ use crate::{blocks::Context, models::Block, UserError};
 use super::{optional_token, optional_validate_token};
 
 pub fn can_view(user_id: Option<i32>, block: &Block) -> bool {
-	let mut allowed = block.public || Some(block.owner_id) == user_id;
+	let mut allowed = block.public;
 	if !allowed {
 		if let Some(user_id) = user_id {
-			if block.perm_view.contains(&user_id)
-				|| block.perm_edit.contains(&user_id)
-				|| block.perm_full.contains(&user_id)
-			{
+			if has_perm_level(user_id, block, PermLevel::View) {
 				allowed = true
 			}
 		}
@@ -57,7 +54,7 @@ pub fn has_perm_level(user_id: i32, block: &Block, level: PermLevel) -> bool {
 	if let PermLevel::Edit = level {
 		return false;
 	}
-	if block.perm_view.contains(&user_id) {
+	if block.public || block.perm_view.contains(&user_id) {
 		return true;
 	}
 	false
