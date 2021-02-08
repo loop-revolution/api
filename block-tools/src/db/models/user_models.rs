@@ -1,4 +1,8 @@
+use diesel::PgConnection;
+
 use super::super::schema::{potential_users, users};
+use crate::diesel::*;
+use crate::Error;
 use std::time::SystemTime;
 
 #[derive(Queryable, Clone)]
@@ -14,6 +18,16 @@ pub struct User {
 	pub credits: i32,
 	pub display_name: Option<String>,
 	pub root_id: Option<i64>,
+}
+
+impl User {
+	pub fn by_id(user_id: i32, conn: &PgConnection) -> Result<Option<Self>, Error> {
+		Ok(users::dsl::users
+			.filter(users::id.eq(user_id))
+			.limit(1)
+			.get_result(conn)
+			.optional()?)
+	}
 }
 
 #[derive(Insertable)]

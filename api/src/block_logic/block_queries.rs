@@ -3,7 +3,7 @@ use super::{
 	block_types::{type_list, BlockType},
 	breadcrumb::{gen_breadcrumb, BreadCrumb},
 };
-use crate::{graphql::ContextData, user_logic::user::user_by_id};
+use crate::graphql::ContextData;
 use async_graphql::{Context, Error, Object};
 use block_tools::{
 	auth::{
@@ -12,7 +12,7 @@ use block_tools::{
 		require_token, validate_token,
 	},
 	dsl::prelude::*,
-	models::{Block, NewNotification},
+	models::{Block, NewNotification, User},
 	schema::blocks,
 	NoAccessSubject, UserError,
 };
@@ -97,7 +97,23 @@ impl BlockMutations {
 		if !has_perm_level(user_id, &block, PermLevel::Full) {
 			return Err(access_err);
 		}
-		Ok(block.update_public(public, conn)?.into())
+		let block = block.update_public(public, conn)?;
+		if user_id != block.owner_id {
+			let user_name = User::by_id(user_id, conn)?
+				.and_then(|user| user.display_name.or(Some(user.username)))
+				.unwrap();
+			let visibility = match public {
+				true => "public",
+				false => "private",
+			};
+			let notif = NewNotification::new(
+				format!("{} made your block {}", user_name, visibility),
+				format!("{} changed the visibility of a block you own.", user_name),
+			)
+			.recipients(vec![block.owner_id]);
+			notif.send(conn)?;
+		}
+		Ok(block.into())
 	}
 
 	pub async fn update_perms(
@@ -120,10 +136,22 @@ impl BlockMutations {
 		if !has_perm_level(user_id, &block, PermLevel::Full) {
 			return Err(access_err);
 		}
+		let block = block.update_perms(perm_full, perm_edit, perm_view, conn)?;
 
-		Ok(block
-			.update_perms(perm_full, perm_edit, perm_view, conn)?
-			.into())
+		if user_id != block.owner_id {
+			let user_name = User::by_id(user_id, conn)?
+				.and_then(|user| user.display_name.or(Some(user.username)))
+				.unwrap();
+			let block_name = delegate_block_name(context, &block.block_type, &block)?;
+			let notif = NewNotification::new(
+				format!("{} updated the permissions of your block", user_name),
+				format!("{} updated \"{}\".", user_name, block_name),
+			)
+			.recipients(vec![block.owner_id]);
+			notif.send(conn)?;
+		}
+
+		Ok(block.into())
 	}
 
 	pub async fn set_starred(
@@ -132,9 +160,9 @@ impl BlockMutations {
 		block_id: i64,
 		starred: bool,
 	) -> Result<BlockObject, Error> {
-		let context = &context.data::<ContextData>()?;
+		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
-		let user_id = validate_token(require_token(&context.other())?)?;
+		let user_id = validate_token(require_token(context)?)?;
 		let access_err: Error = UserError::NoAccess(NoAccessSubject::NotifBlock(block_id)).into();
 		let block = match Block::by_id(block_id, conn)? {
 			Some(block) => block,
@@ -144,15 +172,16 @@ impl BlockMutations {
 			return Err(access_err);
 		}
 		let block = block.update_starred(starred, user_id, conn)?;
-		let user_name = user_by_id(context, user_id)?
+		let user_name = User::by_id(user_id, conn)?
 			.and_then(|user| user.display_name.or(Some(user.username)))
 			.unwrap();
-		let block_name = delegate_block_name(&context.other(), &block.block_type, &block)?;
+		let block_name = delegate_block_name(context, &block.block_type, &block)?;
 
 		let notif = NewNotification::new(
 			format!("{} starred \"{}\"", user_name, block_name),
 			format!("{} starred a block that you own.", user_name),
-		);
+		)
+		.recipients(vec![block.owner_id]);
 		notif.send(conn)?;
 
 		Ok(block.into())
