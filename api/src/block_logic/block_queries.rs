@@ -110,7 +110,8 @@ impl BlockMutations {
 				format!("{} made your block {}", user_name, visibility),
 				format!("{} changed the visibility of a block you own.", user_name),
 			)
-			.recipients(vec![block.owner_id]);
+			.recipients(vec![block.owner_id])
+			.link(block_id);
 			notif.send(conn)?;
 		}
 		Ok(block.into())
@@ -147,7 +148,8 @@ impl BlockMutations {
 				format!("{} updated the permissions of your block", user_name),
 				format!("{} updated \"{}\".", user_name, block_name),
 			)
-			.recipients(vec![block.owner_id]);
+			.recipients(vec![block.owner_id])
+			.link(block_id);
 			notif.send(conn)?;
 		}
 
@@ -172,17 +174,19 @@ impl BlockMutations {
 			return Err(access_err);
 		}
 		let block = block.update_starred(starred, user_id, conn)?;
-		let user_name = User::by_id(user_id, conn)?
-			.and_then(|user| user.display_name.or(Some(user.username)))
-			.unwrap();
-		let block_name = delegate_block_name(context, &block.block_type, &block)?;
-
-		let notif = NewNotification::new(
-			format!("{} starred \"{}\"", user_name, block_name),
-			format!("{} starred a block that you own.", user_name),
-		)
-		.recipients(vec![block.owner_id]);
-		notif.send(conn)?;
+		if starred == true {
+			let user_name = User::by_id(user_id, conn)?
+				.and_then(|user| user.display_name.or(Some(user.username)))
+				.unwrap_or("A user".into());
+			let block_name = delegate_block_name(context, &block.block_type, &block)?;
+			let notif = NewNotification::new(
+				format!("{} starred \"{}\"", user_name, block_name),
+				format!("{} starred a block that you own.", user_name),
+			)
+			.recipients(vec![block.owner_id])
+			.link(block_id);
+			notif.send(conn)?;
+		}
 
 		Ok(block.into())
 	}
