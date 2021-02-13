@@ -10,6 +10,9 @@ env:
 jobs:
   full:
     runs-on: ubuntu-latest
+    container:
+      image: xd009642/tarpaulin
+      options: --security-opt seccomp=unconfined
     services:
       postgres:
         image: postgres
@@ -42,9 +45,6 @@ jobs:
         run: |
           cargo run &
           npx wait-on http-get://localhost:4000/play && kill $!
-
-      - name: Install Tarpaulin
-        run: cargo install cargo-tarpaulin
 
       - name: Test + Generate code coverage
         run: |
