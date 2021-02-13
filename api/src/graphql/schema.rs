@@ -4,6 +4,7 @@ use crate::{
 	user_logic::{
 		auth::{login::LoginMutations, signup::SignupMutations},
 		user::UserQueries,
+		user_info::UserInfoMutations,
 	},
 };
 use async_graphql::{MergedObject, Schema as GraphQLSchema};
@@ -19,6 +20,7 @@ pub struct Mutation(
 	LoginMutations,
 	BlockMutations,
 	NotificationMutations,
+	UserInfoMutations,
 );
 
 pub type Schema = GraphQLSchema<Query, Mutation, Notifications>;
