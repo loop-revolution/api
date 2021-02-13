@@ -10,9 +10,6 @@ env:
 jobs:
   full:
     runs-on: ubuntu-latest
-    container:
-      image: xd009642/tarpaulin
-      options: --security-opt seccomp=unconfined
     services:
       postgres:
         image: postgres
@@ -44,11 +41,11 @@ jobs:
       - name: Test that it starts
         run: |
           cargo run &
-          npx wait-on http-get://localhost:4000/play && kill $!
+          npx wait-on http-get://localhost:4000 && kill $!
 
       - name: Test + Generate code coverage
         run: |
-          cargo +nightly tarpaulin --verbose --all-features --workspace --timeout 120 --out Xml
+          docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin sh -c "cargo +nightly tarpaulin --out Xml"
 
       - name: Upload to codecov.io
         uses: codecov/codecov-action@v1
