@@ -28,6 +28,24 @@ impl User {
 			.get_result(conn)
 			.optional()?)
 	}
+
+	pub fn update_username(
+		&self,
+		new_username: &str,
+		new_localname: &str,
+		new_credits: i32,
+		conn: &PgConnection,
+	) -> Result<User, Error> {
+		Ok(
+			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
+				.set((
+					users::username.eq(new_username),
+					users::localuname.eq(new_localname),
+					users::credits.eq(new_credits),
+				))
+				.get_result(conn)?,
+		)
+	}
 }
 
 #[derive(Insertable)]

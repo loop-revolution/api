@@ -64,6 +64,7 @@ pub enum UserError {
 	JWTGeneric,
 	NoAccess(NoAccessSubject),
 	NeedAuth,
+	InsufficientFunds(i32),
 }
 
 impl fmt::Display for UserError {
@@ -93,6 +94,11 @@ impl fmt::Display for UserError {
 				write!(f, "[uad] Access to {} was denied.", scope.to_string())
 			}
 			UserError::NeedAuth => write!(f, "[uar] Authentication headers are required."),
+			UserError::InsufficientFunds(needed) => write!(
+				f,
+				"[uci] Insuffecient funds. {} credits are needed.",
+				needed
+			),
 		}
 	}
 }
