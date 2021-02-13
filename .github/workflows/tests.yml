@@ -45,7 +45,7 @@ jobs:
 
       - name: Test + Generate code coverage
         run: |
-          docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin sh -c "cargo +nightly tarpaulin --out Xml"
+          docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin sh -c "cargo tarpaulin --out Xml"
 
       - name: Upload to codecov.io
         uses: codecov/codecov-action@v1
