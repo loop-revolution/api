@@ -4,7 +4,7 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
-name: Tests
+name: Suite
 env:
   DATABASE_URL: postgres://postgres:postgres@localhost:5432/testing
   SESSION_SECRET: 1234567890qwertyuiopasdfghjklzxcvbnm
