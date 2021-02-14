@@ -80,7 +80,7 @@ jobs:
         if: steps.target_exist.outputs.files_exists != 'true'
         uses: actions/upload-artifact@v2
         with:
-          name: target--${{ hashFiles('**/Cargo.lock') }}
+          name: target-${{ hashFiles('**/Cargo.lock') }}
           path: target
   test:
     runs-on: ubuntu-latest
