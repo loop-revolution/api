@@ -16,12 +16,26 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: louisbirla/apitestci
+      ports:
+        - 5432:5432
+        - 4000:4000
+      options: >-
+        --add-host=host:0.0.0.0
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: testing
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
-      - uses: harmon758/postgresql-action@v1
-        with:
-          postgresql db: testing
-          postgresql user: postgres
-          postgresql password: postgres
       - name: Checkout
         uses: actions/checkout@v2
         with:
