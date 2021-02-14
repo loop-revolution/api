@@ -3,9 +3,9 @@ use async_graphql::*;
 use super::{localize_username, user::QLUser, verify_pwd, verify_username};
 use crate::graphql::ContextData;
 use block_tools::{
-	auth::{require_token, validate_token},
-	models::User,
-	UserError,
+	auth::{permissions::maybe_use_view, require_token, validate_token},
+	models::{Block, User},
+	NoAccessSubject, UserError,
 };
 
 const USERNAME_UPDATE_COST: i32 = 50;
@@ -26,7 +26,7 @@ impl UserInfoMutations {
 		let user_id = validate_token(&require_token(context)?)?;
 		let user = User::by_id(user_id, conn)?;
 		let user = match user {
-			None => return Err(UserError::JWTGeneric.into()),
+			None => return Err(UserError::JwtGeneric.into()),
 			Some(user) => user,
 		};
 		if !verify_pwd(&password, &user.password)? {
@@ -53,9 +53,63 @@ impl UserInfoMutations {
 		let user_id = validate_token(&require_token(context)?)?;
 		let user = User::by_id(user_id, conn)?;
 		let user = match user {
-			None => return Err(UserError::JWTGeneric.into()),
+			None => return Err(UserError::JwtGeneric.into()),
 			Some(user) => user,
 		};
 		Ok(user.update_display_name(&new_display_name, conn)?.into())
 	}
+
+	async fn set_special_block(
+		&self,
+		context: &Context<'_>,
+		r#type: SpecialBlock,
+		block_id: i64,
+	) -> Result<QLUser> {
+		let context = &context.data::<ContextData>()?.other();
+		let conn = &context.pool.get()?;
+		let user_id = validate_token(&require_token(context)?)?;
+		let user = User::by_id(user_id, conn)?;
+		let user = match user {
+			None => return Err(UserError::JwtGeneric.into()),
+			Some(user) => user,
+		};
+		let block = Block::by_id(block_id, conn)?;
+		if let None = maybe_use_view(context, block)? {
+			return Err(UserError::NoAccess(NoAccessSubject::ViewBlock(block_id)).into());
+		};
+
+		let user = match r#type {
+			SpecialBlock::Root => user.update_root(Some(block_id), conn)?,
+			SpecialBlock::Featured => user.update_featured(Some(block_id), conn)?,
+		};
+
+		Ok(user.into())
+	}
+
+	async fn remove_special_block(
+		&self,
+		context: &Context<'_>,
+		r#type: SpecialBlock,
+	) -> Result<QLUser> {
+		let context = &context.data::<ContextData>()?.other();
+		let conn = &context.pool.get()?;
+		let user_id = validate_token(&require_token(context)?)?;
+		let user = User::by_id(user_id, conn)?;
+		let user = match user {
+			None => return Err(UserError::JwtGeneric.into()),
+			Some(user) => user,
+		};
+		let user = match r#type {
+			SpecialBlock::Root => user.update_root(None, conn)?,
+			SpecialBlock::Featured => user.update_featured(None, conn)?,
+		};
+
+		Ok(user.into())
+	}
+}
+
+#[derive(Enum, Copy, Clone, Eq, PartialEq)]
+pub enum SpecialBlock {
+	Root,
+	Featured,
 }

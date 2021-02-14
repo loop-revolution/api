@@ -21,6 +21,7 @@ pub struct QLUser {
 	pub username: String,
 	pub display_name: Option<String>,
 	pub root_id: Option<i64>,
+	pub featured_id: Option<i64>,
 }
 
 #[Object]
@@ -80,7 +81,17 @@ impl QLUser {
 		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
 		let root = Block::by_id(root_id, conn)?;
-		println!("Root: {}", root_id);
+		Ok(maybe_use_view(context, root)?.and_then(|block| Some(block.into())))
+	}
+
+	async fn featured(&self, context: &Context<'_>) -> Result<Option<BlockObject>> {
+		let featured_id = match self.featured_id {
+			Some(id) => id,
+			None => return Ok(None),
+		};
+		let context = &context.data::<ContextData>()?.other();
+		let conn = &context.pool.get()?;
+		let root = Block::by_id(featured_id, conn)?;
 		Ok(maybe_use_view(context, root)?.and_then(|block| Some(block.into())))
 	}
 }
@@ -92,6 +103,7 @@ impl From<User> for QLUser {
 			username: userd.username,
 			display_name: userd.display_name,
 			root_id: userd.root_id,
+			featured_id: userd.featured_id,
 		}
 	}
 }
