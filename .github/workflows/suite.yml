@@ -31,6 +31,7 @@ jobs:
         with:
           name: bin
           path: ~/.cargo/bin
+          required: false
 
       - name: Check if bins were loaded
         id: bins_exist
@@ -53,6 +54,7 @@ jobs:
         with:
           name: target-${{ hashFiles('**/Cargo.lock') }}
           path: target
+          required: false
 
       - name: Check if target was loaded
         id: target_exist
