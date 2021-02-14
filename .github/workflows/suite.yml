@@ -33,7 +33,10 @@ jobs:
         env:
           cache-name: bin
         with:
-          path: /usr/share/rust/.cargo/bin
+          path: |
+            ~/.cargo/bin
+            ~/.cargo/registry
+            ~/.cargo/git
           key: ${{ runner.os }}-bin-${{ env.cache-name }}
           restore-keys: |
             ${{ runner.os }}-bin-${{ env.cache-name }}-
@@ -68,7 +71,10 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: bin
-          path: /usr/share/rust/.cargo/bin
+          path: |
+            ~/.cargo/bin
+            ~/.cargo/registry
+            ~/.cargo/git
       - name: Upload target
         uses: actions/upload-artifact@v2
         with:
@@ -103,6 +109,9 @@ jobs:
           name: target
           path: target
 
+      - name: Allow access
+        run: sudo chown -R $(whoami) ./target
+
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
 
@@ -110,7 +119,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: bin
-          path: /usr/share/rust/.cargo/bin
+          path: ~/.cargo
+
+      - name: Allow access
+        run: sudo chown -R $(whoami) ~/.cargo
 
       - name: Setup DB
         run: cd block-tools && diesel setup && diesel migration run
@@ -136,6 +148,9 @@ jobs:
         with:
           name: target
           path: target
+
+      - name: Allow access
+        run: sudo chown -R $(whoami) ./target
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
