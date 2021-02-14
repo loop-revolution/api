@@ -44,16 +44,12 @@ jobs:
           cache-name: target
         with:
           path: .
-          key: ${{ runner.os }}-target-${{ env.cache-name }}
-          restore-keys: |
-            ${{ runner.os }}-target-${{ env.cache-name }}-
+          key: ${{ runner.os }}-target-${{ hashFiles('**/Cargo.lock') }}
 
       ## Diesel
-      - name: Diesel dep
-        run: sudo apt install libpq-dev
       - name: Install diesel cli
         if: steps.bin-cache.outputs.cache-hit != 'true'
-        run: cargo install diesel_cli --no-default-features --features "postgres"
+        run: sudo apt install libpq-dev && cargo install diesel_cli --no-default-features --features "postgres"
 
       ## Tarpaulin
       - name: Install tarpaulin
@@ -61,7 +57,7 @@ jobs:
         run: cargo install cargo-tarpaulin
 
       ## Load target cache
-      - name: Install deps
+      - name: Load target cache
         if: steps.target-cache.outputs.cache-hit != 'true'
         uses: actions-rs/cargo@v1
         with:
@@ -101,15 +97,17 @@ jobs:
         with:
           submodules: true
 
-      - uses: actions/download-artifact@v2
+      - name: Load target
+        uses: actions/download-artifact@v2
         with:
           name: target
           path: target
 
-      - name: Install Rust toolchain
+      - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
 
-      - uses: actions/download-artifact@v2
+      - name: Load bins
+        uses: actions/download-artifact@v2
         with:
           name: bin
           path: /usr/share/rust/.cargo/bin
@@ -117,10 +115,10 @@ jobs:
       - name: Setup DB
         run: cd block-tools && diesel setup && diesel migration run
 
-      - name: Test + Generate code coverage
+      - name: Test & Coverage
         run: cargo tarpaulin --out Xml
 
-      - name: Upload to codecov.io
+      - name: Upload coverage
         uses: codecov/codecov-action@v1
         with:
           fail_ci_if_error: true
@@ -133,12 +131,13 @@ jobs:
         with:
           submodules: true
 
-      - uses: actions/download-artifact@v2
+      - name: Load target
+        uses: actions/download-artifact@v2
         with:
           name: target
           path: target
 
-      - name: Install Rust toolchain
+      - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
@@ -150,7 +149,7 @@ jobs:
         with:
           command: check
 
-      - name: Advanced Clippy checks
+      - name: Clippy
         uses: actions-rs/cargo@v1
         with:
           command: clippy
@@ -160,7 +159,7 @@ jobs:
         with:
           command: fmt
 
-      - name: Check if there are changes in formatting
+      - name: Check formatting
         id: changes
         uses: UnicornGlobal/has-changes-action@v1.0.11
 
