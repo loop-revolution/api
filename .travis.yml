@@ -17,7 +17,6 @@ before_script:
     - cd block-tools && diesel setup && diesel migration run && cd ..
 
 script:
-  - cargo build
   - cargo tarpaulin --out Xml
 
 before_cache:
