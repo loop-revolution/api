@@ -31,9 +31,9 @@ pub fn create_token(user_id: i32) -> String {
 	.unwrap()
 }
 
-pub fn validate_token(token: String) -> Result<i32, UserError> {
+pub fn validate_token(token: &str) -> Result<i32, UserError> {
 	let token = decode::<Claims>(
-		&token,
+		token,
 		&DecodingKey::from_secret(get_secret().as_ref()),
 		&Validation::default(),
 	)?;
@@ -43,7 +43,7 @@ pub fn validate_token(token: String) -> Result<i32, UserError> {
 
 pub fn optional_validate_token(token: Option<String>) -> Result<Option<i32>, UserError> {
 	match token {
-		Some(token) => Ok(Some(validate_token(token)?)),
+		Some(token) => Ok(Some(validate_token(&token)?)),
 		None => Ok(None),
 	}
 }

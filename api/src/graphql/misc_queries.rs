@@ -12,3 +12,19 @@ impl MiscQueries {
 		env!("CARGO_PKG_VERSION").to_string()
 	}
 }
+
+#[cfg(test)]
+mod tests {
+	use async_graphql::Value;
+
+	use crate::{graphql::build_schema, tests::value_of_value};
+
+	#[tokio::test]
+	async fn api_version() {
+		let expecter_ver = env!("CARGO_PKG_VERSION").to_string();
+		let schema = build_schema();
+		let res = schema.execute("{ apiVersion }").await.data;
+		let version = value_of_value(&res, "apiVersion");
+		assert_eq!(version, &Value::from(expecter_ver));
+	}
+}

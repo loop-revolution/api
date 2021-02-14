@@ -60,13 +60,13 @@ impl BlockObject {
 
 	async fn starred(&self, context: &Context<'_>) -> Result<bool> {
 		let context = &context.data::<ContextData>()?.other();
-		let user_id = validate_token(require_token(context)?)?;
+		let user_id = validate_token(&require_token(context)?)?;
 		Ok(self.stars.contains(&user_id))
 	}
 
 	async fn notif_enabled(&self, context: &Context<'_>) -> Result<bool> {
 		let context = &context.data::<ContextData>()?.other();
-		let user_id = validate_token(require_token(context)?)?;
+		let user_id = validate_token(&require_token(context)?)?;
 		Ok(self.notif_enabled.contains(&user_id))
 	}
 

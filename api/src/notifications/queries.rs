@@ -17,7 +17,7 @@ impl NotificationQueries {
 	async fn notifications(&self, context: &Context<'_>) -> Result<Vec<QLNotification>> {
 		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
-		let user_id = validate_token(require_token(context)?)?;
+		let user_id = validate_token(&require_token(context)?)?;
 		let notifs: Vec<Notification> = notifications::dsl::notifications
 			.filter(notifications::dsl::recipients.contains(vec![user_id]))
 			.load::<Notification>(conn)?;
