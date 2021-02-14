@@ -17,8 +17,8 @@ jobs:
     container:
       image: louisbirla/apitestci
       ports:
-        - 5432:5432
-        - 4000:4000
+        - 5432
+        - 4000
       # options: >-
       #   --add-host=host:0.0.0.0
     services:
