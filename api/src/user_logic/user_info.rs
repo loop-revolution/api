@@ -42,4 +42,20 @@ impl UserInfoMutations {
 			.update_username(&new_username, &new_local, new_balance, conn)?
 			.into())
 	}
+
+	async fn update_display_name(
+		&self,
+		context: &Context<'_>,
+		new_display_name: String,
+	) -> Result<QLUser> {
+		let context = &context.data::<ContextData>()?.other();
+		let conn = &context.pool.get()?;
+		let user_id = validate_token(&require_token(context)?)?;
+		let user = User::by_id(user_id, conn)?;
+		let user = match user {
+			None => return Err(UserError::JWTGeneric.into()),
+			Some(user) => user,
+		};
+		Ok(user.update_display_name(&new_display_name, conn)?.into())
+	}
 }

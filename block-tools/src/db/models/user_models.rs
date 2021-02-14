@@ -46,6 +46,18 @@ impl User {
 				.get_result(conn)?,
 		)
 	}
+
+	pub fn update_display_name(
+		&self,
+		new_display_name: &str,
+		conn: &PgConnection,
+	) -> Result<User, Error> {
+		Ok(
+			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
+				.set((users::display_name.eq(new_display_name),))
+				.get_result(conn)?,
+		)
+	}
 }
 
 #[derive(Insertable)]
