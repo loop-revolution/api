@@ -29,16 +29,19 @@ pub struct DisplayMeta {
 	pub page: Option<PageMeta>,
 }
 
+impl Default for DisplayMeta {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
 impl DisplayMeta {
 	pub fn new() -> Self {
 		DisplayMeta { page: None }
 	}
 
 	pub fn page(self, page: PageMeta) -> Self {
-		DisplayMeta {
-			page: Some(page),
-			..self
-		}
+		DisplayMeta { page: Some(page) }
 	}
 }
 
@@ -46,6 +49,12 @@ impl DisplayMeta {
 pub struct PageMeta {
 	pub title: Option<String>,
 	pub header: Option<String>,
+}
+
+impl Default for PageMeta {
+	fn default() -> Self {
+		Self::new()
+	}
 }
 
 impl PageMeta {

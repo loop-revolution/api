@@ -45,7 +45,7 @@ pub fn delegate_creation_display(
 		BlockTypes::Data => data_block::DataBlock::create_display(context, user_id),
 		BlockTypes::Text => text_block::TextBlock::create_display(context, user_id),
 		BlockTypes::Group => group_block::GroupBlock::create_display(context, user_id),
-		BlockTypes::Invalid(name) => return Err(BlockError::TypeExist(name).into()),
+		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }
 
@@ -59,6 +59,6 @@ pub fn delegate_block_name(
 		BlockTypes::Data => data_block::DataBlock::block_name(block, context),
 		BlockTypes::Text => text_block::TextBlock::block_name(block, context),
 		BlockTypes::Group => group_block::GroupBlock::block_name(block, context),
-		BlockTypes::Invalid(name) => return Err(BlockError::TypeExist(name).into()),
+		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }

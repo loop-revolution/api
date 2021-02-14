@@ -8,7 +8,7 @@ pub mod queries;
 pub mod sub;
 
 #[derive(SimpleObject, Clone)]
-pub struct QLNotification {
+pub struct NotificationObject {
 	pub name: String,
 	pub description: String,
 	pub block_link: Option<i64>,
@@ -25,7 +25,7 @@ impl NotificationMutations {
 		context: &Context<'_>,
 		name: String,
 		description: String,
-	) -> Result<QLNotification> {
+	) -> Result<NotificationObject> {
 		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
 		let user_id = validate_token(&require_token(context)?)?;
@@ -37,9 +37,9 @@ impl NotificationMutations {
 	}
 }
 
-impl From<Notification> for QLNotification {
+impl From<Notification> for NotificationObject {
 	fn from(n: Notification) -> Self {
-		QLNotification {
+		NotificationObject {
 			name: n.name,
 			description: n.description,
 			recipients: n.recipients,

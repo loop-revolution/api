@@ -14,7 +14,7 @@ use strsim::jaro_winkler;
 
 use super::localize_username;
 
-pub struct QLUser {
+pub struct UserObject {
 	/// Auto-incrementing unique ID for a user
 	pub id: i32,
 	/// Unique alphanumeric username for easy identification
@@ -25,7 +25,7 @@ pub struct QLUser {
 }
 
 #[Object]
-impl QLUser {
+impl UserObject {
 	/// How many users there are in the database
 	async fn credits(&self, context: &Context<'_>) -> Result<Option<i32>, Error> {
 		let context = &context.data::<ContextData>()?;
@@ -81,7 +81,7 @@ impl QLUser {
 		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
 		let root = Block::by_id(root_id, conn)?;
-		Ok(maybe_use_view(context, root)?.and_then(|block| Some(block.into())))
+		Ok(maybe_use_view(context, root)?.map(|block| block.into()))
 	}
 
 	async fn featured(&self, context: &Context<'_>) -> Result<Option<BlockObject>> {
@@ -92,13 +92,13 @@ impl QLUser {
 		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
 		let root = Block::by_id(featured_id, conn)?;
-		Ok(maybe_use_view(context, root)?.and_then(|block| Some(block.into())))
+		Ok(maybe_use_view(context, root)?.map(|block| block.into()))
 	}
 }
 
-impl From<User> for QLUser {
+impl From<User> for UserObject {
 	fn from(userd: User) -> Self {
-		QLUser {
+		UserObject {
 			id: userd.id,
 			username: userd.username,
 			display_name: userd.display_name,
@@ -108,7 +108,7 @@ impl From<User> for QLUser {
 	}
 }
 
-pub fn user_by_id(context: &ContextData, id: i32) -> Result<Option<QLUser>, Error> {
+pub fn user_by_id(context: &ContextData, id: i32) -> Result<Option<UserObject>, Error> {
 	let conn = &context.pool.get()?;
 
 	let usr: Option<User> = users::dsl::users
@@ -119,7 +119,7 @@ pub fn user_by_id(context: &ContextData, id: i32) -> Result<Option<QLUser>, Erro
 
 	match usr {
 		None => Ok(None),
-		Some(usr) => Ok(Some(QLUser::from(usr))),
+		Some(usr) => Ok(Some(UserObject::from(usr))),
 	}
 }
 
@@ -137,7 +137,11 @@ impl UserQueries {
 	}
 
 	/// Tries to find a user with a matching ID. Will be null if a user is not found.
-	async fn user_by_id(&self, context: &Context<'_>, id: i32) -> Result<Option<QLUser>, Error> {
+	async fn user_by_id(
+		&self,
+		context: &Context<'_>,
+		id: i32,
+	) -> Result<Option<UserObject>, Error> {
 		let context = &context.data::<ContextData>()?;
 		user_by_id(context, id)
 	}
@@ -147,7 +151,7 @@ impl UserQueries {
 		&self,
 		context: &Context<'_>,
 		username: String,
-	) -> Result<Option<QLUser>, Error> {
+	) -> Result<Option<UserObject>, Error> {
 		let context = &context.data::<ContextData>()?;
 		let conn = &context.pool.get()?;
 
@@ -161,12 +165,12 @@ impl UserQueries {
 
 		match usr {
 			None => Ok(None),
-			Some(usr) => Ok(Some(QLUser::from(usr))),
+			Some(usr) => Ok(Some(UserObject::from(usr))),
 		}
 	}
 
 	/// Returns a `User` object corresponding with the authorization token.
-	async fn whoami(&self, context: &Context<'_>) -> Result<Option<QLUser>, Error> {
+	async fn whoami(&self, context: &Context<'_>) -> Result<Option<UserObject>, Error> {
 		let context = &context.data::<ContextData>()?;
 		let token = require_token(&context.other())?;
 		let user_id = validate_token(&token)?;
@@ -178,7 +182,7 @@ impl UserQueries {
 		&self,
 		context: &Context<'_>,
 		query: String,
-	) -> Result<Vec<QLUser>, Error> {
+	) -> Result<Vec<UserObject>, Error> {
 		let context = &context.data::<ContextData>()?;
 		let conn = &context.pool.get()?;
 
@@ -189,7 +193,7 @@ impl UserQueries {
 				let username_sim = jaro_winkler(&user.username, &query);
 				let display_name = user.display_name.clone();
 				let display_sim = display_name
-					.and_then(|name| Some(jaro_winkler(&name, &query)))
+					.map(|name| jaro_winkler(&name, &query))
 					.unwrap_or(0.);
 				UserSortHelper {
 					user,
@@ -200,7 +204,7 @@ impl UserQueries {
 			.collect();
 		helpers.sort_by(|a, b| b.strsim.partial_cmp(&a.strsim).unwrap());
 
-		let users: Vec<QLUser> = helpers
+		let users: Vec<UserObject> = helpers
 			.into_iter()
 			.map(|helper| helper.user.into())
 			.collect();

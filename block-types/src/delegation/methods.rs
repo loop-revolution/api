@@ -14,7 +14,7 @@ pub fn delegate_create(
 		BlockTypes::Data => data_block::DataBlock::create(input, context, user_id),
 		BlockTypes::Text => text_block::TextBlock::create(input, context, user_id),
 		BlockTypes::Group => group_block::GroupBlock::create(input, context, user_id),
-		BlockTypes::Invalid(name) => return Err(BlockError::TypeExist(name).into()),
+		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }
 
@@ -32,6 +32,6 @@ pub fn delegate_method(
 		BlockTypes::Group => {
 			group_block::GroupBlock::method_delegate(context, name, block_id, args)
 		}
-		BlockTypes::Invalid(name) => return Err(BlockError::TypeExist(name).into()),
+		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }

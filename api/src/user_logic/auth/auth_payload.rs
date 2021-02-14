@@ -1,6 +1,6 @@
 use crate::{
 	graphql::ContextData,
-	user_logic::user::{user_by_id, QLUser},
+	user_logic::user::{user_by_id, UserObject},
 };
 use async_graphql::*;
 use block_tools::auth::create_token;
@@ -12,7 +12,7 @@ pub struct AuthPayload {
 
 #[Object]
 impl AuthPayload {
-	pub async fn user(&self, context: &Context<'_>) -> Result<Option<QLUser>, Error> {
+	pub async fn user(&self, context: &Context<'_>) -> Result<Option<UserObject>, Error> {
 		let context = context.data::<ContextData>()?;
 		Ok(user_by_id(context, self.user_id)?)
 	}

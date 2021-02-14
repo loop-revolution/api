@@ -1,6 +1,6 @@
 use async_graphql::*;
 
-use super::{localize_username, user::QLUser, verify_pwd, verify_username};
+use super::{localize_username, user::UserObject, verify_pwd, verify_username};
 use crate::graphql::ContextData;
 use block_tools::{
 	auth::{permissions::maybe_use_view, require_token, validate_token},
@@ -20,7 +20,7 @@ impl UserInfoMutations {
 		context: &Context<'_>,
 		new_username: String,
 		password: String,
-	) -> Result<QLUser> {
+	) -> Result<UserObject> {
 		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
 		let user_id = validate_token(&require_token(context)?)?;
@@ -47,7 +47,7 @@ impl UserInfoMutations {
 		&self,
 		context: &Context<'_>,
 		new_display_name: String,
-	) -> Result<QLUser> {
+	) -> Result<UserObject> {
 		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
 		let user_id = validate_token(&require_token(context)?)?;
@@ -64,7 +64,7 @@ impl UserInfoMutations {
 		context: &Context<'_>,
 		r#type: SpecialBlock,
 		block_id: i64,
-	) -> Result<QLUser> {
+	) -> Result<UserObject> {
 		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
 		let user_id = validate_token(&require_token(context)?)?;
@@ -74,7 +74,7 @@ impl UserInfoMutations {
 			Some(user) => user,
 		};
 		let block = Block::by_id(block_id, conn)?;
-		if let None = maybe_use_view(context, block)? {
+		if maybe_use_view(context, block)?.is_none() {
 			return Err(UserError::NoAccess(NoAccessSubject::ViewBlock(block_id)).into());
 		};
 
@@ -90,7 +90,7 @@ impl UserInfoMutations {
 		&self,
 		context: &Context<'_>,
 		r#type: SpecialBlock,
-	) -> Result<QLUser> {
+	) -> Result<UserObject> {
 		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
 		let user_id = validate_token(&require_token(context)?)?;

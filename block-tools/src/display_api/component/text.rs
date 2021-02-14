@@ -31,7 +31,7 @@ impl TextComponent {
 
 	pub fn color(self, color_code: &str) -> Self {
 		TextComponent {
-			color: Some(color_code.to_string().into()),
+			color: Some(color_code.to_string()),
 			..self
 		}
 	}
