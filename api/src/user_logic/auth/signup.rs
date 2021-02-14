@@ -73,7 +73,10 @@ impl SignupMutations {
 				&display_name.unwrap_or(username.clone()),
 				&verification_code,
 			))
-			.map_err(|_| InternalError::EmailError)?;
+			.map_err(|e| {
+				println!("Mailing error: {:?}", e);
+				InternalError::EmailError
+			})?;
 
 		// Preform the insertion to the DB
 		let potential_user: PotentialUser = dsl::insert_into(potential_users::table)
