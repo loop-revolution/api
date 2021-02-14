@@ -3,18 +3,22 @@ use lettre::{transport::smtp::authentication::Credentials, Message, SmtpTranspor
 
 /// Creates an email to ask for a verification code
 pub fn verification_code_email(email: &str, name: &str, code: &str) -> Message {
+	let username = get_email();
 	Message::builder()
-		.from("Loop Team <team@loop.page>".parse().unwrap())
+		.from(format!("Loop Team <{}>", username).parse().unwrap())
 		.to(format!("{} <{}>", name, email).parse().unwrap())
 		.subject("Loop Email Verification")
 		.body(format!("Your Loop account verification code is {}", code))
 		.unwrap()
 }
 
-pub fn get_creds() -> Credentials {
+pub fn get_email() -> String {
 	dotenv().ok();
-	let username =
-		std::env::var("SMTP_USERNAME").expect("SMTP_USERNAME is required to send emails");
+	std::env::var("SMTP_USERNAME").expect("SMTP_USERNAME is required to send emails")
+}
+
+pub fn get_creds() -> Credentials {
+	let username = get_email();
 	let password =
 		std::env::var("SMTP_PASSWORD").expect("SMTP_PASSWORD is required to send emails");
 	Credentials::new(username, password)
