@@ -1,7 +1,4 @@
 language: rust
-dist: bionic
-services:
-  - postgresql
 addons:
   apt:
     packages:
@@ -10,7 +7,8 @@ addons:
 cache: cargo
 rust:
   - nightly
-
+services:
+  - postgresql
 before_script:
     - psql -c 'create database travis_ci_test;' -U postgres
     - psql -c "CREATE USER testing WITH PASSWORD 'password';" -U postgres
