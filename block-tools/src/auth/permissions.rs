@@ -11,11 +11,7 @@ pub fn can_view(user_id: Option<i32>, block: &Block) -> bool {
 			}
 		}
 	}
-	if allowed {
-		true
-	} else {
-		false
-	}
+	allowed
 }
 
 pub fn use_view(context: &Context, block: Block) -> Result<Option<Block>, UserError> {

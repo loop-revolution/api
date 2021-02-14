@@ -26,7 +26,7 @@ impl StackComponent {
 		}
 	}
 
-	pub fn add(self, component: Box<dyn DisplayComponent>) -> Self {
+	pub fn append(self, component: Box<dyn DisplayComponent>) -> Self {
 		let mut items = self.items;
 		items.push(WrappedComponent::from(component));
 		StackComponent {

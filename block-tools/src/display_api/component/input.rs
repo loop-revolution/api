@@ -24,6 +24,12 @@ impl DisplayComponent for InputComponent {
 	}
 }
 
+impl Default for InputComponent {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
 impl InputComponent {
 	pub fn new() -> Self {
 		InputComponent {
