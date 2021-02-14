@@ -43,7 +43,7 @@ jobs:
         run: cargo install cargo-tarpaulin
 
       - name: Install diesel cli
-        run: apt install libpq-dev && cargo install diesel_cli --no-default-features --features "postgres"
+        run: sudo apt install libpq-dev && cargo install diesel_cli --no-default-features --features "postgres"
 
       - name: Setup DB
         run: cd block-tools && diesel setup && diesel migration run
