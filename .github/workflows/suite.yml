@@ -39,12 +39,18 @@ jobs:
           fail_ci_if_error: true
   lint:
     runs-on: ubuntu-latest
-    container: louisbirla/apitestci
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           submodules: true
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+          components: rustfmt, clippy
 
       - name: Basic checks
         uses: actions-rs/cargo@v1
