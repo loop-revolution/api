@@ -23,7 +23,7 @@ impl UserInfoMutations {
 	) -> Result<QLUser> {
 		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
-		let user_id = validate_token(require_token(context)?)?;
+		let user_id = validate_token(&require_token(context)?)?;
 		let user = User::by_id(user_id, conn)?;
 		let user = match user {
 			None => return Err(UserError::JWTGeneric.into()),

@@ -28,7 +28,7 @@ impl NotificationMutations {
 	) -> Result<QLNotification> {
 		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
-		let user_id = validate_token(require_token(context)?)?;
+		let user_id = validate_token(&require_token(context)?)?;
 		let notif = NewNotification::new(name, description)
 			.recipients(vec![user_id])
 			.send(conn)?

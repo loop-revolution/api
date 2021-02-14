@@ -17,15 +17,45 @@ pub fn rand_string(length: usize) -> String {
 }
 
 #[cfg(test)]
-mod test {
-	use async_graphql::Error;
-	use std::time::SystemTime;
+pub mod tests {
+	use std::collections::BTreeMap;
 
-	/// Generates a "random" username based on time
-	pub fn _rand_username() -> Result<String, Error> {
-		Ok(SystemTime::now()
-			.duration_since(SystemTime::UNIX_EPOCH)?
-			.as_millis()
-			.to_string())
+	use async_graphql::{Name, Request, Value};
+	use block_tools::PostgresPool;
+
+	use crate::graphql::ContextData;
+	pub fn value_to_tree(value: &Value) -> &BTreeMap<Name, Value> {
+		if let Value::Object(tree) = value {
+			return tree;
+		} else {
+			panic!();
+		}
+	}
+
+	pub fn panic_val<'a>(tree: &'a BTreeMap<Name, Value>, name: &str) -> &'a Value {
+		match tree.get(name) {
+			Some(val) => return val,
+			None => panic!(),
+		}
+	}
+
+	pub fn value_of_value<'a>(value: &'a Value, name: &str) -> &'a Value {
+		panic_val(value_to_tree(value), name)
+	}
+
+	pub fn make_request(query: String, pool: PostgresPool, token: Option<String>) -> Request {
+		let mut request = Request::new(query);
+		request = request.data(ContextData {
+			pool,
+			auth_token: token,
+		});
+		request
+	}
+
+	pub fn rem_first_and_last(value: &str) -> &str {
+		let mut chars = value.chars();
+		chars.next();
+		chars.next_back();
+		chars.as_str()
 	}
 }

@@ -1,5 +1,5 @@
 name: Lint
-on: [push, pull_request]
+on: [push]
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -10,8 +10,6 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.head_ref }}
-          token: ${{ secrets.AUTOTHINGS_TOKEN }}
           submodules: true
 
       - name: Install Rust toolchain

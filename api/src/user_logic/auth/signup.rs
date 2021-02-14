@@ -73,7 +73,10 @@ impl SignupMutations {
 				&display_name.unwrap_or(username.clone()),
 				&verification_code,
 			))
-			.map_err(|_| InternalError::EmailError)?;
+			.map_err(|e| {
+				println!("Mailing error: {:?}", e);
+				InternalError::EmailError
+			})?;
 
 		// Preform the insertion to the DB
 		let potential_user: PotentialUser = dsl::insert_into(potential_users::table)
@@ -156,7 +159,14 @@ pub fn delete_potential_user(username: &str, conn: &PgConnect) -> Result<(), Err
 
 #[cfg(test)]
 mod test {
-	use crate::graphql::build_schema;
+	use crate::{
+		graphql::build_schema,
+		rand_string,
+		tests::{make_request, rem_first_and_last, value_of_value},
+	};
+	use block_tools::{
+		auth::validate_token, dsl::prelude::*, env_db, get_pool, schema::potential_users,
+	};
 
 	#[tokio::test]
 	async fn password_too_short() {
@@ -166,10 +176,54 @@ mod test {
 		let query = "mutation { signup (
 					username: \"name\",
 					password: \"pwd\",
-					email: \"dumb\",
+					email: \"fake@e.mail\",
 				) { sessionCode } }";
 		let res = schema.execute(query).await;
 
 		assert!(res.errors[0].message.contains("[ups]"));
+	}
+
+	#[tokio::test]
+	async fn successful_signup() {
+		let pool = get_pool(&env_db());
+		let schema = build_schema();
+		let username = rand_string(10);
+		let password = rand_string(10);
+		let request = make_request(
+			format!(
+				r#"mutation {{signup (username: "{}", password: "{}", email: "fake@e.mail") {{ sessionCode }} }}"#,
+				username, password
+			),
+			pool.clone(),
+			None,
+		);
+		let data = schema.execute(request).await.data;
+		let data = value_of_value(&data, "signup");
+		let session_code = value_of_value(data, "sessionCode").to_string();
+		let session_code = rem_first_and_last(&session_code);
+		let conn = pool.get().unwrap();
+		let verification_code: String = potential_users::dsl::potential_users
+			.filter(potential_users::username.eq(&username))
+			.select(potential_users::verification_code)
+			.first(&conn)
+			.unwrap();
+		let request = make_request(
+			format!(
+				r#"mutation {{ confirmEmail (username: "{}", sessionCode: "{}", verificationCode: "{}") {{ token, user {{ username }} }} }}"#,
+				username, session_code, verification_code,
+			),
+			pool.clone(),
+			None,
+		);
+		let data = schema.execute(request).await;
+		let data = data.data;
+		let data = value_of_value(&data, "confirmEmail");
+		let token = value_of_value(data, "token").to_string();
+		let token = rem_first_and_last(&token);
+		validate_token(&token).unwrap();
+		let user = value_of_value(data, "user");
+		let resulting_username = value_of_value(user, "username").to_string();
+		let resulting_username = rem_first_and_last(&resulting_username);
+		assert_eq!(resulting_username, username);
 	}
 }

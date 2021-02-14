@@ -9,7 +9,7 @@ pub struct Notifications;
 #[Subscription]
 impl Notifications {
 	async fn notifications(&self, token: String) -> Result<impl Stream<Item = QLNotification>> {
-		let id = validate_token(token)?;
+		let id = validate_token(&token)?;
 		Ok(
 			Broker::<Notification>::subscribe().filter_map(move |notif| {
 				let show = if notif.recipients.contains(&id) {

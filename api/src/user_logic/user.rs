@@ -31,7 +31,7 @@ impl QLUser {
 		let conn = &context.pool.get()?;
 		let token = require_token(&context.other())?;
 
-		if self.id != validate_token(token)? {
+		if self.id != validate_token(&token)? {
 			return Ok(None);
 		}
 
@@ -157,7 +157,7 @@ impl UserQueries {
 	async fn whoami(&self, context: &Context<'_>) -> Result<Option<QLUser>, Error> {
 		let context = &context.data::<ContextData>()?;
 		let token = require_token(&context.other())?;
-		let user_id = validate_token(token)?;
+		let user_id = validate_token(&token)?;
 
 		user_by_id(context, user_id)
 	}
