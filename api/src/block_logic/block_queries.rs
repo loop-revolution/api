@@ -174,10 +174,10 @@ impl BlockMutations {
 			return Err(access_err);
 		}
 		let block = block.update_starred(starred, user_id, conn)?;
-		if starred == true {
+		if starred {
 			let user_name = User::by_id(user_id, conn)?
 				.and_then(|user| user.display_name.or(Some(user.username)))
-				.unwrap_or("A user".into());
+				.unwrap_or_else(|| "A user".into());
 			let block_name = delegate_block_name(context, &block.block_type, &block)?;
 			let notif = NewNotification::new(
 				format!("{} starred \"{}\"", user_name, block_name),
@@ -241,7 +241,7 @@ impl BlockQueries {
 		let context = &context.data::<ContextData>()?.other();
 		let conn = &context.pool.get()?;
 		let block = maybe_use_view(context, Block::by_id(id, conn)?)?;
-		let block = block.and_then(|block| Some(BlockObject::from(block)));
+		let block = block.map(BlockObject::from);
 		Ok(block)
 	}
 
@@ -275,7 +275,7 @@ impl BlockQueries {
 			.into_iter()
 			.filter(|block| can_view(user_id, block))
 			.map(|block| {
-				let crumbs = gen_breadcrumb(context, &block).unwrap_or(vec![]);
+				let crumbs = gen_breadcrumb(context, &block).unwrap_or_default();
 				let crumb_string = crumbs
 					.iter()
 					.map(|crumb| crumb.name.as_str())
@@ -283,7 +283,7 @@ impl BlockQueries {
 					.join("/");
 				let mut sim = normalized_levenshtein(&crumb_string, &query);
 				if block.block_type == "data" {
-					sim = sim / 2.;
+					sim /= 2.;
 				}
 				BlockSortHelper {
 					breadcrumb: crumbs,

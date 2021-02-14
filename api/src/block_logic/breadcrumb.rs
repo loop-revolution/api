@@ -57,7 +57,7 @@ fn cycle(
 	} else {
 		crumbs.push(BreadCrumb {
 			block_id: block.id,
-			name: parent_prop.property_name.clone(),
+			name: parent_prop.property_name,
 		})
 	}
 	blocks_added.push(block.id);

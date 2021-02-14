@@ -58,6 +58,7 @@ table! {
 		credits -> Int4,
 		display_name -> Nullable<Varchar>,
 		root_id -> Nullable<Int8>,
+		featured_id -> Nullable<Int8>,
 	}
 }
 

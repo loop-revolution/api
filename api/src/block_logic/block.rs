@@ -1,6 +1,6 @@
 use crate::{
 	graphql::ContextData,
-	user_logic::user::{user_by_id, QLUser},
+	user_logic::user::{user_by_id, UserObject},
 };
 use async_graphql::*;
 use block_tools::{
@@ -70,16 +70,16 @@ impl BlockObject {
 		Ok(self.notif_enabled.contains(&user_id))
 	}
 
-	async fn owner(&self, context: &Context<'_>) -> Result<QLUser> {
+	async fn owner(&self, context: &Context<'_>) -> Result<UserObject> {
 		let context = &context.data::<ContextData>()?;
 		let user = user_by_id(context, self.owner_id)?;
 
 		Ok(user.unwrap())
 	}
 
-	async fn perm_full(&self, context: &Context<'_>) -> Result<Vec<QLUser>> {
+	async fn perm_full(&self, context: &Context<'_>) -> Result<Vec<UserObject>> {
 		let context = &context.data::<ContextData>()?;
-		let mut users: Vec<QLUser> = vec![];
+		let mut users: Vec<UserObject> = vec![];
 
 		for id in self.perm_full.clone() {
 			let user = user_by_id(context, id)?;
@@ -91,9 +91,9 @@ impl BlockObject {
 		Ok(users)
 	}
 
-	async fn perm_edit(&self, context: &Context<'_>) -> Result<Vec<QLUser>> {
+	async fn perm_edit(&self, context: &Context<'_>) -> Result<Vec<UserObject>> {
 		let context = &context.data::<ContextData>()?;
-		let mut users: Vec<QLUser> = vec![];
+		let mut users: Vec<UserObject> = vec![];
 
 		for id in self.perm_edit.clone() {
 			let user = user_by_id(context, id)?;
@@ -105,9 +105,9 @@ impl BlockObject {
 		Ok(users)
 	}
 
-	async fn perm_view(&self, context: &Context<'_>) -> Result<Vec<QLUser>> {
+	async fn perm_view(&self, context: &Context<'_>) -> Result<Vec<UserObject>> {
 		let context = &context.data::<ContextData>()?;
-		let mut users: Vec<QLUser> = vec![];
+		let mut users: Vec<UserObject> = vec![];
 
 		for id in self.perm_view.clone() {
 			let user = user_by_id(context, id)?;

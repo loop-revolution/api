@@ -18,6 +18,7 @@ pub struct User {
 	pub credits: i32,
 	pub display_name: Option<String>,
 	pub root_id: Option<i64>,
+	pub featured_id: Option<i64>,
 }
 
 impl User {
@@ -43,6 +44,38 @@ impl User {
 					users::localuname.eq(new_localname),
 					users::credits.eq(new_credits),
 				))
+				.get_result(conn)?,
+		)
+	}
+
+	pub fn update_display_name(
+		&self,
+		new_display_name: &str,
+		conn: &PgConnection,
+	) -> Result<User, Error> {
+		Ok(
+			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
+				.set((users::display_name.eq(new_display_name),))
+				.get_result(conn)?,
+		)
+	}
+
+	pub fn update_root(&self, block_id: Option<i64>, conn: &PgConnection) -> Result<User, Error> {
+		Ok(
+			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
+				.set((users::root_id.eq(block_id),))
+				.get_result(conn)?,
+		)
+	}
+
+	pub fn update_featured(
+		&self,
+		block_id: Option<i64>,
+		conn: &PgConnection,
+	) -> Result<User, Error> {
+		Ok(
+			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
+				.set((users::featured_id.eq(block_id),))
 				.get_result(conn)?,
 		)
 	}

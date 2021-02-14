@@ -61,7 +61,7 @@ pub enum UserError {
 	NameNonexist(String),
 	NameConflict(String),
 	NameTooShort(String),
-	JWTGeneric,
+	JwtGeneric,
 	NoAccess(NoAccessSubject),
 	NeedAuth,
 	InsufficientFunds(i32),
@@ -86,7 +86,7 @@ impl fmt::Display for UserError {
 			}
 			UserError::PasswordMatch => write!(f, "[upm] The password provided is not correct."),
 			UserError::EmailConfirmError(err) => write!(f, "{}", err.to_string()),
-			UserError::JWTGeneric => write!(
+			UserError::JwtGeneric => write!(
 				f,
 				"[ujg] Something unspecified went wrong with user sessions."
 			),

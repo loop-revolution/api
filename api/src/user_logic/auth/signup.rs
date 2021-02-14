@@ -70,7 +70,7 @@ impl SignupMutations {
 		mailer
 			.send(&verification_code_email(
 				&email,
-				&display_name.unwrap_or(username.clone()),
+				&display_name.unwrap_or_else(|| username.clone()),
 				&verification_code,
 			))
 			.map_err(|e| {

@@ -44,10 +44,8 @@ impl From<r2d2::Error> for Error {
 }
 
 impl From<std::num::ParseIntError> for UserError {
-	fn from(e: std::num::ParseIntError) -> Self {
-		match e {
-			_ => UserError::JWTGeneric,
-		}
+	fn from(_: std::num::ParseIntError) -> Self {
+		UserError::JwtGeneric
 	}
 }
 
@@ -59,6 +57,6 @@ impl From<serde_json::Error> for BlockError {
 
 impl From<jsonwebtoken::errors::Error> for UserError {
 	fn from(_: jsonwebtoken::errors::Error) -> Self {
-		UserError::JWTGeneric
+		UserError::JwtGeneric
 	}
 }

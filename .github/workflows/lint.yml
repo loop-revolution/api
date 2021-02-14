@@ -19,11 +19,6 @@ jobs:
           override: true
           components: rustfmt, clippy
 
-      - name: Basic checks
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-
       - name: Advanced Clippy checks
         uses: actions-rs/cargo@v1
         with:
