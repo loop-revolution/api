@@ -6,15 +6,29 @@ on:
     types: [opened, synchronize, reopened]
 name: Tests
 env:
-  DATABASE_URL: postgres://postgres:postgres@localhost:5431/testing
+  DATABASE_URL: postgres://postgres:postgres@localhost:5432/testing
   SESSION_SECRET: 1234567890qwertyuiopasdfghjklzxcvbnm
   SMTP_SERVER: TESTING_SMTP_SERVER
   SMTP_USERNAME: TESTING_SMTP_USERNAME
   SMTP_PASSWORD: TESTING_SMTP_PASSWORD
 jobs:
-  full:
+  setup:
     runs-on: ubuntu-latest
-    container:  louisbirla/apitestci
+    steps:
+      - name: Install Rust
+        run: rustup update nightly; rustup default nightly
+
+      - name: Diesel dependencies
+        run: sudo apt install libpq-dev
+      
+      - name: Install Diesel-CLI
+        run: cargo install diesel_cli --no-default-features --features "postgres"
+
+      - name: Install Tarpaulin
+        run: cargo install cargo-tarpaulin
+  build:
+    runs-on: ubuntu-latest
+    needs: setup
     services:
       postgres:
         image: postgres
@@ -23,7 +37,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_DB: testing
         ports:
-          - 5431:5432
+          - 5432:5432
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -40,7 +54,10 @@ jobs:
 
       - name: Setup DB
         run: cd block-tools && diesel setup && diesel migration run
-
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Test + Generate code coverage
         run: cargo tarpaulin --out Xml
 
