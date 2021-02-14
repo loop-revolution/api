@@ -6,7 +6,7 @@ on:
     types: [opened, synchronize, reopened]
 name: Tests
 env:
-  DATABASE_URL: postgres://postgres:postgres@localhost:5432/testing
+  DATABASE_URL: postgres://postgres:postgres@localhost:5431/testing
   SESSION_SECRET: 1234567890qwertyuiopasdfghjklzxcvbnm
   SMTP_SERVER: TESTING_SMTP_SERVER
   SMTP_USERNAME: TESTING_SMTP_USERNAME
@@ -23,7 +23,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_DB: testing
         ports:
-          - 5432:5432
+          - 5431:5432
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
