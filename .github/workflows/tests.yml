@@ -7,9 +7,15 @@ on:
 name: Tests
 env:
   DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/testing
+  SESSION_SECRET: 1234567890qwertyuiopasdfghjklzxcvbnm
+  SMTP_SERVER: TESTING_SMTP_SERVER
+  SMTP_USERNAME: TESTING_SMTP_USERNAME
+  SMTP_PASSWORD: TESTING_SMTP_PASSWORD
 jobs:
   full:
     runs-on: ubuntu-latest
+    container:
+      image: louisbirla/apitestci
     services:
       postgres:
         image: postgres
@@ -33,19 +39,11 @@ jobs:
           token: ${{ secrets.AUTOTHINGS_TOKEN }}
           submodules: true
 
-      - name: Install node (for wait-on)
-        uses: actions/setup-node@v2
-        with:
-          node-version: "14"
-
-      - name: Test that it starts
-        run: |
-          cargo run &
-          npx wait-on http-get://localhost:4000 && kill $!
+      - name: Setup DB
+        run: cd block-tools && diesel setup && diesel migration run
 
       - name: Test + Generate code coverage
-        run: |
-          docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin sh -c "cargo tarpaulin --out Xml"
+        run: cargo tarpaulin --out Xml
 
       - name: Upload to codecov.io
         uses: codecov/codecov-action@v1
