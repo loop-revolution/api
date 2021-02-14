@@ -19,8 +19,8 @@ jobs:
       ports:
         - 5432:5432
         - 4000:4000
-      options: >-
-        --add-host=host:0.0.0.0
+      # options: >-
+      #   --add-host=host:0.0.0.0
     services:
       postgres:
         image: postgres
