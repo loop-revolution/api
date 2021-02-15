@@ -10,6 +10,9 @@ jobs:
     name: Graphql Checking
     runs-on: ubuntu-latest
     steps:
+      - name: Auto-cancel redundant jobs
+        uses: technote-space/auto-cancel-redundant-job@v1
+
       - name: Checkout the repo
         uses: actions/checkout@v2
         with:
