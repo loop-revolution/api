@@ -3,7 +3,7 @@ use crate::Error;
 use diesel::prelude::*;
 use std::time::SystemTime;
 
-#[derive(Queryable)]
+#[derive(Queryable, Clone)]
 pub struct Block {
 	pub id: i64,
 	pub block_type: String,
