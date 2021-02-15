@@ -30,13 +30,13 @@ jobs:
           override: true
           components: rustfmt, clippy
 
-      - run: yarn global add @graphql-inspector/cli
+      - run: yarn add graphql @graphql-inspector/cli
 
       - name: Test that it starts
         run: |
           cargo run &
           npx wait-on http-get://localhost:4000/ &&
-          graphql-inspector introspect http://localhost:4000 --write schema.graphql &&
+          yarn graphql-inspector introspect http://localhost:4000 --write schema.graphql &&
           kill $!
 
       - uses: kamilkisiela/graphql-inspector@master
