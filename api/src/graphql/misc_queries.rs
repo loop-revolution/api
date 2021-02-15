@@ -15,7 +15,10 @@ impl MiscQueries {
 
 #[cfg(test)]
 mod tests {
-	use crate::{graphql::build_schema, tests::{expect_tree_val, rem_first_and_last}};
+	use crate::{
+		graphql::build_schema,
+		tests::{expect_tree_val, rem_first_and_last},
+	};
 
 	#[tokio::test]
 	async fn api_version() {
