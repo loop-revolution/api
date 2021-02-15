@@ -34,6 +34,10 @@ impl StackComponent {
 			items,
 		}
 	}
+
+	pub fn push(&mut self, component: Box<dyn DisplayComponent>) {
+		self.items.push(WrappedComponent::from(component));
+	}
 }
 
 #[derive(Serialize)]

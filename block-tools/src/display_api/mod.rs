@@ -31,15 +31,11 @@ pub struct DisplayMeta {
 
 impl Default for DisplayMeta {
 	fn default() -> Self {
-		Self::new()
+		DisplayMeta { page: None }
 	}
 }
 
 impl DisplayMeta {
-	pub fn new() -> Self {
-		DisplayMeta { page: None }
-	}
-
 	pub fn page(self, page: PageMeta) -> Self {
 		DisplayMeta { page: Some(page) }
 	}
