@@ -2,7 +2,8 @@ use crate::{BlockError, EmailConfirmError, Error, InternalError, UserError};
 use std::time::SystemTimeError;
 
 impl From<SystemTimeError> for Error {
-	fn from(_: SystemTimeError) -> Self {
+	fn from(e: SystemTimeError) -> Self {
+		sentry::capture_error(&e);
 		Error::GenericError
 	}
 }
@@ -32,13 +33,15 @@ impl From<EmailConfirmError> for Error {
 }
 
 impl From<diesel::result::Error> for Error {
-	fn from(_: diesel::result::Error) -> Self {
+	fn from(e: diesel::result::Error) -> Self {
+		sentry::capture_error(&e);
 		Error::GenericError
 	}
 }
 
 impl From<r2d2::Error> for Error {
-	fn from(_: r2d2::Error) -> Self {
+	fn from(e: r2d2::Error) -> Self {
+		sentry::capture_error(&e);
 		InternalError::DatabaseTimeout.into()
 	}
 }
