@@ -4,7 +4,7 @@ use crate::{
 		CreationObject, DisplayObject,
 	},
 	models::Block,
-	Error, PostgresPool,
+	Error, PgConnect, PostgresPool,
 };
 use async_trait::async_trait;
 
@@ -13,6 +13,12 @@ pub struct Context {
 	/// Gives the GraphQL operations access to the DB
 	pub pool: PostgresPool,
 	pub auth_token: Option<String>,
+}
+
+impl Context {
+	pub fn conn(&self) -> Result<PgConnect, r2d2::Error> {
+		self.pool.get()
+	}
 }
 
 pub struct TypeInfo {
