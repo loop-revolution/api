@@ -19,11 +19,6 @@ jobs:
           override: true
           components: rustfmt, clippy
 
-      - name: Advanced Clippy checks
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-
       - name: Format
         uses: actions-rs/cargo@v1
         with:
@@ -36,3 +31,8 @@ jobs:
       - name: Fail if formatting is off
         if: steps.changes.outputs.changed == 1
         run: exit 1
+
+      - name: Advanced Clippy checks
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy

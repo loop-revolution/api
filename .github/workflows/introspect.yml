@@ -1,0 +1,46 @@
+name: Introspection
+
+on: [push]
+
+env:
+  DATABASE_URL: ${{ secrets.PROD_DB_URL }}
+
+jobs:
+  apollo:
+    name: Graphql Checking
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-cancel redundant jobs
+        uses: technote-space/auto-cancel-redundant-job@v1
+
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Install node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+          components: rustfmt, clippy
+
+      - run: yarn add graphql @graphql-inspector/cli
+
+      - name: Test that it starts
+        run: |
+          cargo run &
+          npx wait-on http-get://localhost:4000/ &&
+          yarn graphql-inspector introspect http://localhost:4000 --write schema.graphql &&
+          kill $!
+
+      - uses: kamilkisiela/graphql-inspector@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          schema: "schema.graphql"
+          endpoint: "https://api.loop.page/"
