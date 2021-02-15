@@ -2,7 +2,7 @@ use super::misc_queries::MiscQueries;
 use crate::{
 	blocks::{
 		basic::{BasicBlockMutations, BasicBlockQueries},
-		create::BlockCreationMutation,
+		create::{BlockCreationMutation, BlockCreationQuery},
 		perms::BlockPermMutations,
 		search::BlockSearchQueries,
 	},
@@ -23,6 +23,7 @@ use async_graphql::{MergedObject, Schema as GraphQLSchema};
 #[derive(MergedObject, Default)]
 pub struct Query(
 	BasicBlockQueries,
+	BlockCreationQuery,
 	BlockSearchQueries,
 	MiscQueries,
 	NotificationQueries,
