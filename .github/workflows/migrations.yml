@@ -25,6 +25,6 @@ jobs:
           override: true
           components: rustfmt, clippy
 
-      - run: apt install libpq-dev
+      - run: sudo apt install libpq-dev
       - run: cargo install diesel_cli --no-default-features --features "postgres"
       - run: cd block-tools && diesel migration run
