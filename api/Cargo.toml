@@ -6,30 +6,34 @@ version = "0.1.0"
 publish = false
 
 [dependencies]
-# Server
+chrono = "0.4.19"
+dotenv = "0.15.0"
+rand = "0.8.1"
+regex = "1.4.3"
+strsim = "0.10.0"
+tokio = { version = "1.2.0", features = ["full"] }
+
+## Server
+async-graphql = "2.5.1"
 async-graphql-warp = "2.5.1"
 warp = "0.3.0"
-tokio = { version = "1.2.0", features = ["full"] }
-dotenv = "0.15.0"
-# Logging
-log = "0.4.13"
-pretty_env_logger = "0.4.0"
-# GraphQL
-serde_json = "1.0"
-async-graphql = "2.5.1"
-# Passwords
-rust-argon2 = "0.8.3"
-rand = "0.8.1"
-# Users
-regex = "1.4.3"
-lettre = "0.10.0-alpha.4"
-chrono = "0.4.19"
-serde = { version = "1.0", features = ["derive"] }
-futures = "0.3"
-# Blocks
+
+## Block Types
 block-tools = { path = "../block-tools" }
-strsim = "0.10.0"
 block-types = { path = "../block-types" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+## Subscriptions
 async-stream = "0.3.0"
+futures = "0.3"
 once_cell = "1.5.2"
 slab = "0.4.2"
+
+## Logging
+log = "0.4.13"
+pretty_env_logger = "0.4.0"
+
+## Sign up
+lettre = "0.10.0-alpha.5"
+rust-argon2 = "0.8.3"

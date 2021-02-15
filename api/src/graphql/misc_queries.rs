@@ -15,16 +15,13 @@ impl MiscQueries {
 
 #[cfg(test)]
 mod tests {
-	use async_graphql::Value;
-
-	use crate::{graphql::build_schema, tests::value_of_value};
+	use crate::{graphql::build_schema, tests::expect_tree_val};
 
 	#[tokio::test]
 	async fn api_version() {
 		let expecter_ver = env!("CARGO_PKG_VERSION").to_string();
-		let schema = build_schema();
-		let res = schema.execute("{ apiVersion }").await.data;
-		let version = value_of_value(&res, "apiVersion");
-		assert_eq!(version, &Value::from(expecter_ver));
+		let res = build_schema().execute("{ apiVersion }").await.data;
+		let version = expect_tree_val(&res, "apiVersion").to_string();
+		assert_eq!(version, expecter_ver);
 	}
 }

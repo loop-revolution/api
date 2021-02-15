@@ -12,6 +12,7 @@ pub fn hash_pwd(password: String) -> Result<String, argon2::Error> {
 	argon2::hash_encoded(password, &salt, &argon_config)
 }
 
+/// Makes sure the password is long enough
 pub fn validate_pwd(password: &str) -> Result<(), Error> {
 	if password.len() < 8 {
 		return Err(UserError::PasswordTooShort.into());
@@ -20,6 +21,9 @@ pub fn validate_pwd(password: &str) -> Result<(), Error> {
 	Ok(())
 }
 
+/// Makes sure that a password is both valid and correct with the hashed password.
+/// Will error if the password is not valid, and will return false if it does not
+/// match the hash.
 pub fn verify_pwd(password: &str, hash: &str) -> Result<bool, Error> {
 	validate_pwd(password)?;
 

@@ -1,7 +1,7 @@
 use super::auth_payload::AuthPayload;
 use crate::{
 	graphql::ContextData,
-	user_logic::{localize_username, verify_pwd},
+	users::info::{password::verify_pwd, username::localize_username},
 };
 use async_graphql::*;
 use block_tools::{dsl::prelude::*, models::User, schema::users, UserError};
@@ -11,28 +11,28 @@ pub struct LoginMutations;
 
 #[Object]
 impl LoginMutations {
+	/// If the provided username and password are correct, will return with an
+	/// authentication token & user pair for authenticating requests.
 	pub async fn login(
 		&self,
 		context: &Context<'_>,
 		username: String,
 		password: String,
-	) -> Result<AuthPayload, Error> {
-		let conn = &context.data::<ContextData>()?.pool.get()?;
-		let localuname = &localize_username(&username);
+	) -> Result<AuthPayload> {
+		let (_, conn) = &ContextData::parse(context)?;
 
+		let localuname = localize_username(&username);
 		let user: Option<User> = users::dsl::users
 			.filter(users::localuname.eq(localuname))
 			.first(conn)
 			.optional()?;
 
-		if user.is_none() {
-			return Err(UserError::NameNonexist(username).into());
-		}
-		let user = user.unwrap();
+		let user = match user {
+			Some(user) => user,
+			None => return Err(UserError::NameNonexist(username).into()),
+		};
 
-		let pwd_pass = verify_pwd(&password, &user.password)?;
-
-		if !pwd_pass {
+		if !verify_pwd(&password, &user.password)? {
 			return Err(UserError::PasswordMatch.into());
 		}
 

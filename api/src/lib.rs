@@ -1,8 +1,8 @@
-pub mod block_logic;
+pub mod blocks;
 pub mod graphql;
 pub mod notifications;
 pub mod sentry;
-pub mod user_logic;
+pub mod users;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use std::iter;
@@ -19,13 +19,13 @@ pub fn rand_string(length: usize) -> String {
 
 #[cfg(test)]
 pub mod tests {
-	use std::collections::BTreeMap;
-
+	use crate::graphql::ContextData;
 	use async_graphql::{Name, Request, Value};
 	use block_tools::PostgresPool;
+	use std::collections::BTreeMap;
 
-	use crate::graphql::ContextData;
-	pub fn value_to_tree(value: &Value) -> &BTreeMap<Name, Value> {
+	/// Expect a value to be an object treee, then return the tree
+	pub fn expect_tree(value: &Value) -> &BTreeMap<Name, Value> {
 		if let Value::Object(tree) = value {
 			return tree;
 		} else {
@@ -33,18 +33,21 @@ pub mod tests {
 		}
 	}
 
-	pub fn panic_val<'a>(tree: &'a BTreeMap<Name, Value>, name: &str) -> &'a Value {
+	/// Expect a tree to have a key
+	pub fn expect_key<'a>(tree: &'a BTreeMap<Name, Value>, name: &str) -> &'a Value {
 		match tree.get(name) {
 			Some(val) => return val,
 			None => panic!(),
 		}
 	}
 
-	pub fn value_of_value<'a>(value: &'a Value, name: &str) -> &'a Value {
-		panic_val(value_to_tree(value), name)
+	/// Expects a value to be an object, and returns a value from it
+	pub fn expect_tree_val<'a>(value: &'a Value, name: &str) -> &'a Value {
+		expect_key(expect_tree(value), name)
 	}
 
-	pub fn make_request(query: String, pool: PostgresPool, token: Option<String>) -> Request {
+	/// Builds a request from context and query
+	pub fn build_request(query: String, pool: PostgresPool, token: Option<String>) -> Request {
 		let mut request = Request::new(query);
 		request = request.data(ContextData {
 			pool,
@@ -53,6 +56,7 @@ pub mod tests {
 		request
 	}
 
+	/// For parsing string Values
 	pub fn rem_first_and_last(value: &str) -> &str {
 		let mut chars = value.chars();
 		chars.next();

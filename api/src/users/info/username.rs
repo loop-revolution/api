@@ -6,12 +6,15 @@ use block_tools::{
 };
 use regex::Regex;
 
+/// Turns a username into something more standard. Returns non-alphanumeric chars and
+/// makes it lowercase
 pub fn localize_username(username: &'_ str) -> String {
 	let re = Regex::new(r"[^a-zA-Z\d]").unwrap();
 	re.replace_all(username, "").to_string().to_lowercase()
 }
 
-pub fn verify_username(localuname: &'_ str, conn: &PgConnect) -> Result<(), Error> {
+/// Makes sure that a username is valid and not already used
+pub fn validate_username(localuname: &'_ str, conn: &PgConnect) -> Result<(), Error> {
 	if localuname.len() < 3 {
 		return Err(UserError::NameTooShort(localuname.to_string()).into());
 	}

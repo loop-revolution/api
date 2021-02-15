@@ -26,22 +26,29 @@ async fn main() {
 		info!("{} in {:?}", info.status(), info.elapsed());
 	});
 
+	// Setup sentry guards (if DSN is provided)
 	let _guard = sentry();
 
-	let schema = build_schema();
+	// Establish a connection to the DB
 	let pool = get_pool(&env_db());
 
+	// Connect the GraphQL Resolvers
+	let schema = build_schema();
+
+	// The route for GraphQL Requests
 	let graphql_post = warp::header::optional::<String>("authorization")
 		.and(async_graphql_warp::graphql(schema.clone()))
 		.and_then(
 			move |token: Option<String>,
 			      (schema, mut request): (Schema, async_graphql::Request)| {
+				// Add the database to the GraphQL Context
 				let pool = pool.clone();
 				async move {
 					request = request.data(ContextData {
 						pool,
 						auth_token: token,
 					});
+					// Execute the request & return it
 					let resp = schema.execute(request).await;
 					Ok::<_, Infallible>(Response::from(resp))
 				}
@@ -56,25 +63,25 @@ async fn main() {
 			))
 	});
 
+	// Allow access from other domains
 	let cors = build_cors();
-	let port = get_port();
 
+	let port = get_port();
 	let routes = graphql_subscription(schema)
 		.or(graphql_playground)
 		.or(graphql_post)
 		.with(log)
 		.with(cors);
 
-	// Announce the server is online
 	log::info!("API running on http://0.0.0.0:{}", port);
 
 	warp::serve(routes).run(([0, 0, 0, 0], port)).await;
 }
 
-// Use PORT variable default to 4000
+/// Use PORT variable default to 4000
 fn get_port() -> u16 {
 	match env::var("PORT") {
-		Ok(str) => str.parse().unwrap(),
+		Ok(str) => str.parse().expect("PORT variable was invalid"),
 		_ => 4000,
 	}
 }

@@ -12,11 +12,13 @@ pub fn verification_code_email(email: &str, name: &str, code: &str) -> Message {
 		.unwrap()
 }
 
+/// Gets (loop's) email from the environment for sending emails
 pub fn get_email() -> String {
 	dotenv().ok();
 	std::env::var("SMTP_USERNAME").expect("SMTP_USERNAME is required to send emails")
 }
 
+/// Get the SMTP credentials from the environment
 pub fn get_creds() -> Credentials {
 	let username = get_email();
 	let password =
@@ -24,6 +26,7 @@ pub fn get_creds() -> Credentials {
 	Credentials::new(username, password)
 }
 
+/// Create a lettre mailer for sending emails. Gets the SMTP credentials from the environment.
 pub fn make_mailer() -> SmtpTransport {
 	dotenv().ok();
 	let server = std::env::var("SMTP_SERVER").expect("SMTP_SERVER is required to send emails");
