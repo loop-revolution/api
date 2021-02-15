@@ -1,7 +1,10 @@
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql_warp::{graphql_subscription, Response};
 use block_tools::{env_db, get_pool};
-use loop_api::graphql::{build_schema, ContextData, Schema};
+use loop_api::{
+	graphql::{build_schema, ContextData, Schema},
+	sentry::sentry,
+};
 use std::{convert::Infallible, env};
 use warp::{
 	http::{header, Method, Response as HttpResponse},
@@ -22,6 +25,8 @@ async fn main() {
 	let log = warp::log::custom(|info| {
 		info!("{} in {:?}", info.status(), info.elapsed());
 	});
+
+	let _guard = sentry();
 
 	let schema = build_schema();
 	let pool = get_pool(&env_db());
