@@ -1,8 +1,15 @@
 use super::block::BlockObject;
 use crate::graphql::ContextData;
 use async_graphql::{Context, Error, Object};
-use block_tools::auth::{require_token, validate_token};
-use block_types::delegation::{display::delegate_creation_display, methods::delegate_create};
+use block_tools::models::User;
+use block_tools::{
+	auth::{require_token, validate_token},
+	UserError,
+};
+use block_types::{
+	blocks::group_block::create_root,
+	delegation::{display::delegate_creation_display, methods::delegate_create},
+};
 
 #[derive(Default)]
 pub struct BlockCreationMutation;
@@ -19,15 +26,23 @@ impl BlockCreationMutation {
 		#[graphql(desc = "Name of the block type to create.")] r#type: String,
 		#[graphql(desc = "JSON string to specify what to create.")] input: String,
 	) -> Result<BlockObject, Error> {
-		let context = &context.data::<ContextData>()?.other();
-		let user_id = validate_token(&require_token(context)?)?;
+		let (context, conn) = &ContextData::parse(context)?;
 
-		Ok(BlockObject::from(delegate_create(
-			r#type.as_str(),
-			input,
-			context,
-			user_id,
-		)?))
+		let user_id = validate_token(&require_token(context)?)?;
+		let user = match User::by_id(user_id, conn)? {
+			Some(user) => user,
+			None => return Err(UserError::JwtGeneric.into()),
+		};
+
+		let mut block =
+			BlockObject::from(delegate_create(r#type.as_str(), input, context, user_id)?);
+
+		// If the user has no root, create one
+		if user.root_id.is_none() {
+			block = create_root(context, user, block.id)?.into();
+		}
+
+		Ok(block)
 	}
 }
 
