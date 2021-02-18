@@ -1,6 +1,6 @@
 pub mod queries;
 pub mod sub;
-use crate::{blocks::block::BlockObject, graphql::ContextData};
+use crate::{blocks::block::BlockObject, graphql::ContextData, users::user::UserObject};
 use async_graphql::*;
 use block_tools::{
 	auth::{
@@ -109,6 +109,24 @@ impl NotificationMutations {
 		}
 
 		Ok(block.update_notifs(enabled, user_id, conn)?.into())
+	}
+
+	/// Set a user's expo tokens to recieve push notifications
+	pub async fn update_expo_tokens(
+		&self,
+		context: &Context<'_>,
+		tokens: Vec<String>,
+	) -> Result<UserObject, Error> {
+		let (context, conn) = &ContextData::parse(context)?;
+
+		let user_id = validate_token(&require_token(context)?)?;
+
+		let user = match User::by_id(user_id, conn)? {
+			Some(user) => user,
+			None => return Err(UserError::JwtGeneric.into()),
+		};
+
+		Ok(user.update_expo_tokens(tokens, conn)?.into())
 	}
 }
 

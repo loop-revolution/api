@@ -80,6 +80,18 @@ impl User {
 				.get_result(conn)?,
 		)
 	}
+
+	pub fn update_expo_tokens(
+		&self,
+		tokens: Vec<String>,
+		conn: &PgConnection,
+	) -> Result<User, Error> {
+		Ok(
+			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
+				.set((users::expo_tokens.eq(tokens),))
+				.get_result(conn)?,
+		)
+	}
 }
 
 #[derive(Insertable)]
