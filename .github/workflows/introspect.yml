@@ -32,7 +32,7 @@ jobs:
 
       - run: yarn add graphql @graphql-inspector/cli
 
-      - name: Test that it starts
+      - name: Introspect schema
         run: |
           cargo run &
           npx wait-on http-get://localhost:4000/ &&
@@ -44,3 +44,5 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           schema: "schema.graphql"
           endpoint: "https://api.loop.page/"
+          # https://github.com/kamilkisiela/graphql-inspector/issues/1806
+          annotations: false
