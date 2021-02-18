@@ -19,6 +19,7 @@ pub struct User {
 	pub display_name: Option<String>,
 	pub root_id: Option<i64>,
 	pub featured_id: Option<i64>,
+	pub expo_tokens: Vec<String>,
 }
 
 impl User {

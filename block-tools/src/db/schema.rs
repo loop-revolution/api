@@ -59,6 +59,7 @@ table! {
 		display_name -> Nullable<Varchar>,
 		root_id -> Nullable<Int8>,
 		featured_id -> Nullable<Int8>,
+		expo_tokens -> Array<Text>,
 	}
 }
 
