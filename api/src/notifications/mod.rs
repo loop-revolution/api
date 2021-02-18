@@ -1,5 +1,6 @@
 pub mod queries;
 pub mod sub;
+
 use crate::{blocks::block::BlockObject, graphql::ContextData, users::user::UserObject};
 use async_graphql::*;
 use block_tools::{
@@ -11,6 +12,7 @@ use block_tools::{
 	NoAccessSubject, UserError,
 };
 use block_types::delegation::display::delegate_block_name;
+use chrono::{DateTime, Utc};
 
 #[derive(SimpleObject, Clone)]
 /// A Loop notification
@@ -21,6 +23,8 @@ pub struct NotificationObject {
 	pub description: String,
 	/// The block that clicking the notification will redirect to
 	pub block_link: Option<i64>,
+	/// When the notification was sent
+	pub time: Option<DateTime<Utc>>,
 	#[graphql(skip)]
 	pub recipients: Vec<i32>,
 }
@@ -137,6 +141,7 @@ impl From<Notification> for NotificationObject {
 			description: n.description,
 			recipients: n.recipients,
 			block_link: n.block_link,
+			time: n.time.map(|time| time.into()),
 		}
 	}
 }

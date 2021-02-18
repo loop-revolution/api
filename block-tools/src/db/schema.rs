@@ -22,6 +22,7 @@ table! {
 		description -> Varchar,
 		block_link -> Nullable<Int8>,
 		recipients -> Array<Int4>,
+		time -> Nullable<Timestamp>,
 	}
 }
 

@@ -2,7 +2,7 @@ use super::super::schema::{notifications, users};
 use crate::{notifications::broker::Broker, Error};
 use diesel::prelude::*;
 use expo_server_sdk::*;
-use std::str::FromStr;
+use std::{str::FromStr, time::SystemTime};
 
 #[derive(Queryable, Clone)]
 pub struct Notification {
@@ -11,6 +11,7 @@ pub struct Notification {
 	pub description: String,
 	pub block_link: Option<i64>,
 	pub recipients: Vec<i32>,
+	pub time: Option<SystemTime>,
 }
 
 #[derive(Insertable)]
@@ -20,6 +21,7 @@ pub struct NewNotification {
 	pub description: String,
 	pub block_link: Option<i64>,
 	pub recipients: Vec<i32>,
+	pub time: Option<SystemTime>,
 }
 
 impl NewNotification {
@@ -54,6 +56,7 @@ impl NewNotification {
 			description,
 			recipients: vec![],
 			block_link: None,
+			time: Some(SystemTime::now()),
 		}
 	}
 
