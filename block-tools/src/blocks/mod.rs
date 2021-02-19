@@ -1,6 +1,6 @@
 use crate::{
 	display_api::{
-		component::{card::Icon, DisplayComponent},
+		component::{icon::Icon, DisplayComponent},
 		CreationObject, DisplayObject,
 	},
 	models::Block,

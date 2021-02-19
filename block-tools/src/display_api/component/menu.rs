@@ -8,10 +8,11 @@ use crate::{
 #[derive(Serialize, Debug)]
 pub struct MenuComponent {
 	pub block_id: i64,
-	pub star_button: Option<StarButton>,
-	pub notifications_enabled: Option<bool>,
+	pub cid: String,
 	pub delete: Option<bool>,
+	pub notifications_enabled: Option<bool>,
 	pub permissions: Option<PermissionsList>,
+	pub star_button: Option<StarButton>,
 }
 
 #[derive(Serialize, Debug)]
@@ -31,7 +32,8 @@ pub struct PermissionsList {
 impl MenuComponent {
 	pub fn new(block_id: i64) -> Self {
 		Self {
-			block_id: block_id,
+			cid: "menu".to_string(),
+			block_id,
 			notifications_enabled: None,
 			delete: None,
 			permissions: None,

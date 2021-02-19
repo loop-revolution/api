@@ -4,9 +4,12 @@ use serde::{
 	Serialize,
 };
 use std::fmt;
+pub mod button;
 pub mod card;
+pub mod icon;
 pub mod input;
 pub mod menu;
+pub mod search;
 pub mod stack;
 pub mod text;
 

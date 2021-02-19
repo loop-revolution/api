@@ -1,6 +1,12 @@
-use component::{menu::MenuComponent, DisplayComponent};
+use component::DisplayComponent;
 use serde::Serialize;
 pub mod component;
+pub mod method;
+pub use method::*;
+pub mod meta;
+pub use meta::*;
+pub mod action;
+pub use action::*;
 
 #[derive(Serialize, Debug)]
 pub struct DisplayObject {
@@ -22,94 +28,4 @@ impl DisplayObject {
 			..self
 		}
 	}
-}
-
-#[derive(Serialize, Debug)]
-pub struct DisplayMeta {
-	pub page: Option<PageMeta>,
-}
-
-impl Default for DisplayMeta {
-	fn default() -> Self {
-		DisplayMeta { page: None }
-	}
-}
-
-impl DisplayMeta {
-	pub fn page(self, page: PageMeta) -> Self {
-		DisplayMeta { page: Some(page) }
-	}
-}
-
-#[derive(Serialize, Debug)]
-pub struct PageMeta {
-	pub title: Option<String>,
-	pub header: Option<String>,
-	pub menu: Option<MenuComponent>,
-}
-
-impl Default for PageMeta {
-	fn default() -> Self {
-		Self::new()
-	}
-}
-
-impl PageMeta {
-	pub fn new() -> Self {
-		PageMeta {
-			title: None,
-			header: None,
-			menu: None,
-		}
-	}
-
-	pub fn title(self, title: &str) -> Self {
-		PageMeta {
-			title: Some(title.to_string()),
-			..self
-		}
-	}
-
-	pub fn header(self, header: &str) -> Self {
-		PageMeta {
-			header: Some(header.to_string()),
-			..self
-		}
-	}
-
-	pub fn menu(self, menu: MenuComponent) -> Self {
-		PageMeta {
-			menu: Some(menu),
-			..self
-		}
-	}
-}
-
-pub type HexCode = String;
-
-#[derive(Serialize, Debug)]
-pub struct MethodObject {
-	#[serde(rename = "type")]
-	pub block_type: String,
-	pub block_id: String,
-	pub method_name: String,
-	pub arg_template: String,
-}
-
-#[derive(Serialize)]
-pub struct WrappedMethod {
-	pub method: MethodObject,
-}
-
-impl From<MethodObject> for WrappedMethod {
-	fn from(object: MethodObject) -> Self {
-		WrappedMethod { method: object }
-	}
-}
-
-#[derive(Serialize, Debug)]
-pub struct CreationObject {
-	pub header_component: Box<dyn DisplayComponent>,
-	pub main_component: Box<dyn DisplayComponent>,
-	pub input_template: String,
 }
