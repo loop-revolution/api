@@ -1,6 +1,7 @@
 pub mod queries;
 pub mod sub;
-use crate::{blocks::block::BlockObject, graphql::ContextData};
+
+use crate::{blocks::block::BlockObject, graphql::ContextData, users::user::UserObject};
 use async_graphql::*;
 use block_tools::{
 	auth::{
@@ -11,6 +12,7 @@ use block_tools::{
 	NoAccessSubject, UserError,
 };
 use block_types::delegation::display::delegate_block_name;
+use chrono::{DateTime, Utc};
 
 #[derive(SimpleObject, Clone)]
 /// A Loop notification
@@ -21,6 +23,8 @@ pub struct NotificationObject {
 	pub description: String,
 	/// The block that clicking the notification will redirect to
 	pub block_link: Option<i64>,
+	/// When the notification was sent
+	pub time: Option<DateTime<Utc>>,
 	#[graphql(skip)]
 	pub recipients: Vec<i32>,
 }
@@ -110,6 +114,42 @@ impl NotificationMutations {
 
 		Ok(block.update_notifs(enabled, user_id, conn)?.into())
 	}
+
+	/// Set a user's expo tokens to recieve push notifications
+	pub async fn update_expo_tokens(
+		&self,
+		context: &Context<'_>,
+		tokens: Vec<String>,
+	) -> Result<UserObject, Error> {
+		let (context, conn) = &ContextData::parse(context)?;
+
+		let user_id = validate_token(&require_token(context)?)?;
+
+		let user = match User::by_id(user_id, conn)? {
+			Some(user) => user,
+			None => return Err(UserError::JwtGeneric.into()),
+		};
+
+		Ok(user.update_expo_tokens(tokens, conn)?.into())
+	}
+
+	/// Add a token to a user's registered tokens to send Expo notifications to
+	pub async fn add_expo_tokens(
+		&self,
+		context: &Context<'_>,
+		token: String,
+	) -> Result<UserObject, Error> {
+		let (context, conn) = &ContextData::parse(context)?;
+
+		let user_id = validate_token(&require_token(context)?)?;
+
+		let user = match User::by_id(user_id, conn)? {
+			Some(user) => user,
+			None => return Err(UserError::JwtGeneric.into()),
+		};
+
+		Ok(user.add_expo_token(token, conn)?.into())
+	}
 }
 
 impl From<Notification> for NotificationObject {
@@ -119,6 +159,7 @@ impl From<Notification> for NotificationObject {
 			description: n.description,
 			recipients: n.recipients,
 			block_link: n.block_link,
+			time: n.time.map(|time| time.into()),
 		}
 	}
 }

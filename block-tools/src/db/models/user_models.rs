@@ -19,6 +19,7 @@ pub struct User {
 	pub display_name: Option<String>,
 	pub root_id: Option<i64>,
 	pub featured_id: Option<i64>,
+	pub expo_tokens: Vec<String>,
 }
 
 impl User {
@@ -76,6 +77,28 @@ impl User {
 		Ok(
 			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
 				.set((users::featured_id.eq(block_id),))
+				.get_result(conn)?,
+		)
+	}
+
+	pub fn update_expo_tokens(
+		&self,
+		tokens: Vec<String>,
+		conn: &PgConnection,
+	) -> Result<User, Error> {
+		Ok(
+			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
+				.set((users::expo_tokens.eq(tokens),))
+				.get_result(conn)?,
+		)
+	}
+
+	pub fn add_expo_token(&self, token: String, conn: &PgConnection) -> Result<User, Error> {
+		let mut all_tokens = self.expo_tokens.clone();
+		all_tokens.push(token);
+		Ok(
+			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
+				.set((users::expo_tokens.eq(all_tokens),))
 				.get_result(conn)?,
 		)
 	}

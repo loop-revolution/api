@@ -22,6 +22,7 @@ table! {
 		description -> Varchar,
 		block_link -> Nullable<Int8>,
 		recipients -> Array<Int4>,
+		time -> Nullable<Timestamp>,
 	}
 }
 
@@ -59,6 +60,7 @@ table! {
 		display_name -> Nullable<Varchar>,
 		root_id -> Nullable<Int8>,
 		featured_id -> Nullable<Int8>,
+		expo_tokens -> Array<Text>,
 	}
 }
 

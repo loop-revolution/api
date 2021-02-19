@@ -1,6 +1,8 @@
-use super::super::schema::notifications;
+use super::super::schema::{notifications, users};
 use crate::{notifications::broker::Broker, Error};
 use diesel::prelude::*;
+use expo_server_sdk::*;
+use std::{str::FromStr, time::SystemTime};
 
 #[derive(Queryable, Clone)]
 pub struct Notification {
@@ -9,6 +11,7 @@ pub struct Notification {
 	pub description: String,
 	pub block_link: Option<i64>,
 	pub recipients: Vec<i32>,
+	pub time: Option<SystemTime>,
 }
 
 #[derive(Insertable)]
@@ -18,6 +21,7 @@ pub struct NewNotification {
 	pub description: String,
 	pub block_link: Option<i64>,
 	pub recipients: Vec<i32>,
+	pub time: Option<SystemTime>,
 }
 
 impl NewNotification {
@@ -26,6 +30,23 @@ impl NewNotification {
 			.values(&self)
 			.get_result(conn)?;
 		Broker::publish(notif.clone());
+		let mut tokens: Vec<String> = vec![];
+		for user_id in &notif.recipients {
+			let mut user_tokens: Vec<String> = users::dsl::users
+				.select(users::dsl::expo_tokens)
+				.filter(users::dsl::id.eq(user_id))
+				.first(conn)?;
+			tokens.append(&mut user_tokens);
+		}
+		for token in tokens {
+			let token = PushToken::from_str(token.as_str()).unwrap();
+			let msg = PushMessage::new(token)
+				.body(&notif.description)
+				.title(&notif.name);
+
+			let push_notifier = PushNotifier::new().gzip_policy(GzipPolicy::Always);
+			push_notifier.send_push_notification(&msg).unwrap();
+		}
 		Ok(notif)
 	}
 
@@ -35,6 +56,7 @@ impl NewNotification {
 			description,
 			recipients: vec![],
 			block_link: None,
+			time: Some(SystemTime::now()),
 		}
 	}
 
