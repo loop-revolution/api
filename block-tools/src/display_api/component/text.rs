@@ -1,12 +1,11 @@
 use super::DisplayComponent;
-use crate::display_api::HexCode;
 use erased_serde::Serialize as Serializable;
 use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct TextComponent {
 	pub text: String,
-	pub color: Option<HexCode>,
+	pub color: Option<String>,
 	pub preset: Option<TextPreset>,
 }
 

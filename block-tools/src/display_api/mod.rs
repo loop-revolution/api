@@ -85,8 +85,6 @@ impl PageMeta {
 	}
 }
 
-pub type HexCode = String;
-
 #[derive(Serialize, Debug)]
 pub struct MethodObject {
 	#[serde(rename = "type")]

@@ -5,6 +5,7 @@ use serde::{
 };
 use std::fmt;
 pub mod card;
+pub mod icon;
 pub mod input;
 pub mod menu;
 pub mod stack;

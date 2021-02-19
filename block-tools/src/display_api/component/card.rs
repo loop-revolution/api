@@ -1,14 +1,10 @@
-use std::fmt;
-
-use crate::display_api::HexCode;
-
-use super::{menu::MenuComponent, text::TextComponent, DisplayComponent};
+use super::{icon::Icon, menu::MenuComponent, text::TextComponent, DisplayComponent};
 use erased_serde::Serialize as Serializable;
 use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct CardComponent {
-	pub color: Option<HexCode>,
+	pub color: Option<String>,
 	pub content: Box<dyn DisplayComponent>,
 	pub header: CardHeader,
 }
@@ -60,22 +56,6 @@ impl CardHeader {
 			menu: Some(menu),
 			..self
 		}
-	}
-}
-
-#[derive(Serialize, Debug)]
-pub enum Icon {
-	Folder,
-	TaskComplete,
-	Message,
-	Box,
-	Type,
-	Feed,
-}
-
-impl fmt::Display for Icon {
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		write!(f, "{:?}", self)
 	}
 }
 
