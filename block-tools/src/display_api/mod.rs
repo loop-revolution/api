@@ -76,6 +76,13 @@ impl PageMeta {
 			..self
 		}
 	}
+
+	pub fn menu(self, menu: MenuComponent) -> Self {
+		PageMeta {
+			menu: Some(menu),
+			..self
+		}
+	}
 }
 
 pub type HexCode = String;

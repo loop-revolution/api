@@ -54,6 +54,13 @@ impl CardHeader {
 			..self
 		}
 	}
+
+	pub fn menu(self, menu: MenuComponent) -> CardHeader {
+		CardHeader {
+			menu: Some(menu),
+			..self
+		}
+	}
 }
 
 #[derive(Serialize, Debug)]
