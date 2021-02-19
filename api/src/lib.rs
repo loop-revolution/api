@@ -19,9 +19,19 @@ pub fn rand_string(length: usize) -> String {
 
 #[cfg(test)]
 pub mod tests {
-	use crate::graphql::ContextData;
+	use crate::{
+		graphql::ContextData,
+		rand_string,
+		users::info::{password::hash_pwd, username::localize_username},
+	};
 	use async_graphql::{Name, Request, Value};
-	use block_tools::PostgresPool;
+	use block_tools::{
+		dsl,
+		dsl::prelude::*,
+		models::{NewUser, User},
+		schema::users,
+		PgConnect, PostgresPool,
+	};
 	use std::collections::BTreeMap;
 
 	/// Expect a value to be an object treee, then return the tree
@@ -62,5 +72,30 @@ pub mod tests {
 		chars.next();
 		chars.next_back();
 		chars.as_str()
+	}
+
+	/// For parsing string Values
+	pub fn test_user(conn: &PgConnect) -> (User, String) {
+		let username = rand_string(10);
+		let password = rand_string(10);
+		let hash = hash_pwd(password.clone()).unwrap();
+		let localuname = localize_username(&username);
+
+		let new_user = NewUser {
+			username,
+			localuname,
+			password: hash,
+			email: "fake@e.mail".into(),
+			credits: 0,
+			display_name: None,
+		};
+
+		(
+			dsl::insert_into(users::table)
+				.values(&new_user)
+				.get_result(conn)
+				.unwrap(),
+			password,
+		)
 	}
 }
