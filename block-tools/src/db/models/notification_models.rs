@@ -39,7 +39,7 @@ impl NewNotification {
 			tokens.append(&mut user_tokens);
 		}
 		for token in tokens {
-			let token = PushToken::from_str(format!("ExpoPushToken[{}]", token).as_str()).unwrap();
+			let token = PushToken::from_str(token.as_str()).unwrap();
 			let msg = PushMessage::new(token)
 				.body(&notif.description)
 				.title(&notif.name);
