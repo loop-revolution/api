@@ -1,6 +1,6 @@
 use crate::display_api::WrappedMethod;
 
-use super::DisplayComponent;
+use super::{text::TextComponent, DisplayComponent};
 use erased_serde::Serialize as Serializable;
 use serde::Serialize;
 
@@ -12,6 +12,7 @@ pub struct InputComponent {
 	#[serde(rename = "type")]
 	pub input_type: Option<String>,
 	pub confirm_cancel: Option<ConfirmCancelOptions>,
+	pub mask: Option<TextComponent>,
 }
 
 impl DisplayComponent for InputComponent {
@@ -38,6 +39,7 @@ impl InputComponent {
 			name: None,
 			input_type: None,
 			confirm_cancel: None,
+			mask: None,
 		}
 	}
 
@@ -65,6 +67,13 @@ impl InputComponent {
 	pub fn label(self, label: &str) -> Self {
 		InputComponent {
 			label: Some(label.to_string()),
+			..self
+		}
+	}
+
+	pub fn mask(self, mask: TextComponent) -> Self {
+		InputComponent {
+			mask: Some(mask),
 			..self
 		}
 	}

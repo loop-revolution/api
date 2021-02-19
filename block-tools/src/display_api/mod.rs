@@ -1,4 +1,4 @@
-use component::DisplayComponent;
+use component::{menu::MenuComponent, DisplayComponent};
 use serde::Serialize;
 pub mod component;
 
@@ -45,6 +45,7 @@ impl DisplayMeta {
 pub struct PageMeta {
 	pub title: Option<String>,
 	pub header: Option<String>,
+	pub menu: Option<MenuComponent>,
 }
 
 impl Default for PageMeta {
@@ -58,6 +59,7 @@ impl PageMeta {
 		PageMeta {
 			title: None,
 			header: None,
+			menu: None,
 		}
 	}
 
@@ -71,6 +73,13 @@ impl PageMeta {
 	pub fn header(self, header: &str) -> Self {
 		PageMeta {
 			header: Some(header.to_string()),
+			..self
+		}
+	}
+
+	pub fn menu(self, menu: MenuComponent) -> Self {
+		PageMeta {
+			menu: Some(menu),
 			..self
 		}
 	}

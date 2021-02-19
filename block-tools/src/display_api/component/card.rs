@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::display_api::HexCode;
 
-use super::{text::TextComponent, DisplayComponent};
+use super::{menu::MenuComponent, text::TextComponent, DisplayComponent};
 use erased_serde::Serialize as Serializable;
 use serde::Serialize;
 
@@ -28,6 +28,7 @@ pub struct CardHeader {
 	pub title: String,
 	pub icon: Option<Icon>,
 	pub block_id: Option<String>,
+	pub menu: Option<MenuComponent>,
 }
 
 impl CardHeader {
@@ -36,6 +37,7 @@ impl CardHeader {
 			title: title.to_string(),
 			icon: None,
 			block_id: None,
+			menu: None,
 		}
 	}
 
@@ -49,6 +51,13 @@ impl CardHeader {
 	pub fn icon(self, icon: Icon) -> CardHeader {
 		CardHeader {
 			icon: Some(icon),
+			..self
+		}
+	}
+
+	pub fn menu(self, menu: MenuComponent) -> CardHeader {
+		CardHeader {
+			menu: Some(menu),
 			..self
 		}
 	}
