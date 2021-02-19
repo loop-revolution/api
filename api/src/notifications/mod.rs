@@ -132,6 +132,24 @@ impl NotificationMutations {
 
 		Ok(user.update_expo_tokens(tokens, conn)?.into())
 	}
+
+	/// Add a token to a user's registered tokens to send Expo notifications to
+	pub async fn add_expo_tokens(
+		&self,
+		context: &Context<'_>,
+		token: String,
+	) -> Result<UserObject, Error> {
+		let (context, conn) = &ContextData::parse(context)?;
+
+		let user_id = validate_token(&require_token(context)?)?;
+
+		let user = match User::by_id(user_id, conn)? {
+			Some(user) => user,
+			None => return Err(UserError::JwtGeneric.into()),
+		};
+
+		Ok(user.add_expo_token(token, conn)?.into())
+	}
 }
 
 impl From<Notification> for NotificationObject {

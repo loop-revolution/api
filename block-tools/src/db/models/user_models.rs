@@ -92,6 +92,16 @@ impl User {
 				.get_result(conn)?,
 		)
 	}
+
+	pub fn add_expo_token(&self, token: String, conn: &PgConnection) -> Result<User, Error> {
+		let mut all_tokens = self.expo_tokens.clone();
+		all_tokens.push(token);
+		Ok(
+			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
+				.set((users::expo_tokens.eq(all_tokens),))
+				.get_result(conn)?,
+		)
+	}
 }
 
 #[derive(Insertable)]
