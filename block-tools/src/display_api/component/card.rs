@@ -1,4 +1,6 @@
-use super::{icon::Icon, menu::MenuComponent, text::TextComponent, DisplayComponent};
+use super::{
+	button::ButtonComponent, icon::Icon, menu::MenuComponent, text::TextComponent, DisplayComponent,
+};
 use erased_serde::Serialize as Serializable;
 use serde::Serialize;
 
@@ -24,6 +26,7 @@ pub struct CardHeader {
 	pub title: String,
 	pub icon: Option<Icon>,
 	pub block_id: Option<String>,
+	pub buttons: Option<Vec<ButtonComponent>>,
 	pub menu: Option<MenuComponent>,
 }
 
@@ -34,6 +37,7 @@ impl CardHeader {
 			icon: None,
 			block_id: None,
 			menu: None,
+			buttons: None,
 		}
 	}
 
@@ -54,6 +58,18 @@ impl CardHeader {
 	pub fn menu(self, menu: MenuComponent) -> CardHeader {
 		CardHeader {
 			menu: Some(menu),
+			..self
+		}
+	}
+
+	pub fn button(self, button: ButtonComponent) -> CardHeader {
+		let mut buttons = match self.buttons {
+			None => vec![],
+			Some(buttons) => buttons,
+		};
+		buttons.push(button);
+		CardHeader {
+			buttons: Some(buttons),
 			..self
 		}
 	}
