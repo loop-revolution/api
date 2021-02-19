@@ -1,0 +1,48 @@
+env_files = [
+	"./.env",
+]
+
+[config]
+default_to_workspace = false
+
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt"]
+
+[tasks.lint]
+install_crate = "clippy"
+command = "cargo"
+args = ["clippy"]
+
+[tasks.test]
+command = "cargo"
+args = ["test"]
+
+[tasks.pre-commit]
+dependencies = [
+	"format",
+	"test",
+	"lint",
+]
+
+[tasks.run-migrations]
+script = [
+	"cd block-tools",
+	"diesel migration run",
+	"cd ..",
+]
+
+[tasks.redo-migrations]
+script = [
+	"cd block-tools",
+	"diesel migration redo",
+	"cd ..",
+]
+
+[tasks.revert-migration]
+script = [
+	"cd block-tools",
+	"diesel migration revert",
+	"cd ..",
+]
