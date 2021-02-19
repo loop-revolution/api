@@ -1,6 +1,6 @@
 use crate::display_api::WrappedMethod;
 
-use super::{DisplayComponent, text::TextComponent};
+use super::{text::TextComponent, DisplayComponent};
 use erased_serde::Serialize as Serializable;
 use serde::Serialize;
 
