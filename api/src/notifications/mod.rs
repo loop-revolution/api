@@ -1,15 +1,19 @@
 pub mod queries;
 pub mod sub;
-
-use crate::{blocks::block::BlockObject, graphql::ContextData, users::user::UserObject};
+use crate::graphql::ContextData;
+use crate::{blocks::block::BlockObject, users::user::UserObject};
 use async_graphql::*;
+use block_tools::use_diesel::*;
 use block_tools::{
-	auth::{
-		permissions::{has_perm_level, PermLevel},
-		require_token, validate_token,
-	},
-	models::{Block, NewNotification, Notification, User},
+	auth::permissions::{has_perm_level, PermLevel},
+	models::{Block, NewNotification, User},
 	NoAccessSubject, UserError,
+};
+use block_tools::{
+	auth::{require_token, validate_token},
+	dsl,
+	models::Notification,
+	schema::notifications,
 };
 use block_types::delegation::display::delegate_block_name;
 use chrono::{DateTime, Utc};
@@ -27,6 +31,8 @@ pub struct NotificationObject {
 	pub time: Option<DateTime<Utc>>,
 	#[graphql(skip)]
 	pub recipients: Vec<i32>,
+	/// The notification's specific ID
+	pub id: i64,
 }
 #[derive(Default)]
 pub struct NotificationMutations {}
@@ -49,6 +55,60 @@ impl NotificationMutations {
 			.send(conn)?
 			.into();
 		Ok(notif)
+	}
+
+	/// Clear a notification that the user is a recepient of
+	async fn clear_one_notif(&self, context: &Context<'_>, id: i64) -> Result<bool> {
+		let (context, conn) = &ContextData::parse(context)?;
+
+		let user_id = validate_token(&require_token(context)?)?;
+
+		let notif: Notification = notifications::dsl::notifications
+			.filter(notifications::dsl::recipients.contains(vec![user_id]))
+			.filter(notifications::dsl::id.eq(id))
+			.first(conn)?;
+
+		let recipients: Vec<i32> = notif
+			.recipients
+			.into_iter()
+			.filter(|id| id != &user_id)
+			.collect();
+
+		dsl::update(notifications::dsl::notifications.filter(notifications::id.eq(id)))
+			.set(notifications::dsl::recipients.eq(recipients))
+			.execute(conn)?;
+
+		Ok(true)
+	}
+
+	/// Clear all notifications of a user
+	async fn clear_all_notifs(&self, context: &Context<'_>) -> Result<u8> {
+		let (context, conn) = &ContextData::parse(context)?;
+
+		let user_id = validate_token(&require_token(context)?)?;
+
+		let notifs: Vec<Notification> = notifications::dsl::notifications
+			.filter(notifications::dsl::recipients.contains(vec![user_id]))
+			.get_results(conn)?;
+
+		// Count of notifications cleared
+		let mut count: u8 = 0;
+
+		for notif in notifs {
+			// New recepients (without user)
+			let recipients: Vec<i32> = notif
+				.recipients
+				.into_iter()
+				.filter(|id| id != &user_id)
+				.collect();
+			// Update
+			dsl::update(notifications::dsl::notifications.filter(notifications::id.eq(notif.id)))
+				.set(notifications::dsl::recipients.eq(recipients))
+				.execute(conn)?;
+			count += 1;
+		}
+
+		Ok(count)
 	}
 
 	/// Stars or unstars a block
@@ -160,6 +220,7 @@ impl From<Notification> for NotificationObject {
 			recipients: n.recipients,
 			block_link: n.block_link,
 			time: n.time.map(|time| time.into()),
+			id: n.id,
 		}
 	}
 }
