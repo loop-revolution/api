@@ -46,5 +46,9 @@ impl TextComponent {
 
 #[derive(Serialize)]
 pub enum TextPreset {
+	Default,
+	Error,
 	Heading,
+	Info,
+	Warn,
 }
