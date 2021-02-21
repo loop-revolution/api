@@ -9,6 +9,7 @@ pub struct SearchComponent {
 	pub r#type: Option<SearchType>,
 	pub then: Option<ActionObject>,
 	pub cancel: Option<ActionObject>,
+	pub action_text: Option<String>,
 }
 
 impl Default for SearchComponent {
@@ -19,6 +20,7 @@ impl Default for SearchComponent {
 			r#type: None,
 			then: None,
 			cancel: None,
+			action_text: None,
 		}
 	}
 }
@@ -27,6 +29,12 @@ impl SearchComponent {
 	pub fn name(self, name: &str) -> Self {
 		Self {
 			name: Some(name.to_string()),
+			..self
+		}
+	}
+	pub fn action_text(self, text: &str) -> Self {
+		Self {
+			action_text: Some(text.to_string()),
 			..self
 		}
 	}
