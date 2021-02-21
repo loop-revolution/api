@@ -23,12 +23,13 @@ impl DisplayComponent for IconComponent {
 
 #[derive(Serialize, Debug)]
 pub enum Icon {
-	Folder,
-	TaskComplete,
-	Message,
 	Box,
-	Type,
 	Feed,
+	Folder,
+	Message,
+	Plus,
+	TaskComplete,
+	Type,
 }
 
 impl fmt::Display for Icon {
