@@ -21,7 +21,7 @@ async-trait = "0.1.42"
 chrono = "0.4.19"
 jsonwebtoken = "7"
 futures = "0.3"
-once_cell = "1.5.2"
+once_cell = "1.6.0"
 slab = "0.4.2"
 sentry = "0.22"
 expo-server-sdk = { git = "https://github.com/big-neon/expo-server-sdk-rust.git", rev = "5e133bce17d76b5cd9ef8e3f9e58dd194a4c453c" }
