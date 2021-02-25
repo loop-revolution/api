@@ -17,6 +17,7 @@ pub fn delegate_page_display(block: &Block, context: &Context) -> Result<Display
 		BlockTypes::Data => data_block::DataBlock::page_display(block, context),
 		BlockTypes::Text => text_block::TextBlock::page_display(block, context),
 		BlockTypes::Group => group_block::GroupBlock::page_display(block, context),
+		BlockTypes::FooBar => foobar_block::FooBarBlock::page_display(block, context),
 		BlockTypes::Invalid(name) => Ok(DisplayObject::new(Box::new(
 			TextComponent::new(&format!("Invalid block type '{}'", name)).color("#ff0000"),
 		))),
@@ -29,6 +30,7 @@ pub fn delegate_embed_display(block: &Block, context: &Context) -> Box<dyn Displ
 		BlockTypes::Data => data_block::DataBlock::embed_display(block, context),
 		BlockTypes::Text => text_block::TextBlock::embed_display(block, context),
 		BlockTypes::Group => group_block::GroupBlock::embed_display(block, context),
+		BlockTypes::FooBar => foobar_block::FooBarBlock::embed_display(block, context),
 		BlockTypes::Invalid(name) => {
 			Box::new(TextComponent::new(&format!("Invalid block type '{}'", name)).color("#ff0000"))
 		}
@@ -45,6 +47,7 @@ pub fn delegate_creation_display(
 		BlockTypes::Data => data_block::DataBlock::create_display(context, user_id),
 		BlockTypes::Text => text_block::TextBlock::create_display(context, user_id),
 		BlockTypes::Group => group_block::GroupBlock::create_display(context, user_id),
+		BlockTypes::FooBar => foobar_block::FooBarBlock::create_display(context, user_id),
 		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }
@@ -59,6 +62,7 @@ pub fn delegate_block_name(
 		BlockTypes::Data => data_block::DataBlock::block_name(block, context),
 		BlockTypes::Text => text_block::TextBlock::block_name(block, context),
 		BlockTypes::Group => group_block::GroupBlock::block_name(block, context),
+		BlockTypes::FooBar => foobar_block::FooBarBlock::block_name(block, context),
 		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }

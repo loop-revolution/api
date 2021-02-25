@@ -4,6 +4,7 @@ pub enum BlockTypes {
 	Data,
 	Text,
 	Group,
+	FooBar,
 	Invalid(String),
 }
 
@@ -13,6 +14,7 @@ impl From<String> for BlockTypes {
 			data_block::BLOCK_NAME => BlockTypes::Data,
 			text_block::BLOCK_NAME => BlockTypes::Text,
 			group_block::BLOCK_NAME => BlockTypes::Group,
+			foobar_block::BLOCK_NAME => BlockTypes::FooBar,
 			_ => BlockTypes::Invalid(s),
 		}
 	}
