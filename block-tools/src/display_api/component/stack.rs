@@ -41,9 +41,9 @@ impl StackComponent {
 }
 
 impl Default for StackComponent {
-    fn default() -> Self {
-        Self::new(StackDirection::Fit)
-    }
+	fn default() -> Self {
+		Self::new(StackDirection::Fit)
+	}
 }
 
 #[derive(Serialize)]
