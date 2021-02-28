@@ -61,6 +61,14 @@ impl User {
 		)
 	}
 
+	pub fn update_password(&self, hash: &str, conn: &PgConnection) -> Result<User, Error> {
+		Ok(
+			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
+				.set((users::password.eq(hash),))
+				.get_result(conn)?,
+		)
+	}
+
 	pub fn update_root(&self, block_id: Option<i64>, conn: &PgConnection) -> Result<User, Error> {
 		Ok(
 			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
