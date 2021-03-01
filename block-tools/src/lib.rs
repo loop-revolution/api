@@ -1,3 +1,5 @@
+#![feature(box_syntax)]
+
 pub mod db;
 pub use db::*;
 pub mod errors;

@@ -1,7 +1,7 @@
 use super::component::DisplayComponent;
 use serde::Serialize;
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 pub struct MethodObject {
 	#[serde(rename = "type")]
 	pub block_type: String,
