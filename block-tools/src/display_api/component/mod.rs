@@ -11,6 +11,7 @@ pub mod card;
 pub mod icon;
 pub mod input;
 pub mod menu;
+pub mod progress;
 pub mod search;
 pub mod stack;
 pub mod text;
