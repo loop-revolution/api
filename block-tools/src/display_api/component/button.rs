@@ -1,11 +1,11 @@
 use super::{icon::Icon, DisplayComponent};
-use crate::display_api::ActionObject;
+use crate::display_api::{colors::ColorScheme, ActionObject};
 use erased_serde::Serialize as Serializable;
 use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct ButtonComponent {
-	pub color_scheme: Option<String>,
+	pub color_scheme: Option<ColorScheme>,
 	pub icon: Option<Icon>,
 	pub interact: Option<ActionObject>,
 	pub size: Option<String>,
