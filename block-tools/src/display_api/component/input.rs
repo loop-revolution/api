@@ -13,6 +13,7 @@ pub struct InputComponent {
 	pub input_type: Option<InputType>,
 	pub confirm_cancel: Option<ConfirmCancelOptions>,
 	pub mask: Option<TextComponent>,
+	pub size: Option<InputSize>,
 }
 
 impl DisplayComponent for InputComponent {
@@ -40,6 +41,7 @@ impl InputComponent {
 			input_type: None,
 			confirm_cancel: None,
 			mask: None,
+			size: None,
 		}
 	}
 
@@ -102,4 +104,13 @@ pub enum InputType {
 	Date,
 	Time,
 	Frequency,
+}
+
+#[derive(Serialize)]
+pub enum InputSize {
+	Large,
+	Medium,
+	Small,
+	MultiLine,
+	Flexible,
 }
