@@ -8,6 +8,7 @@ pub mod badge;
 pub mod blocklist;
 pub mod button;
 pub mod card;
+pub mod checkbox;
 pub mod icon;
 pub mod input;
 pub mod menu;
