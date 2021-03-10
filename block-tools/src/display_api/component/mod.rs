@@ -13,6 +13,7 @@ pub mod checkbox;
 pub mod dropdown;
 pub mod icon;
 pub mod input;
+pub mod link;
 pub mod menu;
 pub mod progress;
 pub mod search;
