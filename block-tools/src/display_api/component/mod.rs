@@ -4,6 +4,7 @@ use serde::{
 	Serialize,
 };
 use std::fmt;
+pub mod actionpopover;
 pub mod badge;
 pub mod blocklist;
 pub mod button;
