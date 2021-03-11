@@ -1,5 +1,5 @@
 [package]
-version = "0.1.4"
+version = "0.1.5"
 name = "block-tools"
 description = "Tools for block types on Loop"
 authors = ["Louis Birla <louis.birla@gmail.com>"]
