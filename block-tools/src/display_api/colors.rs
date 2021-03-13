@@ -5,6 +5,7 @@ pub enum ColorScheme {
 	Blue,
 	Cyan,
 	Gray,
+	Green,
 	Orange,
 	Pink,
 	Purple,
