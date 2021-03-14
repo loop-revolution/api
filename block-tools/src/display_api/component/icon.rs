@@ -1,5 +1,7 @@
 use std::fmt;
 
+use crate::display_api::colors::ColorScheme;
+
 use super::DisplayComponent;
 use erased_serde::Serialize as Serializable;
 use serde::Serialize;
@@ -8,6 +10,7 @@ use serde::Serialize;
 pub struct IconComponent {
 	pub icon: Icon,
 	pub color: Option<String>,
+	pub color_scheme: Option<ColorScheme>,
 	pub size: Option<String>,
 }
 

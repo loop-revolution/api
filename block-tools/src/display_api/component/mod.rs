@@ -4,12 +4,18 @@ use serde::{
 	Serialize,
 };
 use std::fmt;
+pub mod actionpopover;
+pub mod badge;
 pub mod blocklist;
 pub mod button;
 pub mod card;
+pub mod checkbox;
+pub mod dropdown;
 pub mod icon;
 pub mod input;
+pub mod link;
 pub mod menu;
+pub mod progress;
 pub mod search;
 pub mod stack;
 pub mod text;

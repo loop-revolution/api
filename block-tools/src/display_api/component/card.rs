@@ -25,6 +25,7 @@ pub struct CardHeader {
 	pub icon: Option<Icon>,
 	pub block_id: Option<String>,
 	pub menu: Option<MenuComponent>,
+	pub custom: Option<Box<dyn DisplayComponent>>,
 }
 
 impl CardHeader {
@@ -34,6 +35,7 @@ impl CardHeader {
 			icon: None,
 			block_id: None,
 			menu: None,
+			custom: None,
 		}
 	}
 

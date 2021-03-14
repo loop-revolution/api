@@ -1,16 +1,18 @@
 use super::{icon::Icon, DisplayComponent};
-use crate::display_api::ActionObject;
+use crate::display_api::{colors::ColorScheme, ActionObject};
 use erased_serde::Serialize as Serializable;
 use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct ButtonComponent {
-	pub color_scheme: Option<String>,
+	pub color_scheme: Option<ColorScheme>,
 	pub icon: Option<Icon>,
 	pub interact: Option<ActionObject>,
-	pub size: Option<String>,
+	pub size: Option<ButtonSize>,
 	pub text: String,
 	pub variant: Option<ButtonVariant>,
+	pub readonly: Option<bool>,
+	pub disabled: Option<bool>,
 }
 
 impl DisplayComponent for ButtonComponent {
@@ -32,6 +34,8 @@ impl ButtonComponent {
 			size: None,
 			text: text.into(),
 			variant: None,
+			disabled: None,
+			readonly: None,
 		}
 	}
 
@@ -50,4 +54,11 @@ pub enum ButtonVariant {
 	Ghost,
 	Link,
 	Nostyle,
+}
+
+#[derive(Serialize, Debug)]
+pub enum ButtonSize {
+	Small,
+	Medium,
+	Large,
 }

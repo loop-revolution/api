@@ -10,9 +10,10 @@ pub struct InputComponent {
 	pub label: Option<String>,
 	pub name: Option<String>,
 	#[serde(rename = "type")]
-	pub input_type: Option<String>,
+	pub input_type: Option<InputType>,
 	pub confirm_cancel: Option<ConfirmCancelOptions>,
 	pub mask: Option<TextComponent>,
+	pub size: Option<InputSize>,
 }
 
 impl DisplayComponent for InputComponent {
@@ -40,6 +41,7 @@ impl InputComponent {
 			input_type: None,
 			confirm_cancel: None,
 			mask: None,
+			size: None,
 		}
 	}
 
@@ -57,9 +59,9 @@ impl InputComponent {
 		}
 	}
 
-	pub fn input_type(self, input_type: &str) -> Self {
+	pub fn input_type(self, input_type: InputType) -> Self {
 		InputComponent {
-			input_type: Some(input_type.to_string()),
+			input_type: Some(input_type),
 			..self
 		}
 	}
@@ -93,4 +95,22 @@ impl InputComponent {
 pub struct ConfirmCancelOptions {
 	pub enabled: bool,
 	pub on_confirm: WrappedMethod,
+}
+
+#[derive(Serialize)]
+pub enum InputType {
+	Text,
+	Number,
+	Date,
+	Time,
+	Frequency,
+}
+
+#[derive(Serialize)]
+pub enum InputSize {
+	Large,
+	Medium,
+	Small,
+	MultiLine,
+	Flexible,
 }

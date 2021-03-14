@@ -7,6 +7,7 @@ pub mod meta;
 pub use meta::*;
 pub mod action;
 pub use action::*;
+pub mod colors;
 
 #[derive(Serialize, Debug)]
 pub struct DisplayObject {
