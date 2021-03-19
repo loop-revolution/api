@@ -10,32 +10,36 @@ rust:
 services:
   - postgresql
 before_script:
-    - psql -c 'create database travis_ci_test;' -U postgres
-    - psql -c "CREATE USER testing WITH PASSWORD 'password';" -U postgres
-    - cargo install cargo-tarpaulin
-    - cargo install diesel_cli --no-default-features --features "postgres"
-    - cd block-tools && diesel setup && diesel migration run && cd ..
+  - psql -c 'create database travis_ci_test;' -U postgres
+  - psql -c "CREATE USER testing WITH PASSWORD 'password';" -U postgres
+  - curl -L https://github.com/mozilla/grcov/releases/latest/download/grcov-linux-x86_64.tar.bz2 | tar jxf -
+  - cargo install diesel_cli --no-default-features --features "postgres"
+  - cd block-tools && diesel setup && diesel migration run && cd ..
+  - rustup component add llvm-tools-preview
 
 script:
-  - cargo tarpaulin --out Xml
+  - export RUSTFLAGS="-Zinstrument-coverage"
+  - cargo build
+  - LLVM_PROFILE_FILE="your_name-%p-%m.profraw" cargo test --verbose
+  - ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info
 
 before_cache:
   # Delete loose files in the debug directory
   - find ./target/debug -maxdepth 1 -type f -delete
-  # Delete the test and benchmark executables. Finding these all might take some 
+  # Delete the test and benchmark executables. Finding these all might take some
   # experimentation.
   - rm -rf ./target/debug/deps/criterion*
   - rm -rf ./target/debug/deps/bench*
   # Delete the associated metadata files for those executables
   - rm -rf ./target/debug/.fingerprint/criterion*
   - rm -rf ./target/debug/.fingerprint/bench*
-  # Note that all of the above need to be repeated for `release/` instead of 
+  # Note that all of the above need to be repeated for `release/` instead of
   # `debug/` if your build script builds artifacts in release mode.
   # This is just more metadata
   - rm -f  ./target/.rustc_info.json
   # Also delete the saved benchmark data from the test benchmarks. If you
   # have Criterion.rs benchmarks, you'll probably want to do this as well, or set
-  # the CRITERION_HOME environment variable to move that data out of the 
+  # the CRITERION_HOME environment variable to move that data out of the
   # `target/` directory.
   - rm -rf ./target/criterion
   # Also delete cargo's registry index. This is updated on every build, but it's
@@ -43,4 +47,4 @@ before_cache:
   - rm -rf ~/.cargo/registry/index/
 
 after_success: |
-    bash <(curl -s https://codecov.io/bash)
+  bash <(curl -s https://codecov.io/bash) -f lcov.info

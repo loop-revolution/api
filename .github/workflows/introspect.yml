@@ -3,7 +3,7 @@ name: Introspection
 on: [push]
 
 env:
-  DATABASE_URL: ${{ secrets.PROD_DB_URL }}
+  INTROSPECTING: "true"
 
 jobs:
   apollo:
@@ -44,5 +44,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           schema: "schema.graphql"
           endpoint: "https://api.loop.page/"
-          # https://github.com/kamilkisiela/graphql-inspector/issues/1806
-          annotations: false
+          annotations: true
