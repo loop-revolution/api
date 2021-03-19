@@ -44,4 +44,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           schema: "schema.graphql"
           endpoint: "https://api.loop.page/"
-          annotations: true
+          annotations: false
