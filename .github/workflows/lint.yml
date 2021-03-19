@@ -34,6 +34,7 @@ jobs:
 
       - name: Clippy checks
         uses: actions-rs/clippy-check@v1
+        if: ${{ !contains(github.ref, 'dependabot') }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --all-features
