@@ -10,14 +10,14 @@ use block_tools::{
 	UserError,
 };
 
-const USERNAME_UPDATE_COST: i32 = 50;
+const USERNAME_UPDATE_COST: i32 = 0;
 
 #[derive(Default)]
 pub struct UserInfoMutations {}
 
 #[Object]
 impl UserInfoMutations {
-	/// Update a user's username. This costs 50 credits, and the user must supply their password
+	/// Update a user's username. This costs 0 credits for now, and the user must supply their password
 	/// and have their token. The new username must not be in use (or it will error).
 	async fn update_username(
 		&self,
