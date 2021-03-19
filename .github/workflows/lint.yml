@@ -32,7 +32,8 @@ jobs:
         if: steps.changes.outputs.changed == 1
         run: exit 1
 
-      - name: Advanced Clippy checks
-        uses: actions-rs/cargo@v1
+      - name: Clippy checks
+        uses: actions-rs/clippy-check@v1
         with:
-          command: clippy
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --all-features
