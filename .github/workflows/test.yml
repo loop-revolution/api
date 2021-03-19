@@ -1,0 +1,73 @@
+name: Test
+
+on: [push]
+
+env:
+  DATABASE_URL: postgres://postgres:postgres@localhost:5432/testing
+  SESSION_SECRET: 1234567890qwertyuiopasdfghjklzxcvbnm
+  SMTP_PASSWORD: ${{ secrets.TESTING_SMTP_PASSWORD }}
+  SMTP_SERVER: ${{ secrets.TESTING_SMTP_SERVER }}
+  SMTP_USERNAME: ${{ secrets.TESTING_SMTP_USERNAME }}
+  RUSTFLAGS: -Zinstrument-coverage
+
+jobs:
+  suite:
+    name: Testing & Coverage
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Auto-cancel redundant jobs
+        uses: technote-space/auto-cancel-redundant-job@v1
+
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+
+      - name: Install postgres libs for diesel
+        run: sudo apt install libpq-dev libssl-dev
+
+      - name: Install diesel cli
+        run: cargo install diesel_cli --no-default-features --features "postgres"
+
+      - name: Set up the DB
+        run: cd block-tools && diesel setup && diesel migration run && cd ..
+
+      - name: Install grcov
+        run: curl -L https://github.com/mozilla/grcov/releases/latest/download/grcov-linux-x86_64.tar.bz2 | tar jxf -
+
+      - name: Install llvm tools
+        run: rustup component add llvm-tools-preview
+
+      - name: Run the tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --all-features --no-fail-fast
+        env:
+          LLVM_PROFILE_FILE: "api-%p-%m.profraw"
+
+      - name: Generate coverage
+        run: ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./lcov.info
+          fail_ci_if_error: true
