@@ -6,10 +6,9 @@ env:
   INTROSPECTING: "true"
 
 jobs:
-  apollo:
+  check:
     name: Graphql Checking
     runs-on: ubuntu-latest
-    if: github.event.pusher.name != "dependabot"
     steps:
       - name: Auto-cancel redundant jobs
         uses: technote-space/auto-cancel-redundant-job@v1
@@ -41,6 +40,7 @@ jobs:
           kill $!
 
       - uses: kamilkisiela/graphql-inspector@master
+        if: github.event.pusher.name != "dependabot"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           schema: "schema.graphql"
