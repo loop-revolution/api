@@ -40,7 +40,7 @@ jobs:
           kill $!
 
       - uses: kamilkisiela/graphql-inspector@master
-        if: ${{ !contains(github.ref, "dependabot") }}
+        if: ${{ !contains(github.ref, 'dependabot') }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           schema: "schema.graphql"
