@@ -9,6 +9,7 @@ jobs:
   apollo:
     name: Graphql Checking
     runs-on: ubuntu-latest
+    if: github.event.pusher.name != "dependabot"
     steps:
       - name: Auto-cancel redundant jobs
         uses: technote-space/auto-cancel-redundant-job@v1
@@ -44,4 +45,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           schema: "schema.graphql"
           endpoint: "https://api.loop.page/"
-          annotations: false
+          annotations: true
