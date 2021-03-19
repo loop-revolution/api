@@ -1,6 +1,6 @@
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql_warp::{graphql_subscription, Response};
-use block_tools::{env_db, get_pool};
+use block_tools::{get_pool, optional_env_db};
 use loop_api::{
 	graphql::{build_schema, ContextData, Schema},
 	sentry::sentry,
@@ -29,8 +29,10 @@ async fn main() {
 	// Setup sentry guards (if DSN is provided)
 	let _guard = sentry();
 
+	let db_url = optional_env_db();
+
 	// Establish a connection to the DB
-	let pool = get_pool(&env_db());
+	let pool = db_url.map(|url| get_pool(&url));
 
 	// Connect the GraphQL Resolvers
 	let schema = build_schema();
@@ -44,10 +46,12 @@ async fn main() {
 				// Add the database to the GraphQL Context
 				let pool = pool.clone();
 				async move {
-					request = request.data(ContextData {
-						pool,
-						auth_token: token,
-					});
+					if let Some(pool) = pool {
+						request = request.data(ContextData {
+							pool,
+							auth_token: token,
+						});
+					}
 					// Execute the request & return it
 					let resp = schema.execute(request).await;
 					Ok::<_, Infallible>(Response::from(resp))

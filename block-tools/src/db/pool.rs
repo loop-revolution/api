@@ -31,3 +31,24 @@ pub fn env_db() -> String {
 		}
 	}
 }
+
+/// Gets the DATABASE_URL from the environment, if
+/// the INTROSPECTING environment variable is not "true"
+pub fn optional_env_db() -> Option<String> {
+	// Load the environment from .env file
+	dotenv().ok();
+	// If introspection is all that is needed,
+	// connection to a database is optional.
+	match env::var("INTROSPECTING") {
+		Ok(val) if val == "true" => return None,
+		_ => (),
+	}
+	// Postgres DB URL (from env as `DATABASE_URL`)
+	match env::var("DATABASE_URL") {
+		Ok(url) => Some(url),
+		Err(_) => {
+			error!("A 'DATABASE_URL' environment variable is required.");
+			panic!()
+		}
+	}
+}

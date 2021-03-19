@@ -7,6 +7,9 @@ temp*
 # Rust output
 target
 pkg
+# Coverage
+*.profraw
+lcov.info
 # Config for development
 .cargo/config.toml
 # Editor
