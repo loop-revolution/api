@@ -3,7 +3,6 @@ name: Test
 on: [push]
 
 env:
-  DATABASE_URL: postgres://postgres:postgres@localhost:5432/testing
   SESSION_SECRET: 1234567890qwertyuiopasdfghjklzxcvbnm
   SMTP_PASSWORD: ${{ secrets.TESTING_SMTP_PASSWORD }}
   SMTP_SERVER: ${{ secrets.TESTING_SMTP_SERVER }}
@@ -18,7 +17,11 @@ jobs:
       postgres:
         image: postgres
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -39,14 +42,13 @@ jobs:
           toolchain: nightly
           override: true
 
-      - name: Install postgres libs for diesel
-        run: sudo apt install libpq-dev libssl-dev
-
       - name: Install diesel cli
         run: cargo install diesel_cli --no-default-features --features "postgres"
 
       - name: Set up the DB
         run: cd block-tools && diesel setup && diesel migration run && cd ..
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres
 
       - name: Install grcov
         run: curl -L https://github.com/mozilla/grcov/releases/latest/download/grcov-linux-x86_64.tar.bz2 | tar jxf -
@@ -61,6 +63,7 @@ jobs:
           args: --all-features --no-fail-fast
         env:
           LLVM_PROFILE_FILE: "api-%p-%m.profraw"
+          DATABASE_URL: postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres
 
       - name: Generate coverage
         run: ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info
