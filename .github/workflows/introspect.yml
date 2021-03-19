@@ -6,7 +6,7 @@ env:
   INTROSPECTING: "true"
 
 jobs:
-  apollo:
+  check:
     name: Graphql Checking
     runs-on: ubuntu-latest
     steps:
@@ -40,8 +40,9 @@ jobs:
           kill $!
 
       - uses: kamilkisiela/graphql-inspector@master
+        if: github.event.pusher.name != 'dependabot'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           schema: "schema.graphql"
           endpoint: "https://api.loop.page/"
-          annotations: false
+          annotations: true
