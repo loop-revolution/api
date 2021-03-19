@@ -12,12 +12,16 @@ services:
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
   - psql -c "CREATE USER testing WITH PASSWORD 'password';" -U postgres
-  - cargo install cargo-tarpaulin
+  - curl -L https://github.com/mozilla/grcov/releases/latest/download/grcov-linux-x86_64.tar.bz2 | tar jxf -
   - cargo install diesel_cli --no-default-features --features "postgres"
   - cd block-tools && diesel setup && diesel migration run && cd ..
+  - rustup component add llvm-tools-preview
 
 script:
-  - cargo tarpaulin -v --out Xml
+  - export RUSTFLAGS="-Zinstrument-coverage"
+  - cargo build
+  - LLVM_PROFILE_FILE="your_name-%p-%m.profraw" cargo test --verbose
+  - ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info
 
 before_cache:
   # Delete loose files in the debug directory
@@ -43,4 +47,4 @@ before_cache:
   - rm -rf ~/.cargo/registry/index/
 
 after_success: |
-  bash <(curl -s https://codecov.io/bash)
+  bash <(curl -s https://codecov.io/bash) -f lcov.info
