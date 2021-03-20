@@ -2,10 +2,13 @@ use serde::Serialize;
 
 use crate::{
 	auth::permissions::{has_perm_level, PermLevel},
+	display_api::ActionObject,
 	models::Block,
 };
 
-#[derive(Serialize, Debug)]
+use super::icon::Icon;
+
+#[derive(Serialize)]
 pub struct MenuComponent {
 	pub block_id: i64,
 	pub cid: String,
@@ -13,6 +16,7 @@ pub struct MenuComponent {
 	pub notifications_enabled: Option<bool>,
 	pub permissions: Option<PermissionsList>,
 	pub star_button: Option<StarButton>,
+	pub custom: Option<Vec<CustomMenuItem>>,
 }
 
 #[derive(Serialize, Debug)]
@@ -29,6 +33,14 @@ pub struct PermissionsList {
 	pub public: Option<bool>,
 }
 
+#[derive(Serialize)]
+pub struct CustomMenuItem {
+	pub icon: Icon,
+	pub text: String,
+	pub interact: Option<ActionObject>,
+	pub disabled: Option<bool>,
+}
+
 impl MenuComponent {
 	pub fn new(block_id: i64) -> Self {
 		Self {
@@ -38,6 +50,7 @@ impl MenuComponent {
 			delete: None,
 			permissions: None,
 			star_button: None,
+			custom: None,
 		}
 	}
 

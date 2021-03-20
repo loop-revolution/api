@@ -9,7 +9,7 @@ pub mod action;
 pub use action::*;
 pub mod colors;
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize)]
 pub struct DisplayObject {
 	pub display: Box<dyn DisplayComponent>,
 	pub meta: Option<DisplayMeta>,

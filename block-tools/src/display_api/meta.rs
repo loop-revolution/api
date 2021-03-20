@@ -2,7 +2,7 @@ use serde::Serialize;
 
 use super::component::menu::MenuComponent;
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize)]
 pub struct DisplayMeta {
 	pub page: Option<PageMeta>,
 }
@@ -19,7 +19,7 @@ impl DisplayMeta {
 	}
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize)]
 pub struct PageMeta {
 	pub title: Option<String>,
 	pub header: Option<String>,
