@@ -10,6 +10,11 @@ pub struct TextComponent {
 	pub color: Option<String>,
 	pub color_scheme: Option<ColorScheme>,
 	pub preset: Option<TextPreset>,
+	pub bold: Option<bool>,
+	pub italic: Option<bool>,
+	pub underline: Option<bool>,
+	pub strikethrough: Option<bool>,
+	pub monospace: Option<bool>,
 }
 
 impl DisplayComponent for TextComponent {
@@ -29,6 +34,11 @@ impl TextComponent {
 			color: None,
 			color_scheme: None,
 			preset: None,
+			bold: None,
+			italic: None,
+			underline: None,
+			strikethrough: None,
+			monospace: None,
 		}
 	}
 
