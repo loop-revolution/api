@@ -42,4 +42,7 @@ pub trait BlockType {
 	) -> Result<Block, Error>;
 	fn info() -> TypeInfo;
 	fn block_name(block: &Block, context: &Context) -> Result<String, Error>;
+	fn visibility_update(_context: &Context, _block_id: i64, _public: bool) -> Result<(), Error> {
+		Ok(())
+	}
 }
