@@ -80,6 +80,13 @@ impl InputComponent {
 		}
 	}
 
+	pub fn size(self, size: InputSize) -> Self {
+		InputComponent {
+			size: Some(size),
+			..self
+		}
+	}
+
 	pub fn with_confirm(self, on_confirm: WrappedMethod) -> Self {
 		InputComponent {
 			confirm_cancel: Some(ConfirmCancelOptions {

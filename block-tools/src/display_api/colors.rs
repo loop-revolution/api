@@ -1,5 +1,5 @@
 use serde::Serialize;
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum ColorScheme {
 	Blue,

@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use super::component::menu::MenuComponent;
+use super::component::{menu::MenuComponent, DisplayComponent};
 
 #[derive(Serialize)]
 pub struct DisplayMeta {
@@ -23,6 +23,7 @@ impl DisplayMeta {
 pub struct PageMeta {
 	pub title: Option<String>,
 	pub header: Option<String>,
+	pub header_component: Option<Box<dyn DisplayComponent>>,
 	pub menu: Option<MenuComponent>,
 }
 
@@ -37,6 +38,7 @@ impl PageMeta {
 		PageMeta {
 			title: None,
 			header: None,
+			header_component: None,
 			menu: None,
 		}
 	}
@@ -51,6 +53,13 @@ impl PageMeta {
 	pub fn header(self, header: &str) -> Self {
 		PageMeta {
 			header: Some(header.to_string()),
+			..self
+		}
+	}
+
+	pub fn header_component(self, component: Box<dyn DisplayComponent>) -> Self {
+		PageMeta {
+			header_component: Some(component),
 			..self
 		}
 	}

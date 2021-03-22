@@ -4,7 +4,7 @@ use super::DisplayComponent;
 use erased_serde::Serialize as Serializable;
 use serde::Serialize;
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct TextComponent {
 	pub text: String,
 	pub color: Option<String>,
@@ -28,7 +28,7 @@ impl DisplayComponent for TextComponent {
 }
 
 impl TextComponent {
-	pub fn new(text: &str) -> Self {
+	pub fn new(text: impl std::fmt::Display) -> Self {
 		TextComponent {
 			text: text.to_string(),
 			color: None,
@@ -57,7 +57,7 @@ impl TextComponent {
 	}
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub enum TextPreset {
 	Default,
 	Error,
