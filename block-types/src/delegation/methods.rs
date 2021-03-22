@@ -35,3 +35,18 @@ pub fn delegate_method(
 		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }
+
+pub fn delegate_visibility_update(
+	context: &Context,
+	block_type: &str,
+	block_id: i64,
+	public: bool,
+) -> Result<(), Error> {
+	let block_type: BlockTypes = block_type.to_string().into();
+	match block_type {
+		BlockTypes::Data => data_block::DataBlock::visibility_update(context, block_id, public),
+		BlockTypes::Text => text_block::TextBlock::visibility_update(context, block_id, public),
+		BlockTypes::Group => group_block::GroupBlock::visibility_update(context, block_id, public),
+		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
+	}
+}

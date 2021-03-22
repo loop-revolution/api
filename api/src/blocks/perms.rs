@@ -9,7 +9,7 @@ use block_tools::{
 	models::{Block, NewNotification, User},
 	NoAccessSubject, UserError,
 };
-use block_types::delegation::display::delegate_block_name;
+use block_types::delegation::{display::delegate_block_name, methods::delegate_visibility_update};
 
 #[derive(Default)]
 pub struct BlockPermMutations;
@@ -41,6 +41,8 @@ impl BlockPermMutations {
 		}
 
 		let block = block.update_public(public, conn)?;
+
+		delegate_visibility_update(context, &block.block_type, block.id, public)?;
 
 		// If the user is not the owner, notify the owner
 		if user_id != block.owner_id {
