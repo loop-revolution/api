@@ -8,7 +8,7 @@ use crate::{
 
 use super::icon::Icon;
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct MenuComponent {
 	pub block_id: i64,
 	pub cid: String,
@@ -19,13 +19,13 @@ pub struct MenuComponent {
 	pub custom: Option<Vec<CustomMenuItem>>,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 pub struct StarButton {
 	pub starred: bool,
 	pub count: usize,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 pub struct PermissionsList {
 	pub full: usize,
 	pub edit: usize,
@@ -33,12 +33,29 @@ pub struct PermissionsList {
 	pub public: Option<bool>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct CustomMenuItem {
 	pub icon: Icon,
 	pub text: String,
 	pub interact: Option<ActionObject>,
 	pub disabled: Option<bool>,
+}
+
+impl CustomMenuItem {
+	pub fn new(text: impl ToString, icon: Icon) -> Self {
+		CustomMenuItem {
+			icon,
+			text: text.to_string(),
+			interact: None,
+			disabled: None,
+		}
+	}
+	pub fn interact(self, action: ActionObject) -> Self {
+		Self {
+			interact: Some(action),
+			..self
+		}
+	}
 }
 
 impl MenuComponent {

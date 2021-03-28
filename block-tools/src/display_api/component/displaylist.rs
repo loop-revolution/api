@@ -5,6 +5,7 @@ use serde::Serialize;
 #[derive(Serialize)]
 pub struct DisplayListComponent {
 	pub items: Vec<DisplayListItem>,
+	pub color: Option<String>,
 }
 
 impl DisplayComponent for DisplayListComponent {
@@ -21,6 +22,7 @@ impl Default for DisplayListComponent {
 	fn default() -> Self {
 		DisplayListComponent {
 			items: Vec::default(),
+			color: None,
 		}
 	}
 }

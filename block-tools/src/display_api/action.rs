@@ -1,7 +1,7 @@
 use super::{component::search::SearchComponent, MethodObject};
 use serde::Serialize;
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct ActionObject {
 	pub method: Option<MethodObject>,
 	pub search: Option<Box<SearchComponent>>,
@@ -42,7 +42,7 @@ impl Default for ActionObject {
 	}
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct RedirectObject {
 	pub app_path: Option<String>,
 	pub url: Option<String>,

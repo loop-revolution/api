@@ -5,17 +5,24 @@ use super::component::{menu::MenuComponent, DisplayComponent};
 #[derive(Serialize)]
 pub struct DisplayMeta {
 	pub page: Option<PageMeta>,
+	pub color: Option<String>,
 }
 
 impl Default for DisplayMeta {
 	fn default() -> Self {
-		DisplayMeta { page: None }
+		DisplayMeta {
+			page: None,
+			color: None,
+		}
 	}
 }
 
 impl DisplayMeta {
 	pub fn page(self, page: PageMeta) -> Self {
-		DisplayMeta { page: Some(page) }
+		DisplayMeta {
+			page: Some(page),
+			color: None,
+		}
 	}
 }
 
