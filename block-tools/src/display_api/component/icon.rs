@@ -24,7 +24,7 @@ impl DisplayComponent for IconComponent {
 	}
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 pub enum Icon {
 	Box,
 	Feed,
