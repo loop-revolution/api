@@ -1,6 +1,9 @@
 use super::{super::schema::blocks, NewProperty};
 use crate::Error;
+use colors_transform::Color;
 use diesel::prelude::*;
+use palette::{Shade, Srgb};
+use rand::Rng;
 use std::time::SystemTime;
 
 #[derive(Queryable, Clone)]
@@ -17,6 +20,7 @@ pub struct Block {
 	pub perm_view: Vec<i32>,
 	pub stars: Vec<i32>,
 	pub notif_enabled: Vec<i32>,
+	pub color: Option<String>,
 }
 
 impl Block {
@@ -42,6 +46,21 @@ impl Block {
 			diesel::update(blocks::dsl::blocks.filter(blocks::id.eq(self.id)))
 				.set((
 					blocks::block_data.eq(Some(new_data)),
+					blocks::updated_at.eq(std::time::SystemTime::now()),
+				))
+				.get_result(conn)?,
+		)
+	}
+
+	pub fn update_color(
+		&self,
+		new_color: Option<String>,
+		conn: &PgConnection,
+	) -> Result<Block, Error> {
+		Ok(
+			diesel::update(blocks::dsl::blocks.filter(blocks::id.eq(self.id)))
+				.set((
+					blocks::color.eq(new_color),
 					blocks::updated_at.eq(std::time::SystemTime::now()),
 				))
 				.get_result(conn)?,
@@ -138,6 +157,7 @@ pub struct NewBlock {
 	pub perm_view: Vec<i32>,
 	pub stars: Vec<i32>,
 	pub notif_enabled: Vec<i32>,
+	pub color: Option<String>,
 }
 
 pub struct MinNewBlock<'a> {
@@ -159,6 +179,7 @@ impl NewBlock {
 			perm_view: vec![],
 			stars: vec![],
 			notif_enabled: vec![],
+			color: None,
 		}
 	}
 
@@ -201,6 +222,24 @@ impl NewBlock {
 		Ok(diesel::insert_into(blocks::table)
 			.values(&self)
 			.get_result(conn)?)
+	}
+
+	pub fn color_from(self, rgb: String) -> Result<Self, Error> {
+		let mut rng = rand::thread_rng();
+		let color = rgb.parse::<colors_transform::Rgb>().unwrap();
+		let mut color =
+			Srgb::new(color.get_red(), color.get_green(), color.get_blue()).into_linear();
+		match rng.gen_range(0..4) {
+			0 => color = color.lighten(0.1),
+			1 => color = color.darken(0.1),
+			2 => color = color.darken(0.2),
+			_ => color = color.darken(0.2),
+		}
+		let color = colors_transform::Rgb::from(color.red, color.blue, color.green).to_css_string();
+		Ok(NewBlock {
+			color: Some(color),
+			..self
+		})
 	}
 }
 

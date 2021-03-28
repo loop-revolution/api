@@ -110,6 +110,7 @@ pub enum NoAccessSubject {
 	UpdatePermissions(i64),
 	ViewBlock(i64),
 	NotifBlock(i64),
+	EditColor(i64),
 }
 
 impl fmt::Display for NoAccessSubject {
@@ -122,6 +123,7 @@ impl fmt::Display for NoAccessSubject {
 			NoAccessSubject::DeleteBlock(id) => write!(f, "deleting block {}", id),
 			NoAccessSubject::ViewBlock(id) => write!(f, "viewing block {}", id),
 			NoAccessSubject::NotifBlock(id) => write!(f, "setting block {}'s notifications", id),
+			NoAccessSubject::EditColor(id) => write!(f, "changing block {}'s color", id),
 		}
 	}
 }

@@ -12,6 +12,7 @@ table! {
 		perm_view -> Array<Int4>,
 		stars -> Array<Int4>,
 		notif_enabled -> Array<Int4>,
+		color -> Nullable<Varchar>,
 	}
 }
 
