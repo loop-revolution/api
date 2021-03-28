@@ -2,7 +2,7 @@ use serde::Serialize;
 
 use crate::display_api::ActionObject;
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct SearchComponent {
 	pub cid: String,
 	pub name: Option<String>,
@@ -58,7 +58,7 @@ impl SearchComponent {
 	}
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 pub enum SearchType {
 	Block,
 	User,
