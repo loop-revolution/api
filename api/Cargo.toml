@@ -16,7 +16,7 @@ tokio = { version = "1.4.0", features = ["full"] }
 ## Server
 async-graphql = "2.5.1"
 async-graphql-warp = "2.5.1"
-warp = "0.3.0"
+warp = "0.3.1"
 
 ## Block Types
 block-tools = { path = "../block-tools" }
