@@ -16,6 +16,7 @@ pub struct BlockObject {
 	pub block_data: Option<String>,
 	pub block_type: String,
 	pub id: i64,
+	pub color: Option<String>,
 	// Dates
 	pub created_at: SystemTime,
 	pub updated_at: SystemTime,
@@ -68,6 +69,11 @@ impl BlockObject {
 	/// How many users have starred this block?
 	async fn star_count(&self) -> usize {
 		self.stars.len()
+	}
+
+	/// The block's color as an RGB string `rgb(123,123,123)`
+	async fn color(&self) -> Option<String> {
+		self.color.clone()
 	}
 
 	/// This returns true if the authenticated user has starred the block
@@ -154,6 +160,7 @@ impl BlockObject {
 			created_at: self.created_at,
 			updated_at: self.updated_at,
 			block_data: self.block_data.clone(),
+			color: self.color.clone(),
 			block_type: self.block_type.clone(),
 			owner_id: self.owner_id,
 			public: self.public,
@@ -173,6 +180,7 @@ impl From<Block> for BlockObject {
 			created_at: blockd.created_at,
 			updated_at: blockd.updated_at,
 			block_data: blockd.block_data,
+			color: blockd.color,
 			block_type: blockd.block_type,
 			owner_id: blockd.owner_id,
 			public: blockd.public,
@@ -193,6 +201,7 @@ impl From<&Block> for BlockObject {
 			updated_at: blockd.updated_at,
 			block_data: blockd.block_data.clone(),
 			block_type: blockd.block_type.clone(),
+			color: blockd.color.clone(),
 			owner_id: blockd.owner_id,
 			public: blockd.public,
 			perm_full: blockd.perm_full.clone(),

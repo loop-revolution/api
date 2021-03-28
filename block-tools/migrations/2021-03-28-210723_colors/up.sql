@@ -1,0 +1,2 @@
+ALTER TABLE blocks
+ADD color VARCHAR(17);
