@@ -20,8 +20,8 @@ pub mod progress;
 pub mod richtext;
 pub mod search;
 pub mod stack;
-pub mod text;
 pub mod stickytogglebutton;
+pub mod text;
 
 pub trait DisplayComponent {
 	fn cid(&self) -> &str;
