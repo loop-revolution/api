@@ -21,6 +21,7 @@ pub mod richtext;
 pub mod search;
 pub mod stack;
 pub mod text;
+pub mod stickytogglebutton;
 
 pub trait DisplayComponent {
 	fn cid(&self) -> &str;
