@@ -32,6 +32,8 @@ pub enum Icon {
 	Message,
 	Plus,
 	TaskComplete,
+	ThumbsDown,
+	ThumbsUp,
 	Type,
 }
 
