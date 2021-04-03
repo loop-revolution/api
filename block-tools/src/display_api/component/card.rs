@@ -64,7 +64,7 @@ impl CardHeader {
 pub fn error_card(error: &str) -> CardComponent {
 	CardComponent {
 		color: None,
-		content: Box::new(TextComponent::new(error).color("#ff0000")),
+		content: box TextComponent::new(error).color("#ff0000"),
 		header: CardHeader::new("Block Error"),
 	}
 }

@@ -17,9 +17,9 @@ pub fn delegate_page_display(block: &Block, context: &Context) -> Result<Display
 		BlockTypes::Data => data_block::DataBlock::page_display(block, context),
 		BlockTypes::Text => text_block::TextBlock::page_display(block, context),
 		BlockTypes::Group => group_block::GroupBlock::page_display(block, context),
-		BlockTypes::Invalid(name) => Ok(DisplayObject::new(Box::new(
-			TextComponent::new(&format!("Invalid block type '{}'", name)).color("#ff0000"),
-		))),
+		BlockTypes::Invalid(name) => Ok(DisplayObject::new(
+			box TextComponent::new(&format!("Invalid block type '{}'", name)).color("#ff0000"),
+		)),
 	}
 }
 
@@ -30,7 +30,7 @@ pub fn delegate_embed_display(block: &Block, context: &Context) -> Box<dyn Displ
 		BlockTypes::Text => text_block::TextBlock::embed_display(block, context),
 		BlockTypes::Group => group_block::GroupBlock::embed_display(block, context),
 		BlockTypes::Invalid(name) => {
-			Box::new(TextComponent::new(&format!("Invalid block type '{}'", name)).color("#ff0000"))
+			box TextComponent::new(&format!("Invalid block type '{}'", name)).color("#ff0000")
 		}
 	}
 }
