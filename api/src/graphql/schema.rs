@@ -10,7 +10,8 @@ use crate::{
 	users::{
 		auth::{
 			change_email::ChangeEmailMutation, confirm_email::ConfirmEmailMutation,
-			login::LoginMutations, signup::SignupMutations,
+			forgot_password::ForgotPasswordMutations, login::LoginMutations,
+			signup::SignupMutations,
 		},
 		info::user_info::UserInfoMutations,
 		search::UserSearchQueries,
@@ -40,6 +41,7 @@ pub struct Mutation(
 	BlockPermMutations,
 	ChangeEmailMutation,
 	ConfirmEmailMutation,
+	ForgotPasswordMutations,
 	LoginMutations,
 	NotificationMutations,
 	SignupMutations,
