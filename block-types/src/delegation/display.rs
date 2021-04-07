@@ -8,10 +8,10 @@ use block_tools::{
 		CreationObject, DisplayObject,
 	},
 	models::Block,
-	BlockError, Error,
+	BlockError, LoopError,
 };
 
-pub fn delegate_page_display(block: &Block, context: &Context) -> Result<DisplayObject, Error> {
+pub fn delegate_page_display(block: &Block, context: &Context) -> Result<DisplayObject, LoopError> {
 	let block_type: BlockTypes = block.block_type.clone().into();
 	match block_type {
 		BlockTypes::Data => data_block::DataBlock::page_display(block, context),
@@ -39,7 +39,7 @@ pub fn delegate_creation_display(
 	context: &Context,
 	block_type: &str,
 	user_id: i32,
-) -> Result<CreationObject, Error> {
+) -> Result<CreationObject, LoopError> {
 	let block_type: BlockTypes = block_type.to_string().into();
 	match block_type {
 		BlockTypes::Data => data_block::DataBlock::create_display(context, user_id),
@@ -53,7 +53,7 @@ pub fn delegate_block_name(
 	context: &Context,
 	block_type: &str,
 	block: &Block,
-) -> Result<String, Error> {
+) -> Result<String, LoopError> {
 	let block_type: BlockTypes = block_type.to_string().into();
 	match block_type {
 		BlockTypes::Data => data_block::DataBlock::block_name(block, context),

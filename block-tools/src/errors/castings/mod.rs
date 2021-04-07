@@ -1,45 +1,45 @@
-use crate::{BlockError, EmailConfirmError, Error, InternalError, UserError};
+use crate::{BlockError, EmailConfirmError, InternalError, LoopError, UserError};
 use std::time::SystemTimeError;
 
-impl From<SystemTimeError> for Error {
+impl From<SystemTimeError> for LoopError {
 	fn from(e: SystemTimeError) -> Self {
 		sentry::capture_error(&e);
-		Error::GenericError
+		LoopError::GenericError
 	}
 }
 
-impl From<InternalError> for Error {
+impl From<InternalError> for LoopError {
 	fn from(e: InternalError) -> Self {
-		Error::InternalError(e)
+		LoopError::InternalError(e)
 	}
 }
 
-impl From<UserError> for Error {
+impl From<UserError> for LoopError {
 	fn from(e: UserError) -> Self {
-		Error::UserError(e)
+		LoopError::UserError(e)
 	}
 }
 
-impl From<BlockError> for Error {
+impl From<BlockError> for LoopError {
 	fn from(e: BlockError) -> Self {
-		Error::BlockError(e)
+		LoopError::BlockError(e)
 	}
 }
 
-impl From<EmailConfirmError> for Error {
+impl From<EmailConfirmError> for LoopError {
 	fn from(e: EmailConfirmError) -> Self {
 		UserError::EmailConfirmError(e).into()
 	}
 }
 
-impl From<diesel::result::Error> for Error {
+impl From<diesel::result::Error> for LoopError {
 	fn from(e: diesel::result::Error) -> Self {
 		sentry::capture_error(&e);
-		Error::GenericError
+		LoopError::GenericError
 	}
 }
 
-impl From<r2d2::Error> for Error {
+impl From<r2d2::Error> for LoopError {
 	fn from(e: r2d2::Error) -> Self {
 		sentry::capture_error(&e);
 		InternalError::DatabaseTimeout.into()

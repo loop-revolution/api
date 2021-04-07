@@ -2,7 +2,7 @@ use diesel::PgConnection;
 
 use super::super::schema::{potential_users, users};
 use crate::diesel::*;
-use crate::Error;
+use crate::LoopError;
 use std::time::SystemTime;
 
 #[derive(Queryable, Clone)]
@@ -23,7 +23,7 @@ pub struct User {
 }
 
 impl User {
-	pub fn by_id(user_id: i32, conn: &PgConnection) -> Result<Option<Self>, Error> {
+	pub fn by_id(user_id: i32, conn: &PgConnection) -> Result<Option<Self>, LoopError> {
 		Ok(users::dsl::users
 			.filter(users::id.eq(user_id))
 			.limit(1)
@@ -37,7 +37,7 @@ impl User {
 		new_localname: &str,
 		new_credits: i32,
 		conn: &PgConnection,
-	) -> Result<User, Error> {
+	) -> Result<User, LoopError> {
 		Ok(
 			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
 				.set((
@@ -53,7 +53,7 @@ impl User {
 		&self,
 		new_display_name: &str,
 		conn: &PgConnection,
-	) -> Result<User, Error> {
+	) -> Result<User, LoopError> {
 		Ok(
 			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
 				.set((users::display_name.eq(new_display_name),))
@@ -61,7 +61,7 @@ impl User {
 		)
 	}
 
-	pub fn update_password(&self, hash: &str, conn: &PgConnection) -> Result<User, Error> {
+	pub fn update_password(&self, hash: &str, conn: &PgConnection) -> Result<User, LoopError> {
 		Ok(
 			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
 				.set((users::password.eq(hash),))
@@ -69,7 +69,11 @@ impl User {
 		)
 	}
 
-	pub fn update_root(&self, block_id: Option<i64>, conn: &PgConnection) -> Result<User, Error> {
+	pub fn update_root(
+		&self,
+		block_id: Option<i64>,
+		conn: &PgConnection,
+	) -> Result<User, LoopError> {
 		Ok(
 			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
 				.set((users::root_id.eq(block_id),))
@@ -81,7 +85,7 @@ impl User {
 		&self,
 		block_id: Option<i64>,
 		conn: &PgConnection,
-	) -> Result<User, Error> {
+	) -> Result<User, LoopError> {
 		Ok(
 			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
 				.set((users::featured_id.eq(block_id),))
@@ -93,7 +97,7 @@ impl User {
 		&self,
 		tokens: Vec<String>,
 		conn: &PgConnection,
-	) -> Result<User, Error> {
+	) -> Result<User, LoopError> {
 		Ok(
 			diesel::update(users::dsl::users.filter(users::id.eq(self.id)))
 				.set((users::expo_tokens.eq(tokens),))
@@ -101,7 +105,7 @@ impl User {
 		)
 	}
 
-	pub fn add_expo_token(&self, token: String, conn: &PgConnection) -> Result<User, Error> {
+	pub fn add_expo_token(&self, token: String, conn: &PgConnection) -> Result<User, LoopError> {
 		let mut all_tokens = self.expo_tokens.clone();
 		all_tokens.push(token);
 		Ok(
