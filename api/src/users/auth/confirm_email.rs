@@ -90,3 +90,14 @@ pub fn delete_potential_user(username: &str, conn: &PgConnect) -> async_graphql:
 	.execute(conn)?;
 	Ok(())
 }
+
+#[derive(SimpleObject)]
+/// The return of the `signup` mutation. Includes the email (again), and
+/// a session code required for `confirmEmail`
+pub struct EmailConfirmPayload {
+	/// The email that the verification code was sent to
+	pub email: String,
+	/// The session code required for confirming an email and creating a user.
+	/// This is not sent to the user, it is only found from the `signup` mutation.
+	pub session_code: String,
+}

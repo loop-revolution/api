@@ -18,6 +18,8 @@ pub struct UserObject {
 	pub display_name: Option<String>,
 	pub root_id: Option<i64>,
 	pub featured_id: Option<i64>,
+	pub email: String,
+	pub credits: i32,
 }
 
 #[Object]
@@ -25,19 +27,27 @@ impl UserObject {
 	/// The number of credits the user has. Will only show if the user matches the authentication
 	/// token. If not (or no token) it will be null.
 	async fn credits(&self, context: &Context<'_>) -> Result<Option<i32>, Error> {
-		let (context, conn) = &ContextData::parse(context)?;
+		let (context, _) = &ContextData::parse(context)?;
 		let token = require_token(context)?;
 
 		if self.id != validate_token(&token)? {
 			return Ok(None);
 		}
 
-		Ok(Some(
-			users::dsl::users
-				.filter(users::id.eq(&self.id))
-				.select(users::credits)
-				.first(conn)?,
-		))
+		Ok(Some(self.credits))
+	}
+
+	/// The user's email. Will only show if the user matches the authentication
+	/// token. If not (or no token) it will be null.
+	async fn email(&self, context: &Context<'_>) -> Result<Option<String>, Error> {
+		let (context, _) = &ContextData::parse(context)?;
+		let token = require_token(context)?;
+
+		if self.id != validate_token(&token)? {
+			return Ok(None);
+		}
+
+		Ok(Some(self.email.clone()))
 	}
 
 	/// The user's unique ID. Use this whenever unique identification is needed
@@ -110,6 +120,8 @@ impl From<User> for UserObject {
 			display_name: userd.display_name,
 			root_id: userd.root_id,
 			featured_id: userd.featured_id,
+			email: userd.email,
+			credits: userd.credits,
 		}
 	}
 }

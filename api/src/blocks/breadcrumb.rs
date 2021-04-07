@@ -4,7 +4,7 @@ use block_tools::{
 	blocks::Context,
 	models::{Block, Property},
 	schema::properties,
-	Error,
+	LoopError,
 };
 use block_types::delegation::display::delegate_block_name;
 
@@ -20,7 +20,7 @@ pub struct BreadCrumb {
 }
 
 /// Generates a vector of crumbs for a single block
-pub fn gen_breadcrumb(context: &Context, block: &Block) -> Result<Vec<BreadCrumb>, Error> {
+pub fn gen_breadcrumb(context: &Context, block: &Block) -> Result<Vec<BreadCrumb>, LoopError> {
 	// Generate the breadcrumbs (it's recursive)
 	let mut crumbs = cycle(context, block, vec![], vec![])?.0;
 	// Reverse the order of the breadcrumbs b/c it would otherwise
@@ -36,7 +36,7 @@ fn cycle(
 	block: &Block,
 	mut crumbs: Vec<BreadCrumb>,
 	mut blocks_added: Vec<i64>,
-) -> Result<(Vec<BreadCrumb>, Vec<i64>), Error> {
+) -> Result<(Vec<BreadCrumb>, Vec<i64>), LoopError> {
 	let conn = &context.conn()?;
 
 	let parent_props: Vec<Property> = properties::dsl::properties
@@ -91,7 +91,7 @@ fn cycle(
 fn allowed_parent(
 	parent_props: Vec<Property>,
 	context: &Context,
-) -> Result<(Option<Property>, Option<Block>), Error> {
+) -> Result<(Option<Property>, Option<Block>), LoopError> {
 	let conn = &context.conn()?;
 
 	let mut parent: Option<Block> = None;
