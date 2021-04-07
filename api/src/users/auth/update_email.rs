@@ -19,11 +19,11 @@ use rand::thread_rng;
 use rand::Rng;
 
 #[derive(Default)]
-pub struct ChangeEmailMutation;
+pub struct UpdateEmailMutation;
 
 #[Object]
-impl ChangeEmailMutation {
-	pub async fn change_email(
+impl UpdateEmailMutation {
+	pub async fn update_email(
 		&self,
 		context: &Context<'_>,
 		new_email: String,
@@ -72,9 +72,9 @@ impl ChangeEmailMutation {
 			session_code: email_confirm.session_code,
 		})
 	}
-	/// After the `confirmEmail` mutation, confirm the change with this mutation. Push the
-	/// session code from the `confirmEmail` results, and get the verification code from the email.
-	pub async fn confirm_change_email(
+	/// After the `updateEmail` mutation, confirm the change with this mutation. Push the
+	/// session code from the `updateEmail` results, and get the verification code from the email.
+	pub async fn confirm_update_email(
 		&self,
 		context: &Context<'_>,
 		session_code: String,
