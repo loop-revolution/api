@@ -1,23 +1,12 @@
-use super::{text::TextComponent, DisplayComponent};
-use erased_serde::Serialize as Serializable;
-use serde::Serialize;
+use crate::display_api::component::atomic::text::TextComponent;
+use serde::{Serialize, Deserialize};
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LinkComponent {
 	pub text: TextComponent,
 	pub external: Option<bool>,
 	pub app_path: Option<String>,
 	pub url: Option<String>,
-}
-
-impl DisplayComponent for LinkComponent {
-	fn cid(&self) -> &str {
-		"link"
-	}
-
-	fn args(&self) -> &dyn Serializable {
-		self
-	}
 }
 
 impl LinkComponent {

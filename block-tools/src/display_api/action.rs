@@ -1,35 +1,17 @@
-use super::{component::search::SearchComponent, MethodObject};
-use serde::Serialize;
+use super::{MethodObject, component::misc::search::SearchComponent};
+use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ActionObject {
 	pub method: Option<MethodObject>,
 	pub search: Option<Box<SearchComponent>>,
 	pub redirect: Option<RedirectObject>,
 }
 
-impl ActionObject {
-	pub fn method(method: MethodObject) -> Self {
-		Self {
-			method: Some(method),
-			search: None,
-			redirect: None,
-		}
-	}
-	pub fn search(search_component: SearchComponent) -> Self {
-		Self {
-			method: None,
-			search: Some(box search_component),
-			redirect: None,
-		}
-	}
-	pub fn redirect(redirect: RedirectObject) -> Self {
-		Self {
-			method: None,
-			search: None,
-			redirect: Some(redirect),
-		}
-	}
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct RedirectObject {
+	pub app_path: Option<String>,
+	pub url: Option<String>,
 }
 
 impl Default for ActionObject {
@@ -42,23 +24,23 @@ impl Default for ActionObject {
 	}
 }
 
-#[derive(Serialize, Clone)]
-pub struct RedirectObject {
-	pub app_path: Option<String>,
-	pub url: Option<String>,
-}
-
-impl RedirectObject {
-	pub fn app_path(path: String) -> Self {
+impl ActionObject {
+	pub fn method(method: MethodObject) -> Self {
 		Self {
-			app_path: Some(path),
-			url: None,
+			method: Some(method),
+			..Default::default()
 		}
 	}
-	pub fn url(url: String) -> Self {
+	pub fn search(search: SearchComponent) -> Self {
 		Self {
-			app_path: None,
-			url: Some(url),
+			search: Some(box search),
+			..Default::default()
+		}
+	}
+	pub fn redirect(redirect: RedirectObject) -> Self {
+		Self {
+			redirect: Some(redirect),
+			..Default::default()
 		}
 	}
 }
@@ -68,6 +50,21 @@ impl Default for RedirectObject {
 		Self {
 			app_path: None,
 			url: None,
+		}
+	}
+}
+
+impl RedirectObject {
+	pub fn app_path(app_path: impl ToString) -> Self {
+		Self {
+			app_path: Some(app_path.to_string()),
+			..Default::default()
+		}
+	}
+	pub fn url(url: impl ToString) -> Self {
+		Self {
+			url: Some(url.to_string()),
+			..Default::default()
 		}
 	}
 }

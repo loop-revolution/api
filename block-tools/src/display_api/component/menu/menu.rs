@@ -1,14 +1,12 @@
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 
 use crate::{
 	auth::permissions::{has_perm_level, PermLevel},
-	display_api::ActionObject,
+	display_api::{component::atomic::icon::Icon, ActionObject},
 	models::Block,
 };
 
-use super::icon::Icon;
-
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MenuComponent {
 	pub block_id: i64,
 	pub cid: String,
@@ -19,13 +17,13 @@ pub struct MenuComponent {
 	pub custom: Option<Vec<CustomMenuItem>>,
 }
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StarButton {
 	pub starred: bool,
 	pub count: usize,
 }
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PermissionsList {
 	pub full: usize,
 	pub edit: usize,
@@ -33,7 +31,7 @@ pub struct PermissionsList {
 	pub public: Option<bool>,
 }
 
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CustomMenuItem {
 	pub icon: Icon,
 	pub text: String,
@@ -50,12 +48,6 @@ impl CustomMenuItem {
 			disabled: None,
 		}
 	}
-	pub fn interact(self, action: ActionObject) -> Self {
-		Self {
-			interact: Some(action),
-			..self
-		}
-	}
 }
 
 impl MenuComponent {
@@ -70,8 +62,10 @@ impl MenuComponent {
 			custom: None,
 		}
 	}
+}
 
-	pub fn load_from_block(block: &Block, user_id: i32) -> Self {
+impl MenuComponent {
+	pub fn from_block(block: &Block, user_id: i32) -> Self {
 		let mut menu = MenuComponent::new(block.id);
 
 		if has_perm_level(user_id, &block, PermLevel::View) {

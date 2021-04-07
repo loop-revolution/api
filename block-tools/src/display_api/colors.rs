@@ -1,5 +1,5 @@
-use serde::Serialize;
-#[derive(Serialize, Clone)]
+use serde::{Serialize, Deserialize};
+#[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(rename_all = "lowercase")]
 pub enum ColorScheme {
 	Blue,
