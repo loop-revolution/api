@@ -9,7 +9,8 @@ use crate::{
 	notifications::{queries::NotificationQueries, sub::Notifications, NotificationMutations},
 	users::{
 		auth::{
-			confirm_email::ConfirmEmailMutation, login::LoginMutations, signup::SignupMutations,
+			change_email::ChangeEmailMutation, confirm_email::ConfirmEmailMutation,
+			login::LoginMutations, signup::SignupMutations,
 		},
 		info::user_info::UserInfoMutations,
 		search::UserSearchQueries,
@@ -37,6 +38,7 @@ pub struct Mutation(
 	BasicBlockMutations,
 	BlockCreationMutation,
 	BlockPermMutations,
+	ChangeEmailMutation,
 	ConfirmEmailMutation,
 	LoginMutations,
 	NotificationMutations,

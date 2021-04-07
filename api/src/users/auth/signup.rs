@@ -1,5 +1,5 @@
 use super::{
-	confirm_email::delete_potential_user,
+	confirm_email::{delete_potential_user, EmailConfirmPayload},
 	email::{make_mailer, verification_code_email},
 };
 use crate::{
@@ -36,7 +36,7 @@ impl SignupMutations {
 		password: String,
 		email: String,
 		display_name: Option<String>,
-	) -> Result<EmailConfirm, Error> {
+	) -> Result<EmailConfirmPayload, Error> {
 		validate_pwd(&password)?;
 		let hash = hash_pwd(password)?;
 
@@ -80,22 +80,11 @@ impl SignupMutations {
 			.values(&new_potential)
 			.get_result(conn)?;
 
-		Ok(EmailConfirm {
+		Ok(EmailConfirmPayload {
 			email: potential_user.email,
 			session_code: potential_user.session_code,
 		})
 	}
-}
-
-#[derive(SimpleObject)]
-/// The return of the `signup` mutation. Includes the email (again), and
-/// a session code required for `confirmEmail`
-pub struct EmailConfirm {
-	/// The email that the verification code was sent to
-	pub email: String,
-	/// The session code required for confirming an email and creating a user.
-	/// This is not sent to the user, it is only found from the `signup` mutation.
-	pub session_code: String,
 }
 
 #[cfg(test)]
