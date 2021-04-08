@@ -1,4 +1,3 @@
-use std::time::SystemTime;
 use super::{
 	block_types::{type_list, BlockType},
 	breadcrumb::{gen_breadcrumb, BreadCrumb},
@@ -12,6 +11,7 @@ use block_tools::{
 	schema::blocks,
 };
 use block_types::delegation::display::delegate_block_icon;
+use std::time::SystemTime;
 use strsim::normalized_levenshtein;
 
 #[derive(Default)]
@@ -61,11 +61,9 @@ impl BlockSearchQueries {
 						}
 					}
 					if let Some(user_id) = user_id {
-						if let Some(only_starred) = filters.starred {
-							if only_starred {
-								if !block.stars.contains(&user_id) {
-									return false;
-								}
+						if let Some(only_show_starred) = filters.starred {
+							if only_show_starred && !block.stars.contains(&user_id) {
+								return false;
 							}
 						}
 					}
