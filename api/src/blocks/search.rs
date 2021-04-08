@@ -1,9 +1,10 @@
+use std::time::SystemTime;
 use super::{
 	block_types::{type_list, BlockType},
 	breadcrumb::{gen_breadcrumb, BreadCrumb},
 };
 use crate::graphql::ContextData;
-use async_graphql::{Context, Error, InputObject, Object, SimpleObject};
+use async_graphql::{Context, Enum, Error, InputObject, Object, SimpleObject};
 use block_tools::{
 	auth::{optional_token, optional_validate_token, permissions::can_view},
 	dsl::prelude::*,
@@ -32,11 +33,13 @@ impl BlockSearchQueries {
 		query: String,
 		filters: Option<BlockSearchFilters>,
 		#[graphql(desc = "Include data blocks with results?")] with_data: Option<bool>,
+		sort_by: Option<BlockSortType>,
 	) -> Result<Vec<BlockResult>, Error> {
 		let (context, conn) = &ContextData::parse(context)?;
 
 		let user_id = optional_validate_token(optional_token(context))?;
 		let with_data = with_data.unwrap_or_default();
+		let sort_by = sort_by.unwrap_or_default();
 
 		let mut helpers = blocks::dsl::blocks
 			.load::<Block>(conn)?
@@ -92,11 +95,28 @@ impl BlockSearchQueries {
 				BlockSortHelper {
 					result,
 					strsim: sim,
+					star_count: block.stars.len(),
+					updated_at: block.updated_at,
+					created_at: block.created_at,
 				}
 			})
 			.filter(|helper| helper.strsim != 0.)
 			.collect::<Vec<BlockSortHelper>>();
-		helpers.sort_by(|a, b| b.strsim.partial_cmp(&a.strsim).unwrap());
+
+		match sort_by {
+			BlockSortType::Default => {
+				helpers.sort_by(|a, b| b.strsim.partial_cmp(&a.strsim).unwrap());
+			}
+			BlockSortType::StarCount => {
+				helpers.sort_by(|a, b| b.star_count.partial_cmp(&a.star_count).unwrap());
+			}
+			BlockSortType::Updated => {
+				helpers.sort_by(|a, b| b.updated_at.partial_cmp(&a.updated_at).unwrap());
+			}
+			BlockSortType::Created => {
+				helpers.sort_by(|a, b| b.created_at.partial_cmp(&a.created_at).unwrap());
+			}
+		}
 
 		Ok(helpers.into_iter().map(|helper| helper.result).collect())
 	}
@@ -105,6 +125,9 @@ impl BlockSearchQueries {
 struct BlockSortHelper {
 	result: BlockResult,
 	strsim: f64,
+	star_count: usize,
+	updated_at: SystemTime,
+	created_at: SystemTime,
 }
 
 #[derive(SimpleObject)]
@@ -129,4 +152,19 @@ struct BlockSearchFilters {
 	block_type: Option<String>,
 	/// Will only include blocks owned by this user
 	owner_id: Option<i32>,
+}
+
+#[derive(Enum, Copy, Clone, PartialEq, Eq)]
+/// Custom ways to sort the results
+enum BlockSortType {
+	Default,
+	StarCount,
+	Updated,
+	Created,
+}
+
+impl Default for BlockSortType {
+	fn default() -> Self {
+		Self::Default
+	}
 }
