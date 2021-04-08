@@ -1,6 +1,6 @@
 use crate::blocks::*;
 use crate::types::BlockTypes;
-use block_tools::blocks::BlockType;
+use block_tools::{blocks::BlockType, display_api::component::icon::Icon};
 use block_tools::{
 	blocks::Context,
 	display_api::{
@@ -61,4 +61,14 @@ pub fn delegate_block_name(
 		BlockTypes::Group => group_block::GroupBlock::block_name(block, context),
 		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
+}
+
+pub fn delegate_block_icon(block_type: impl ToString) -> Option<Icon> {
+	let block_type: BlockTypes = block_type.to_string().into();
+	Some(match block_type {
+		BlockTypes::Data => data_block::DataBlock::info().icon,
+		BlockTypes::Text => text_block::TextBlock::info().icon,
+		BlockTypes::Group => group_block::GroupBlock::info().icon,
+		BlockTypes::Invalid(_) => return None,
+	})
 }

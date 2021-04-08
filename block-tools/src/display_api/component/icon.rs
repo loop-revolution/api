@@ -42,3 +42,9 @@ impl fmt::Display for Icon {
 		write!(f, "{:?}", self)
 	}
 }
+
+impl From<Icon> for String {
+	fn from(icon: Icon) -> Self {
+		icon.to_string()
+	}
+}
