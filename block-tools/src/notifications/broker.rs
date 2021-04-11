@@ -23,7 +23,7 @@ where
 	let mut map = SUBSCRIBERS.lock().unwrap();
 	let senders = map
 		.entry(TypeId::of::<Senders<T>>())
-		.or_insert_with(|| Box::new(Senders::<T>(Default::default())));
+		.or_insert_with(|| box Senders::<T>(Default::default()));
 	f(senders.downcast_mut::<Senders<T>>().unwrap())
 }
 

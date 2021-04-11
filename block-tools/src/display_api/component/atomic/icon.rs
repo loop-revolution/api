@@ -1,12 +1,8 @@
+use crate::display_api::colors::ColorScheme;
+use serde::{Deserialize, Serialize};
 use std::fmt;
 
-use crate::display_api::colors::ColorScheme;
-
-use super::DisplayComponent;
-use erased_serde::Serialize as Serializable;
-use serde::Serialize;
-
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IconComponent {
 	pub icon: Icon,
 	pub color: Option<String>,
@@ -14,17 +10,7 @@ pub struct IconComponent {
 	pub size: Option<String>,
 }
 
-impl DisplayComponent for IconComponent {
-	fn cid(&self) -> &str {
-		"icon"
-	}
-
-	fn args(&self) -> &dyn Serializable {
-		self
-	}
-}
-
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum Icon {
 	Box,
 	Feed,
@@ -40,6 +26,17 @@ pub enum Icon {
 impl fmt::Display for Icon {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		write!(f, "{:?}", self)
+	}
+}
+
+impl From<Icon> for IconComponent {
+	fn from(icon: Icon) -> Self {
+		Self {
+			icon,
+			color: None,
+			color_scheme: None,
+			size: None,
+		}
 	}
 }
 

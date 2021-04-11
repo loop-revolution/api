@@ -355,6 +355,7 @@ name = "block-types"
 version = "0.0.1"
 dependencies = [
  "block-tools",
+ "log",
  "serde",
  "serde_json",
 ]

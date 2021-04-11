@@ -160,19 +160,14 @@ pub struct NewBlock {
 	pub color: Option<String>,
 }
 
-pub struct MinNewBlock<'a> {
-	pub block_type: &'a str,
-	pub owner_id: i32,
-}
-
 impl NewBlock {
-	pub fn new(minimum: MinNewBlock) -> Self {
+	pub fn new(block_type: impl ToString, owner_id: i32) -> Self {
 		NewBlock {
-			block_type: minimum.block_type.to_string(),
+			block_type: block_type.to_string(),
 			created_at: std::time::SystemTime::now(),
 			updated_at: std::time::SystemTime::now(),
 			block_data: None,
-			owner_id: minimum.owner_id,
+			owner_id,
 			public: false,
 			perm_full: vec![],
 			perm_edit: vec![],
@@ -183,48 +178,13 @@ impl NewBlock {
 		}
 	}
 
-	pub fn data(self, data: &str) -> Self {
-		NewBlock {
-			block_data: Some(data.to_string()),
-			..self
-		}
-	}
-
-	pub fn public(self) -> Self {
-		NewBlock {
-			public: true,
-			..self
-		}
-	}
-
-	pub fn perm_full(self, set: Vec<i32>) -> Self {
-		NewBlock {
-			perm_full: set,
-			..self
-		}
-	}
-
-	pub fn perm_edit(self, set: Vec<i32>) -> Self {
-		NewBlock {
-			perm_edit: set,
-			..self
-		}
-	}
-
-	pub fn perm_view(self, set: Vec<i32>) -> Self {
-		NewBlock {
-			perm_view: set,
-			..self
-		}
-	}
-
 	pub fn insert(self, conn: &PgConnection) -> Result<Block, LoopError> {
 		Ok(diesel::insert_into(blocks::table)
-			.values(&self)
+			.values(self)
 			.get_result(conn)?)
 	}
 
-	pub fn color_from(self, rgb: String) -> Result<Self, LoopError> {
+	pub fn color_from(&mut self, rgb: String) -> Result<(), LoopError> {
 		let mut rng = rand::thread_rng();
 		let color = rgb.parse::<colors_transform::Rgb>().unwrap();
 		let mut color =
@@ -236,18 +196,7 @@ impl NewBlock {
 			_ => color = color.darken(0.2),
 		}
 		let color = colors_transform::Rgb::from(color.red, color.blue, color.green).to_css_string();
-		Ok(NewBlock {
-			color: Some(color),
-			..self
-		})
-	}
-}
-
-impl MinNewBlock<'_> {
-	pub fn into(self) -> NewBlock {
-		NewBlock::new(self)
-	}
-	pub fn insert(self, conn: &PgConnection) -> Result<Block, LoopError> {
-		self.into().insert(conn)
+		self.color = Some(color);
+		Ok(())
 	}
 }

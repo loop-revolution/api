@@ -1,7 +1,7 @@
 use super::component::DisplayComponent;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MethodObject {
 	#[serde(rename = "type")]
 	pub block_type: String,
@@ -10,7 +10,14 @@ pub struct MethodObject {
 	pub arg_template: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct CreationObject {
+	pub header_component: DisplayComponent,
+	pub main_component: DisplayComponent,
+	pub input_template: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WrappedMethod {
 	pub method: MethodObject,
 }
@@ -19,11 +26,4 @@ impl From<MethodObject> for WrappedMethod {
 	fn from(object: MethodObject) -> Self {
 		WrappedMethod { method: object }
 	}
-}
-
-#[derive(Serialize, Debug)]
-pub struct CreationObject {
-	pub header_component: Box<dyn DisplayComponent>,
-	pub main_component: Box<dyn DisplayComponent>,
-	pub input_template: String,
 }

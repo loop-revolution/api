@@ -1,9 +1,9 @@
-use super::{text::TextComponent, DisplayComponent};
-use crate::display_api::{colors::ColorScheme, ActionObject};
-use erased_serde::Serialize as Serializable;
-use serde::Serialize;
+use crate::display_api::{
+	colors::ColorScheme, component::atomic::text::TextComponent, ActionObject,
+};
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CheckboxComponent {
 	pub color_scheme: Option<ColorScheme>,
 	pub color: Option<String>,
@@ -16,14 +16,10 @@ pub struct CheckboxComponent {
 	pub variant: Option<CheckboxVariant>,
 }
 
-impl DisplayComponent for CheckboxComponent {
-	fn cid(&self) -> &str {
-		"checkbox"
-	}
-
-	fn args(&self) -> &dyn Serializable {
-		self
-	}
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum CheckboxVariant {
+	Default,
+	Cancel,
 }
 
 impl CheckboxComponent {
@@ -40,10 +36,4 @@ impl CheckboxComponent {
 			variant: None,
 		}
 	}
-}
-
-#[derive(Serialize, Debug)]
-pub enum CheckboxVariant {
-	Default,
-	Cancel,
 }

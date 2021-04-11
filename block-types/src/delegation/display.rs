@@ -1,12 +1,12 @@
 use crate::blocks::*;
 use crate::types::BlockTypes;
-use block_tools::{blocks::BlockType, display_api::component::icon::Icon};
+use block_tools::{
+	blocks::BlockType,
+	display_api::component::atomic::{icon::Icon, text::TextComponent},
+};
 use block_tools::{
 	blocks::Context,
-	display_api::{
-		component::{text::TextComponent, DisplayComponent},
-		CreationObject, DisplayObject,
-	},
+	display_api::{component::DisplayComponent, CreationObject, DisplayObject},
 	models::Block,
 	BlockError, LoopError,
 };
@@ -17,21 +17,27 @@ pub fn delegate_page_display(block: &Block, context: &Context) -> Result<Display
 		BlockTypes::Data => data_block::DataBlock::page_display(block, context),
 		BlockTypes::Text => text_block::TextBlock::page_display(block, context),
 		BlockTypes::Group => group_block::GroupBlock::page_display(block, context),
-		BlockTypes::Invalid(name) => Ok(DisplayObject::new(Box::new(
-			TextComponent::new(&format!("Invalid block type '{}'", name)).color("#ff0000"),
-		))),
+		BlockTypes::Invalid(name) => Ok(DisplayObject::new(
+			TextComponent {
+				color: Some("#ff0000".to_string()),
+				..TextComponent::new(format!("Invalid block type '{}'", name))
+			}
+			.into(),
+		)),
 	}
 }
 
-pub fn delegate_embed_display(block: &Block, context: &Context) -> Box<dyn DisplayComponent> {
+pub fn delegate_embed_display(block: &Block, context: &Context) -> DisplayComponent {
 	let block_type: BlockTypes = block.block_type.clone().into();
 	match block_type {
 		BlockTypes::Data => data_block::DataBlock::embed_display(block, context),
 		BlockTypes::Text => text_block::TextBlock::embed_display(block, context),
 		BlockTypes::Group => group_block::GroupBlock::embed_display(block, context),
-		BlockTypes::Invalid(name) => {
-			Box::new(TextComponent::new(&format!("Invalid block type '{}'", name)).color("#ff0000"))
+		BlockTypes::Invalid(name) => TextComponent {
+			color: Some("#ff0000".to_string()),
+			..TextComponent::new(format!("Invalid block type '{}'", name))
 		}
+		.into(),
 	}
 }
 

@@ -1,9 +1,7 @@
-use super::{icon::Icon, DisplayComponent};
-use crate::display_api::{colors::ColorScheme, ActionObject};
-use erased_serde::Serialize as Serializable;
-use serde::Serialize;
+use crate::display_api::{colors::ColorScheme, component::atomic::icon::Icon, ActionObject};
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DropdownComponent {
 	pub color_scheme: Option<ColorScheme>,
 	pub default: Option<u8>,
@@ -15,14 +13,16 @@ pub struct DropdownComponent {
 	pub variant: Option<DropdownVariant>,
 }
 
-impl DisplayComponent for DropdownComponent {
-	fn cid(&self) -> &str {
-		"dropdown"
-	}
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct DropdownOption {
+	icon: Option<Icon>,
+	text: String,
+}
 
-	fn args(&self) -> &dyn Serializable {
-		self
-	}
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum DropdownVariant {
+	Filled,
+	Outline,
 }
 
 impl Default for DropdownComponent {
@@ -38,16 +38,4 @@ impl Default for DropdownComponent {
 			variant: None,
 		}
 	}
-}
-
-#[derive(Serialize, Debug)]
-pub struct DropdownOption {
-	icon: Option<Icon>,
-	text: String,
-}
-
-#[derive(Serialize, Debug)]
-pub enum DropdownVariant {
-	Filled,
-	Outline,
 }

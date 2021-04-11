@@ -11,22 +11,15 @@ pub mod colors;
 
 #[derive(Serialize)]
 pub struct DisplayObject {
-	pub display: Box<dyn DisplayComponent>,
+	pub display: DisplayComponent,
 	pub meta: Option<DisplayMeta>,
 }
 
 impl DisplayObject {
-	pub fn new(component: Box<dyn DisplayComponent>) -> Self {
+	pub fn new(component: DisplayComponent) -> Self {
 		DisplayObject {
 			display: component,
 			meta: None,
-		}
-	}
-
-	pub fn meta(self, meta: DisplayMeta) -> Self {
-		DisplayObject {
-			meta: Some(meta),
-			..self
 		}
 	}
 }
