@@ -178,13 +178,55 @@ impl NewBlock {
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	pub fn data(self, data: &str) -> Self {
+		NewBlock {
+			block_data: Some(data.to_string()),
+			..self
+		}
+	}
+
+	pub fn public(self) -> Self {
+		NewBlock {
+			public: true,
+			..self
+		}
+	}
+
+	pub fn perm_full(self, set: Vec<i32>) -> Self {
+		NewBlock {
+			perm_full: set,
+			..self
+		}
+	}
+
+	pub fn perm_edit(self, set: Vec<i32>) -> Self {
+		NewBlock {
+			perm_edit: set,
+			..self
+		}
+	}
+
+	pub fn perm_view(self, set: Vec<i32>) -> Self {
+		NewBlock {
+			perm_view: set,
+			..self
+		}
+	}
+
+>>>>>>> main
 	pub fn insert(self, conn: &PgConnection) -> Result<Block, LoopError> {
 		Ok(diesel::insert_into(blocks::table)
 			.values(self)
 			.get_result(conn)?)
 	}
 
+<<<<<<< HEAD
 	pub fn color_from(&mut self, rgb: String) -> Result<(), LoopError> {
+=======
+	pub fn color_from(self, rgb: String) -> Result<Self, LoopError> {
+>>>>>>> main
 		let mut rng = rand::thread_rng();
 		let color = rgb.parse::<colors_transform::Rgb>().unwrap();
 		let mut color =
@@ -196,7 +238,23 @@ impl NewBlock {
 			_ => color = color.darken(0.2),
 		}
 		let color = colors_transform::Rgb::from(color.red, color.blue, color.green).to_css_string();
+<<<<<<< HEAD
 		self.color = Some(color);
 		Ok(())
+=======
+		Ok(NewBlock {
+			color: Some(color),
+			..self
+		})
+	}
+}
+
+impl MinNewBlock<'_> {
+	pub fn into(self) -> NewBlock {
+		NewBlock::new(self)
+	}
+	pub fn insert(self, conn: &PgConnection) -> Result<Block, LoopError> {
+		self.into().insert(conn)
+>>>>>>> main
 	}
 }

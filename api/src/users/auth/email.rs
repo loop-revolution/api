@@ -12,6 +12,17 @@ pub fn verification_code_email(email: &str, name: &str, code: &str) -> Message {
 		.unwrap()
 }
 
+/// Creates an email with a temporary password payload
+pub fn password_reset_email(email: &str, name: &str, pwd: &str) -> Message {
+	let username = get_email();
+	Message::builder()
+		.from(format!("Loop Team <{}>", username).parse().unwrap())
+		.to(format!("{} <{}>", name, email).parse().unwrap())
+		.subject("Loop Password Reset")
+		.body(format!("Your Loop password has been set to '{}'. Make sure to change your password after logging in, and delete this email.", pwd))
+		.unwrap()
+}
+
 /// Gets (loop's) email from the environment for sending emails
 pub fn get_email() -> String {
 	dotenv().ok();

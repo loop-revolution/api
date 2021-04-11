@@ -17,6 +17,17 @@ table! {
 }
 
 table! {
+	email_confirm (id) {
+		id -> Int4,
+		new_email -> Varchar,
+		session_code -> Varchar,
+		verification_code -> Bpchar,
+		user_id -> Int4,
+		created_at -> Timestamp,
+	}
+}
+
+table! {
 	notifications (id) {
 		id -> Int8,
 		name -> Varchar,
@@ -65,4 +76,13 @@ table! {
 	}
 }
 
-allow_tables_to_appear_in_same_query!(blocks, notifications, potential_users, properties, users,);
+joinable!(email_confirm -> users (user_id));
+
+allow_tables_to_appear_in_same_query!(
+	blocks,
+	email_confirm,
+	notifications,
+	potential_users,
+	properties,
+	users,
+);
