@@ -2,20 +2,20 @@ use std::fmt;
 mod castings;
 
 #[derive(Debug, Clone)]
-pub enum Error {
+pub enum LoopError {
 	GenericError,
 	InternalError(InternalError),
 	UserError(UserError),
 	BlockError(BlockError),
 }
 
-impl fmt::Display for Error {
+impl fmt::Display for LoopError {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match self {
-			Error::GenericError => write!(f, "[g] Something unspecified went wrong."),
-			Error::InternalError(err) => write!(f, "{}", err.to_string()),
-			Error::UserError(err) => write!(f, "{}", err.to_string()),
-			Error::BlockError(err) => write!(f, "{}", err.to_string()),
+			LoopError::GenericError => write!(f, "[g] Something unspecified went wrong."),
+			LoopError::InternalError(err) => write!(f, "{}", err.to_string()),
+			LoopError::UserError(err) => write!(f, "{}", err.to_string()),
+			LoopError::BlockError(err) => write!(f, "{}", err.to_string()),
 		}
 	}
 }

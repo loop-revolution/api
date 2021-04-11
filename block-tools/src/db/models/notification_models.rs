@@ -1,5 +1,5 @@
 use super::super::schema::{notifications, users};
-use crate::{notifications::broker::Broker, Error};
+use crate::{notifications::broker::Broker, LoopError};
 use diesel::prelude::*;
 use expo_server_sdk::*;
 use std::{str::FromStr, time::SystemTime};
@@ -25,7 +25,7 @@ pub struct NewNotification {
 }
 
 impl NewNotification {
-	pub fn send(self, conn: &PgConnection) -> Result<Notification, Error> {
+	pub fn send(self, conn: &PgConnection) -> Result<Notification, LoopError> {
 		let notif: Notification = diesel::insert_into(notifications::table)
 			.values(&self)
 			.get_result(conn)?;

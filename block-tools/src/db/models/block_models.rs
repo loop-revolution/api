@@ -1,5 +1,5 @@
 use super::{super::schema::blocks, NewProperty};
-use crate::Error;
+use crate::LoopError;
 use colors_transform::Color;
 use diesel::prelude::*;
 use palette::{Shade, Srgb};
@@ -33,7 +33,7 @@ impl Block {
 		}
 	}
 
-	pub fn by_id(block_id: i64, conn: &PgConnection) -> Result<Option<Self>, Error> {
+	pub fn by_id(block_id: i64, conn: &PgConnection) -> Result<Option<Self>, LoopError> {
 		Ok(blocks::dsl::blocks
 			.filter(blocks::id.eq(block_id))
 			.limit(1)
@@ -41,7 +41,7 @@ impl Block {
 			.optional()?)
 	}
 
-	pub fn update_data(&self, new_data: &str, conn: &PgConnection) -> Result<Block, Error> {
+	pub fn update_data(&self, new_data: &str, conn: &PgConnection) -> Result<Block, LoopError> {
 		Ok(
 			diesel::update(blocks::dsl::blocks.filter(blocks::id.eq(self.id)))
 				.set((
@@ -56,7 +56,7 @@ impl Block {
 		&self,
 		new_color: Option<String>,
 		conn: &PgConnection,
-	) -> Result<Block, Error> {
+	) -> Result<Block, LoopError> {
 		Ok(
 			diesel::update(blocks::dsl::blocks.filter(blocks::id.eq(self.id)))
 				.set((
@@ -67,7 +67,7 @@ impl Block {
 		)
 	}
 
-	pub fn update_public(&self, public: bool, conn: &PgConnection) -> Result<Block, Error> {
+	pub fn update_public(&self, public: bool, conn: &PgConnection) -> Result<Block, LoopError> {
 		Ok(
 			diesel::update(blocks::dsl::blocks.filter(blocks::id.eq(self.id)))
 				.set((
@@ -83,7 +83,7 @@ impl Block {
 		starred: bool,
 		user_id: i32,
 		conn: &PgConnection,
-	) -> Result<Block, Error> {
+	) -> Result<Block, LoopError> {
 		let filter = blocks::dsl::blocks.filter(blocks::id.eq(self.id));
 		let mut stars: Vec<i32> = filter.limit(1).select(blocks::stars).get_result(conn)?;
 		if starred {
@@ -104,7 +104,7 @@ impl Block {
 		enable: bool,
 		user_id: i32,
 		conn: &PgConnection,
-	) -> Result<Block, Error> {
+	) -> Result<Block, LoopError> {
 		let filter = blocks::dsl::blocks.filter(blocks::id.eq(self.id));
 		let mut notifs: Vec<i32> = filter
 			.limit(1)
@@ -129,7 +129,7 @@ impl Block {
 		perm_edit: Vec<i32>,
 		perm_view: Vec<i32>,
 		conn: &PgConnection,
-	) -> Result<Block, Error> {
+	) -> Result<Block, LoopError> {
 		Ok(
 			diesel::update(blocks::dsl::blocks.filter(blocks::id.eq(self.id)))
 				.set((
@@ -178,13 +178,13 @@ impl NewBlock {
 		}
 	}
 
-	pub fn insert(self, conn: &PgConnection) -> Result<Block, Error> {
+	pub fn insert(self, conn: &PgConnection) -> Result<Block, LoopError> {
 		Ok(diesel::insert_into(blocks::table)
 			.values(self)
 			.get_result(conn)?)
 	}
 
-	pub fn color_from(&mut self, rgb: String) -> Result<(), Error> {
+	pub fn color_from(&mut self, rgb: String) -> Result<(), LoopError> {
 		let mut rng = rand::thread_rng();
 		let color = rgb.parse::<colors_transform::Rgb>().unwrap();
 		let mut color =

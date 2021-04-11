@@ -1,7 +1,7 @@
 use diesel::{prelude::*, PgConnection};
 
 use super::super::schema::properties;
-use crate::Error;
+use crate::LoopError;
 
 #[derive(Queryable)]
 pub struct Property {
@@ -29,7 +29,7 @@ impl NewProperty {
 		}
 	}
 
-	pub fn insert(self, conn: &PgConnection) -> Result<Property, Error> {
+	pub fn insert(self, conn: &PgConnection) -> Result<Property, LoopError> {
 		Ok(diesel::insert_into(properties::table)
 			.values(&self)
 			.get_result(conn)?)

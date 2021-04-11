@@ -1,14 +1,14 @@
 use crate::blocks::*;
 use crate::types::BlockTypes;
 use block_tools::blocks::BlockType;
-use block_tools::{blocks::Context, models::Block, BlockError, Error};
+use block_tools::{blocks::Context, models::Block, BlockError, LoopError};
 
 pub fn delegate_create(
 	block_type: &str,
 	input: String,
 	context: &Context,
 	user_id: i32,
-) -> Result<Block, Error> {
+) -> Result<Block, LoopError> {
 	let block_type: BlockTypes = block_type.to_string().into();
 	match block_type {
 		BlockTypes::Data => data_block::DataBlock::create(input, context, user_id),
@@ -24,7 +24,7 @@ pub fn delegate_method(
 	args: String,
 	name: String,
 	block_id: i64,
-) -> Result<Block, Error> {
+) -> Result<Block, LoopError> {
 	let block_type: BlockTypes = block_type.into();
 	match block_type {
 		BlockTypes::Data => data_block::DataBlock::method_delegate(context, name, block_id, args),
@@ -41,7 +41,7 @@ pub fn delegate_visibility_update(
 	block_type: &str,
 	block_id: i64,
 	public: bool,
-) -> Result<(), Error> {
+) -> Result<(), LoopError> {
 	let block_type: BlockTypes = block_type.to_string().into();
 	match block_type {
 		BlockTypes::Data => data_block::DataBlock::visibility_update(context, block_id, public),

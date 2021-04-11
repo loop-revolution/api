@@ -4,7 +4,7 @@ use crate::{
 		CreationObject, DisplayObject,
 	},
 	models::Block,
-	BlockError, Error, PgConnect, PostgresPool,
+	BlockError, LoopError, PgConnect, PostgresPool,
 };
 use async_trait::async_trait;
 
@@ -30,21 +30,25 @@ pub struct TypeInfo {
 #[async_trait]
 pub trait BlockType {
 	fn name() -> String;
-	fn create(input: String, context: &Context, user_id: i32) -> Result<Block, Error>;
-	fn page_display(block: &Block, context: &Context) -> Result<DisplayObject, Error>;
+	fn create(input: String, context: &Context, user_id: i32) -> Result<Block, LoopError>;
+	fn page_display(block: &Block, context: &Context) -> Result<DisplayObject, LoopError>;
 	fn embed_display(block: &Block, context: &Context) -> DisplayComponent;
-	fn create_display(context: &Context, user_id: i32) -> Result<CreationObject, Error>;
+	fn create_display(context: &Context, user_id: i32) -> Result<CreationObject, LoopError>;
 	fn method_delegate(
 		_context: &Context,
 		name: String,
 		_block_id: i64,
 		_args: String,
-	) -> Result<Block, Error> {
+	) -> Result<Block, LoopError> {
 		Err(BlockError::MethodExist(name, Self::name()).into())
 	}
 	fn info() -> TypeInfo;
-	fn block_name(block: &Block, context: &Context) -> Result<String, Error>;
-	fn visibility_update(_context: &Context, _block_id: i64, _public: bool) -> Result<(), Error> {
+	fn block_name(block: &Block, context: &Context) -> Result<String, LoopError>;
+	fn visibility_update(
+		_context: &Context,
+		_block_id: i64,
+		_public: bool,
+	) -> Result<(), LoopError> {
 		Ok(())
 	}
 }
