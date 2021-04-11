@@ -1,5 +1,5 @@
-use super::{MethodObject, component::misc::search::SearchComponent};
-use serde::{Serialize, Deserialize};
+use super::{component::misc::search::SearchComponent, MethodObject};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ActionObject {

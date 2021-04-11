@@ -1,5 +1,5 @@
 use crate::display_api::{colors::ColorScheme, component::DisplayComponent};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct TextComponent {
@@ -55,7 +55,7 @@ impl TextComponent {
 }
 
 impl From<TextComponent> for DisplayComponent {
-    fn from(c: TextComponent) -> Self {
-        Self::Text(c)
-    }
+	fn from(c: TextComponent) -> Self {
+		Self::Text(c)
+	}
 }

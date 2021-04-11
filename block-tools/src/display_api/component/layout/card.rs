@@ -2,7 +2,7 @@ use crate::display_api::{
 	colors::ColorScheme,
 	component::{
 		atomic::{icon::Icon, text::TextComponent},
-		menu::menu::MenuComponent,
+		menus::menu::MenuComponent,
 		DisplayComponent,
 	},
 };
@@ -51,7 +51,7 @@ impl CardComponent {
 }
 
 impl From<CardComponent> for DisplayComponent {
-    fn from(c: CardComponent) -> Self {
-        Self::Card(c)
-    }
+	fn from(c: CardComponent) -> Self {
+		Self::Card(c)
+	}
 }

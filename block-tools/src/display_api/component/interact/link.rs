@@ -1,5 +1,5 @@
 use crate::display_api::component::atomic::text::TextComponent;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LinkComponent {

@@ -9,7 +9,7 @@ pub mod data;
 pub mod form;
 pub mod interact;
 pub mod layout;
-pub mod menu;
+pub mod menus;
 pub mod misc;
 
 #[derive(Deserialize, Debug, Clone)]
@@ -34,7 +34,7 @@ pub enum DisplayComponent {
 	DisplayList(layout::displaylist::DisplayListComponent),
 	Stack(layout::stack::StackComponent),
 	// Menu
-	ActionPopover(menu::actionpopover::ActionPopoverComponent),
+	ActionPopover(menus::actionpopover::ActionPopoverComponent),
 	// Misc
 	RichText(misc::richtext::RichTextComponent),
 }

@@ -1,5 +1,5 @@
-pub mod input;
-pub mod dropdown;
-pub mod checkbox;
-pub mod stickytogglebutton;
 pub mod blocklist;
+pub mod checkbox;
+pub mod dropdown;
+pub mod input;
+pub mod stickytogglebutton;

@@ -1,5 +1,5 @@
 use super::component::DisplayComponent;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MethodObject {
@@ -27,4 +27,3 @@ impl From<MethodObject> for WrappedMethod {
 		WrappedMethod { method: object }
 	}
 }
-

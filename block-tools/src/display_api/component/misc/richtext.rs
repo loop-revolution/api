@@ -1,5 +1,5 @@
-use crate::display_api::{MethodObject, component::DisplayComponent};
-use serde::{Serialize, Deserialize};
+use crate::display_api::{component::DisplayComponent, MethodObject};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RichTextComponent {
@@ -24,7 +24,7 @@ impl Default for RichTextComponent {
 }
 
 impl From<RichTextComponent> for DisplayComponent {
-    fn from(c: RichTextComponent) -> Self {
-        Self::RichText(c)
-    }
+	fn from(c: RichTextComponent) -> Self {
+		Self::RichText(c)
+	}
 }

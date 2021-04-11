@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use super::component::{menu::menu::MenuComponent, DisplayComponent};
+use super::component::{menus::menu::MenuComponent, DisplayComponent};
 
 #[derive(Serialize)]
 pub struct DisplayMeta {

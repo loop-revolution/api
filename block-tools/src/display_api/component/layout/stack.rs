@@ -60,7 +60,7 @@ impl StackComponent {
 }
 
 impl From<StackComponent> for DisplayComponent {
-    fn from(c: StackComponent) -> Self {
-        Self::Stack(c)
-    }
+	fn from(c: StackComponent) -> Self {
+		Self::Stack(c)
+	}
 }

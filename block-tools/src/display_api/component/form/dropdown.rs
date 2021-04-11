@@ -1,5 +1,5 @@
-use crate::display_api::{ActionObject, colors::ColorScheme, component::atomic::icon::Icon};
-use serde::{Serialize, Deserialize};
+use crate::display_api::{colors::ColorScheme, component::atomic::icon::Icon, ActionObject};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DropdownComponent {

@@ -1,4 +1,4 @@
-use crate::display_api::component::{menu::menu::MenuComponent, DisplayComponent};
+use crate::display_api::component::{menus::menu::MenuComponent, DisplayComponent};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
