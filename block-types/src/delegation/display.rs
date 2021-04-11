@@ -1,10 +1,9 @@
 use crate::blocks::*;
 use crate::types::BlockTypes;
-<<<<<<< HEAD
-use block_tools::{blocks::BlockType, display_api::component::atomic::text::TextComponent};
-=======
-use block_tools::{blocks::BlockType, display_api::component::icon::Icon};
->>>>>>> main
+use block_tools::{
+	blocks::BlockType,
+	display_api::component::atomic::{icon::Icon, text::TextComponent},
+};
 use block_tools::{
 	blocks::Context,
 	display_api::{component::DisplayComponent, CreationObject, DisplayObject},

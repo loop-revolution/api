@@ -29,7 +29,6 @@ impl fmt::Display for Icon {
 	}
 }
 
-<<<<<<< HEAD:block-tools/src/display_api/component/atomic/icon.rs
 impl From<Icon> for IconComponent {
 	fn from(icon: Icon) -> Self {
 		Self {
@@ -38,10 +37,11 @@ impl From<Icon> for IconComponent {
 			color_scheme: None,
 			size: None,
 		}
-=======
+	}
+}
+
 impl From<Icon> for String {
 	fn from(icon: Icon) -> Self {
 		icon.to_string()
->>>>>>> main:block-tools/src/display_api/component/icon.rs
 	}
 }
