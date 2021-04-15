@@ -116,7 +116,7 @@ impl CommentMutations {
 	}
 
 	/// Stars or unstars a comment
-	pub async fn set_starred(
+	pub async fn set_comment_starred(
 		&self,
 		context: &Context<'_>,
 		comment_id: i64,
