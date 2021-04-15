@@ -1,10 +1,12 @@
 mod block_models;
-pub use block_models::*;
-mod property_models;
-pub use property_models::*;
+mod comment_models;
 pub mod email_models;
 mod notification_models;
+mod property_models;
 mod user_models;
+pub use block_models::*;
+pub use comment_models::*;
 pub use email_models::*;
 pub use notification_models::*;
+pub use property_models::*;
 pub use user_models::*;

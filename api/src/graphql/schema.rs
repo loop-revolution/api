@@ -2,6 +2,7 @@ use super::misc_queries::MiscQueries;
 use crate::{
 	blocks::{
 		basic::{BasicBlockMutations, BasicBlockQueries},
+		comments::CommentMutations,
 		create::{BlockCreationMutation, BlockCreationQuery},
 		perms::BlockPermMutations,
 		search::BlockSearchQueries,
@@ -38,13 +39,14 @@ pub struct Mutation(
 	BasicBlockMutations,
 	BlockCreationMutation,
 	BlockPermMutations,
-	UpdateEmailMutation,
+	CommentMutations,
 	ConfirmEmailMutation,
 	ForgotPasswordMutations,
 	LoginMutations,
 	NotificationMutations,
 	SignupMutations,
 	SpecialBlockMutations,
+	UpdateEmailMutation,
 	UserInfoMutations,
 );
 

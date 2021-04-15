@@ -17,6 +17,17 @@ table! {
 }
 
 table! {
+	comments (id) {
+		id -> Int8,
+		author_id -> Int4,
+		content_id -> Int8,
+		block_id -> Int8,
+		stars -> Array<Int4>,
+		created_at -> Timestamp,
+	}
+}
+
+table! {
 	email_confirm (id) {
 		id -> Int4,
 		new_email -> Varchar,
@@ -76,10 +87,13 @@ table! {
 	}
 }
 
+joinable!(comments -> blocks (content_id));
+joinable!(comments -> users (author_id));
 joinable!(email_confirm -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
 	blocks,
+	comments,
 	email_confirm,
 	notifications,
 	potential_users,
