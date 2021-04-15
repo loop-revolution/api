@@ -17,6 +17,7 @@ pub fn delegate_page_display(block: &Block, context: &Context) -> Result<Display
 		BlockTypes::Data => data_block::DataBlock::page_display(block, context),
 		BlockTypes::Text => text_block::TextBlock::page_display(block, context),
 		BlockTypes::Group => group_block::GroupBlock::page_display(block, context),
+		BlockTypes::Document => document_block::DocumentBlock::page_display(block, context),
 		BlockTypes::Invalid(name) => Ok(DisplayObject::new(
 			TextComponent {
 				color: Some("#ff0000".to_string()),
@@ -33,6 +34,7 @@ pub fn delegate_embed_display(block: &Block, context: &Context) -> DisplayCompon
 		BlockTypes::Data => data_block::DataBlock::embed_display(block, context),
 		BlockTypes::Text => text_block::TextBlock::embed_display(block, context),
 		BlockTypes::Group => group_block::GroupBlock::embed_display(block, context),
+		BlockTypes::Document => document_block::DocumentBlock::embed_display(block, context),
 		BlockTypes::Invalid(name) => TextComponent {
 			color: Some("#ff0000".to_string()),
 			..TextComponent::new(format!("Invalid block type '{}'", name))
@@ -51,6 +53,7 @@ pub fn delegate_creation_display(
 		BlockTypes::Data => data_block::DataBlock::create_display(context, user_id),
 		BlockTypes::Text => text_block::TextBlock::create_display(context, user_id),
 		BlockTypes::Group => group_block::GroupBlock::create_display(context, user_id),
+		BlockTypes::Document => document_block::DocumentBlock::create_display(context, user_id),
 		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }
@@ -65,6 +68,7 @@ pub fn delegate_block_name(
 		BlockTypes::Data => data_block::DataBlock::block_name(block, context),
 		BlockTypes::Text => text_block::TextBlock::block_name(block, context),
 		BlockTypes::Group => group_block::GroupBlock::block_name(block, context),
+		BlockTypes::Document => document_block::DocumentBlock::block_name(block, context),
 		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }
@@ -75,6 +79,7 @@ pub fn delegate_block_icon(block_type: impl ToString) -> Option<Icon> {
 		BlockTypes::Data => data_block::DataBlock::info().icon,
 		BlockTypes::Text => text_block::TextBlock::info().icon,
 		BlockTypes::Group => group_block::GroupBlock::info().icon,
+		BlockTypes::Document => document_block::DocumentBlock::info().icon,
 		BlockTypes::Invalid(_) => return None,
 	})
 }
