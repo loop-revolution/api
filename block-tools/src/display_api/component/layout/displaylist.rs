@@ -32,7 +32,7 @@ impl DisplayListItem {
 }
 
 impl From<DisplayListComponent> for DisplayComponent {
-    fn from(list: DisplayListComponent) -> Self {
-        DisplayComponent::DisplayList(list)
-    }
+	fn from(list: DisplayListComponent) -> Self {
+		DisplayComponent::DisplayList(list)
+	}
 }
