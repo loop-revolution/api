@@ -152,6 +152,7 @@ impl BlockObject {
 		let (context, conn) = &ContextData::parse(context)?;
 		let user_id = optional_validate_token(optional_token(context))?;
 		let comments: Vec<Comment> = comments::dsl::comments
+			.order_by(comments::dsl::created_at.desc())
 			.filter(comments::block_id.eq(self.id))
 			.get_results(conn)?;
 		let mut comment_objects: Vec<CommentObject> = vec![];
