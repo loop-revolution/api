@@ -1,10 +1,12 @@
-use serde::{Deserialize, Serialize};
-
 use crate::{
 	auth::permissions::{has_perm_level, PermLevel},
+	db::schema::comments,
 	display_api::{component::atomic::icon::Icon, ActionObject},
 	models::Block,
+	LoopError, PgConnect,
 };
+use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MenuComponent {
@@ -15,6 +17,7 @@ pub struct MenuComponent {
 	pub permissions: Option<PermissionsList>,
 	pub star_button: Option<StarButton>,
 	pub custom: Option<Vec<CustomMenuItem>>,
+	pub comment_count: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -60,6 +63,7 @@ impl MenuComponent {
 			permissions: None,
 			star_button: None,
 			custom: None,
+			comment_count: None,
 		}
 	}
 }
@@ -92,5 +96,17 @@ impl MenuComponent {
 		}
 
 		menu
+	}
+}
+
+impl MenuComponent {
+	/// Adds a count of comments to the menu
+	pub fn load_comments(&mut self, conn: &PgConnect) -> Result<i64, LoopError> {
+		let count: i64 = comments::dsl::comments
+			.filter(comments::block_id.eq(self.block_id))
+			.count()
+			.get_result(conn)?;
+		self.comment_count = Some(count);
+		Ok(count)
 	}
 }

@@ -27,8 +27,9 @@ impl From<TypeInfo> for BlockType {
 
 pub fn type_list() -> Vec<BlockType> {
 	vec![
-		data_block::DataBlock::info().into(),
-		text_block::TextBlock::info().into(),
 		group_block::GroupBlock::info().into(),
+		document_block::DocumentBlock::info().into(),
+		text_block::TextBlock::info().into(),
+		data_block::DataBlock::info().into(),
 	]
 }

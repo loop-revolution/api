@@ -105,12 +105,13 @@ impl fmt::Display for UserError {
 
 #[derive(Debug, Clone)]
 pub enum NoAccessSubject {
-	OtherUserCredits,
 	DeleteBlock(i64),
+	EditColor(i64),
+	NotifBlock(i64),
+	OtherUserCredits,
 	UpdatePermissions(i64),
 	ViewBlock(i64),
-	NotifBlock(i64),
-	EditColor(i64),
+	ViewComment(i64),
 }
 
 impl fmt::Display for NoAccessSubject {
@@ -122,6 +123,7 @@ impl fmt::Display for NoAccessSubject {
 			}
 			NoAccessSubject::DeleteBlock(id) => write!(f, "deleting block {}", id),
 			NoAccessSubject::ViewBlock(id) => write!(f, "viewing block {}", id),
+			NoAccessSubject::ViewComment(id) => write!(f, "viewing comment {}", id),
 			NoAccessSubject::NotifBlock(id) => write!(f, "setting block {}'s notifications", id),
 			NoAccessSubject::EditColor(id) => write!(f, "changing block {}'s color", id),
 		}

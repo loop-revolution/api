@@ -1,14 +1,22 @@
 use crate::{graphql::ContextData, users::user::UserObject};
 use async_graphql::*;
 use block_tools::{
-	auth::{require_token, validate_token},
-	models::{Block, User},
+	auth::{
+		optional_token, optional_validate_token, permissions::can_view, require_token,
+		validate_token,
+	},
+	dsl::prelude::*,
+	models::{Block, Comment, User},
+	schema::comments,
 };
 use block_types::delegation::display::{delegate_embed_display, delegate_page_display};
 use chrono::{DateTime, Utc};
 use std::time::SystemTime;
 
-use super::breadcrumb::{gen_breadcrumb, BreadCrumb};
+use super::{
+	breadcrumb::{gen_breadcrumb, BreadCrumb},
+	comments::CommentObject,
+};
 
 /// A block on Loop. Currently the best documentation is in this schema.
 pub struct BlockObject {
@@ -137,6 +145,38 @@ impl BlockObject {
 	async fn breadcrumb(&self, context: &Context<'_>) -> Result<Vec<BreadCrumb>> {
 		let context = &context.data::<ContextData>()?.other();
 		Ok(gen_breadcrumb(context, &self.other())?)
+	}
+
+	/// All the comments that the user can see on this block
+	async fn comments(&self, context: &Context<'_>) -> Result<Vec<CommentObject>> {
+		let (context, conn) = &ContextData::parse(context)?;
+		let user_id = optional_validate_token(optional_token(context))?;
+		let comments: Vec<Comment> = comments::dsl::comments
+			.filter(comments::block_id.eq(self.id))
+			.get_results(conn)?;
+		let mut comment_objects: Vec<CommentObject> = vec![];
+
+		for comment in comments {
+			if let Some(block) = Block::by_id(comment.content_id, &conn)? {
+				if can_view(user_id, &block) {
+					comment_objects.push(comment.into())
+				}
+			}
+		}
+
+		Ok(comment_objects)
+	}
+
+	/// The total number of comments for this block. This includes blocks that the user doesn't
+	/// have access to.
+	async fn comments_count(&self, context: &Context<'_>) -> Result<i64> {
+		let (_, conn) = &ContextData::parse(context)?;
+		let count: i64 = comments::dsl::comments
+			.filter(comments::block_id.eq(self.id))
+			.count()
+			.get_result(conn)?;
+
+		Ok(count)
 	}
 }
 

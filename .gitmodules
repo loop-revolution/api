@@ -7,3 +7,6 @@
 [submodule "block-types/src/blocks/text_block"]
 	path = block-types/src/blocks/text_block
 	url = https://github.com/loop-revolution/text-block.git
+[submodule "block-types/src/blocks/document_block"]
+	path = block-types/src/blocks/document_block
+	url = https://github.com/loop-revolution/document-block.git
