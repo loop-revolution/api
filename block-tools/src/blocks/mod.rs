@@ -6,7 +6,6 @@ use crate::{
 	models::Block,
 	BlockError, LoopError, PgConnect, PostgresPool,
 };
-use async_trait::async_trait;
 
 /// The context to share among GraphQL requests
 pub struct Context {
@@ -27,7 +26,6 @@ pub struct TypeInfo {
 	pub icon: Icon,
 }
 
-#[async_trait]
 pub trait BlockType {
 	fn name() -> String;
 	fn create(input: String, context: &Context, user_id: i32) -> Result<Block, LoopError>;
