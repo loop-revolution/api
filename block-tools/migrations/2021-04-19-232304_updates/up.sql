@@ -1,0 +1,6 @@
+CREATE TABLE updates (
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP NOT NULL,
+	display TEXT NOT NULL,
+	seen INT[] NOT NULL
+);

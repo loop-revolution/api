@@ -15,6 +15,7 @@ use block_tools::{
 	models::Notification,
 	schema::notifications,
 };
+pub mod updates;
 use block_types::delegation::display::delegate_block_name;
 use chrono::{DateTime, Utc};
 

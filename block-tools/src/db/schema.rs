@@ -73,6 +73,15 @@ table! {
 }
 
 table! {
+	updates (id) {
+		id -> Int4,
+		created_at -> Timestamp,
+		display -> Text,
+		seen -> Array<Int4>,
+	}
+}
+
+table! {
 	users (id) {
 		id -> Int4,
 		username -> Varchar,
@@ -98,5 +107,6 @@ allow_tables_to_appear_in_same_query!(
 	notifications,
 	potential_users,
 	properties,
+	updates,
 	users,
 );
