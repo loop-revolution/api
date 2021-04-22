@@ -5,5 +5,4 @@ pub struct UpdateModel {
 	pub id: i32,
 	pub created_at: SystemTime,
 	pub display: String,
-	pub seen: Vec<i32>,
 }
