@@ -4,12 +4,12 @@ use block_tools::{
 	db::schema::updates,
 	dsl,
 	dsl::*,
-	models::update_models::UpdateModel,
-	LoopError,
+	models::{update_models::UpdateModel, User},
+	schema::users,
 };
 use chrono::{DateTime, Utc};
 
-use crate::graphql::ContextData;
+use crate::{graphql::ContextData, users::user::UserObject};
 
 #[derive(Clone)]
 /// A Loop notification
@@ -20,7 +20,6 @@ pub struct Update {
 	pub display: String,
 	/// When was the update posted
 	pub created_at: DateTime<Utc>,
-	pub seen: Vec<i32>,
 }
 
 #[Object]
@@ -35,9 +34,22 @@ impl Update {
 		self.created_at
 	}
 	pub async fn seen(&self, context: &Context<'_>) -> Result<Option<bool>> {
-		let (user_ctx, _) = &ContextData::parse(context)?;
+		let (user_ctx, conn) = &ContextData::parse(context)?;
 		let user_id = optional_validate_token(optional_token(user_ctx))?;
-		Ok(user_id.map(|id| self.seen.contains(&id)))
+		let user = if let Some(user_id) = user_id {
+			if let Some(user) = User::by_id(user_id, &conn)? {
+				user
+			} else {
+				return Ok(None);
+			}
+		} else {
+			return Ok(None);
+		};
+		if let Some(id) = user.latest_update_seen_id {
+			Ok(Some(id >= self.id))
+		} else {
+			Ok(Some(false))
+		}
 	}
 }
 
@@ -60,36 +72,18 @@ pub struct UpdateMutations {}
 #[Object]
 impl UpdateMutations {
 	/// Mark an update as seen/unseen
-	async fn set_update_seen(
+	async fn set_latest_seen(
 		&self,
 		context: &Context<'_>,
-		seen: bool,
-		update_id: i32,
-	) -> Result<Update> {
+		latest_update_id: i32,
+	) -> Result<UserObject> {
 		let (context, conn) = &ContextData::parse(context)?;
 		let user_id = validate_token(&require_token(context)?)?;
 
-		let update: Option<UpdateModel> = updates::dsl::updates
-			.filter(updates::dsl::id.eq(update_id))
-			.first(conn)
-			.optional()?;
-		let update = if let Some(update) = update {
-			update
-		} else {
-			return Err(LoopError::GenericError.into());
-		};
-
-		let mut new_seen = update.seen;
-		if seen && !new_seen.contains(&user_id) {
-			new_seen.push(user_id);
-		} else {
-			new_seen = new_seen.into_iter().filter(|id| id != &user_id).collect();
-		}
-		let update: UpdateModel =
-			dsl::update(updates::dsl::updates.filter(updates::id.eq(update_id)))
-				.set((updates::seen.eq(new_seen),))
-				.get_result(conn)?;
-		Ok(update.into())
+		let user: User = dsl::update(users::dsl::users.filter(users::id.eq(user_id)))
+			.set((users::latest_update_seen_id.eq(latest_update_id),))
+			.get_result(conn)?;
+		Ok(user.into())
 	}
 }
 
@@ -99,7 +93,6 @@ impl From<UpdateModel> for Update {
 			id: model.id,
 			display: model.display,
 			created_at: model.created_at.into(),
-			seen: model.seen,
 		}
 	}
 }

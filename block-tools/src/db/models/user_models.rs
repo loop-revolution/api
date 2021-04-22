@@ -20,6 +20,8 @@ pub struct User {
 	pub root_id: Option<i64>,
 	pub featured_id: Option<i64>,
 	pub expo_tokens: Vec<String>,
+	// The latest update that the user has seen
+	pub latest_update_seen_id: Option<i32>,
 }
 
 impl User {
