@@ -3,6 +3,7 @@ mod comment_models;
 pub mod email_models;
 mod notification_models;
 mod property_models;
+pub mod update_models;
 mod user_models;
 pub use block_models::*;
 pub use comment_models::*;

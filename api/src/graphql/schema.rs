@@ -7,7 +7,12 @@ use crate::{
 		perms::BlockPermMutations,
 		search::BlockSearchQueries,
 	},
-	notifications::{queries::NotificationQueries, sub::Notifications, NotificationMutations},
+	notifications::{
+		queries::NotificationQueries,
+		sub::Notifications,
+		updates::{UpdateMutations, UpdateQueries},
+		NotificationMutations,
+	},
 	users::{
 		auth::{
 			confirm_email::ConfirmEmailMutation, forgot_password::ForgotPasswordMutations,
@@ -29,6 +34,7 @@ pub struct Query(
 	BlockSearchQueries,
 	MiscQueries,
 	NotificationQueries,
+	UpdateQueries,
 	UserQueries,
 	UserSearchQueries,
 	UserSelectingQueries,
@@ -47,6 +53,7 @@ pub struct Mutation(
 	SignupMutations,
 	SpecialBlockMutations,
 	UpdateEmailMutation,
+	UpdateMutations,
 	UserInfoMutations,
 );
 

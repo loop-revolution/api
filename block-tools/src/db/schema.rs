@@ -73,6 +73,14 @@ table! {
 }
 
 table! {
+	updates (id) {
+		id -> Int4,
+		created_at -> Timestamp,
+		display -> Text,
+	}
+}
+
+table! {
 	users (id) {
 		id -> Int4,
 		username -> Varchar,
@@ -84,12 +92,14 @@ table! {
 		root_id -> Nullable<Int8>,
 		featured_id -> Nullable<Int8>,
 		expo_tokens -> Array<Text>,
+		latest_update_seen_id -> Nullable<Int4>,
 	}
 }
 
 joinable!(comments -> blocks (content_id));
 joinable!(comments -> users (author_id));
 joinable!(email_confirm -> users (user_id));
+joinable!(users -> updates (latest_update_seen_id));
 
 allow_tables_to_appear_in_same_query!(
 	blocks,
@@ -98,5 +108,6 @@ allow_tables_to_appear_in_same_query!(
 	notifications,
 	potential_users,
 	properties,
+	updates,
 	users,
 );
