@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 pub struct CardComponent {
 	pub color: Option<String>,
 	pub content: Box<DisplayComponent>,
-	pub header: Box<CardHeader>,
+	pub header: Option<Box<CardHeader>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -45,7 +45,7 @@ impl CardComponent {
 				..TextComponent::new(error)
 			}
 			.into(),
-			header: box CardHeader::new("Block Error"),
+			header: Some(box CardHeader::new("Block Error")),
 		}
 	}
 }

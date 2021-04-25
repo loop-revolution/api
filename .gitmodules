@@ -10,3 +10,9 @@
 [submodule "block-types/src/blocks/document_block"]
 	path = block-types/src/blocks/document_block
 	url = https://github.com/loop-revolution/document-block.git
+[submodule "block-types/src/blocks/habit_block"]
+	path = block-types/src/blocks/habit_block
+	url = https://github.com/loop-revolution/habit-block.git
+[submodule "block-types/src/blocks/task_block"]
+	path = block-types/src/blocks/task_block
+	url = https://github.com/loop-revolution/task-block.git

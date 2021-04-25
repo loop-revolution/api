@@ -1,3 +1,4 @@
+use crate::display_api::component::DisplayComponent;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -18,5 +19,11 @@ impl ProgressComponent {
 			thickness: None,
 			color: None,
 		}
+	}
+}
+
+impl From<ProgressComponent> for DisplayComponent {
+	fn from(component: ProgressComponent) -> Self {
+		DisplayComponent::Progress(component)
 	}
 }

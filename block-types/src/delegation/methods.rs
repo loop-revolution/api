@@ -15,6 +15,8 @@ pub fn delegate_create(
 		BlockTypes::Text => text_block::TextBlock::create(input, context, user_id),
 		BlockTypes::Group => group_block::GroupBlock::create(input, context, user_id),
 		BlockTypes::Document => document_block::DocumentBlock::create(input, context, user_id),
+		BlockTypes::Habit => habit_block::HabitBlock::create(input, context, user_id),
+		BlockTypes::Task => task_block::TaskBlock::create(input, context, user_id),
 		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }
@@ -30,12 +32,16 @@ pub fn delegate_method(
 	match block_type {
 		BlockTypes::Data => data_block::DataBlock::method_delegate(context, name, block_id, args),
 		BlockTypes::Text => text_block::TextBlock::method_delegate(context, name, block_id, args),
+		BlockTypes::Habit => {
+			habit_block::HabitBlock::method_delegate(context, name, block_id, args)
+		}
 		BlockTypes::Document => {
 			document_block::DocumentBlock::method_delegate(context, name, block_id, args)
 		}
 		BlockTypes::Group => {
 			group_block::GroupBlock::method_delegate(context, name, block_id, args)
 		}
+		BlockTypes::Task => task_block::TaskBlock::method_delegate(context, name, block_id, args),
 		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }
@@ -51,6 +57,8 @@ pub fn delegate_visibility_update(
 		BlockTypes::Data => data_block::DataBlock::visibility_update(context, block_id, public),
 		BlockTypes::Text => text_block::TextBlock::visibility_update(context, block_id, public),
 		BlockTypes::Group => group_block::GroupBlock::visibility_update(context, block_id, public),
+		BlockTypes::Habit => habit_block::HabitBlock::visibility_update(context, block_id, public),
+		BlockTypes::Task => task_block::TaskBlock::visibility_update(context, block_id, public),
 		BlockTypes::Document => {
 			document_block::DocumentBlock::visibility_update(context, block_id, public)
 		}
