@@ -1,4 +1,8 @@
-use crate::display_api::{colors::ColorScheme, component::atomic::icon::Icon, ActionObject};
+use crate::display_api::{
+	colors::ColorScheme,
+	component::{atomic::icon::Icon, DisplayComponent},
+	ActionObject,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -37,5 +41,20 @@ impl Default for DropdownComponent {
 			readonly: None,
 			variant: None,
 		}
+	}
+}
+
+impl DropdownOption {
+	pub fn new(text: impl ToString) -> Self {
+		Self {
+			text: text.to_string(),
+			icon: None,
+		}
+	}
+}
+
+impl From<DropdownComponent> for DisplayComponent {
+	fn from(component: DropdownComponent) -> Self {
+		DisplayComponent::Dropdown(component)
 	}
 }
