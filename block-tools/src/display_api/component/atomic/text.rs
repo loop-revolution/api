@@ -12,6 +12,7 @@ pub struct TextComponent {
 	pub underline: Option<bool>,
 	pub strikethrough: Option<bool>,
 	pub monospace: Option<bool>,
+	pub tiny_space: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -35,6 +36,7 @@ impl TextComponent {
 			underline: None,
 			strikethrough: None,
 			monospace: None,
+			tiny_space: None,
 		}
 	}
 }

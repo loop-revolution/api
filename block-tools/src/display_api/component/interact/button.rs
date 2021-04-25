@@ -1,4 +1,8 @@
-use crate::display_api::{colors::ColorScheme, component::atomic::icon::Icon, ActionObject};
+use crate::display_api::{
+	colors::ColorScheme,
+	component::{atomic::icon::Icon, DisplayComponent},
+	ActionObject,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -41,5 +45,11 @@ impl ButtonComponent {
 			disabled: None,
 			readonly: None,
 		}
+	}
+}
+
+impl From<ButtonComponent> for DisplayComponent {
+	fn from(component: ButtonComponent) -> Self {
+		DisplayComponent::Button(component)
 	}
 }

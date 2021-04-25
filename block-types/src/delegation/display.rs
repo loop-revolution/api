@@ -19,13 +19,10 @@ pub fn delegate_page_display(block: &Block, context: &Context) -> Result<Display
 		BlockTypes::Group => group_block::GroupBlock::page_display(block, context),
 		BlockTypes::Document => document_block::DocumentBlock::page_display(block, context),
 		BlockTypes::Habit => habit_block::HabitBlock::page_display(block, context),
-		BlockTypes::Invalid(name) => Ok(DisplayObject::new(
-			TextComponent {
-				color: Some("#ff0000".to_string()),
-				..TextComponent::new(format!("Invalid block type '{}'", name))
-			}
-			.into(),
-		)),
+		BlockTypes::Invalid(name) => Ok(DisplayObject::new(TextComponent {
+			color: Some("#ff0000".to_string()),
+			..TextComponent::new(format!("Invalid block type '{}'", name))
+		})),
 	}
 }
 
