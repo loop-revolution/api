@@ -19,6 +19,7 @@ pub fn delegate_page_display(block: &Block, context: &Context) -> Result<Display
 		BlockTypes::Group => group_block::GroupBlock::page_display(block, context),
 		BlockTypes::Document => document_block::DocumentBlock::page_display(block, context),
 		BlockTypes::Habit => habit_block::HabitBlock::page_display(block, context),
+		BlockTypes::Task => task_block::TaskBlock::page_display(block, context),
 		BlockTypes::Invalid(name) => Ok(DisplayObject::new(TextComponent {
 			color: Some("#ff0000".to_string()),
 			..TextComponent::new(format!("Invalid block type '{}'", name))
@@ -34,6 +35,7 @@ pub fn delegate_embed_display(block: &Block, context: &Context) -> DisplayCompon
 		BlockTypes::Group => group_block::GroupBlock::embed_display(block, context),
 		BlockTypes::Document => document_block::DocumentBlock::embed_display(block, context),
 		BlockTypes::Habit => habit_block::HabitBlock::embed_display(block, context),
+		BlockTypes::Task => task_block::TaskBlock::embed_display(block, context),
 		BlockTypes::Invalid(name) => TextComponent {
 			color: Some("#ff0000".to_string()),
 			..TextComponent::new(format!("Invalid block type '{}'", name))
@@ -54,6 +56,7 @@ pub fn delegate_creation_display(
 		BlockTypes::Group => group_block::GroupBlock::create_display(context, user_id),
 		BlockTypes::Document => document_block::DocumentBlock::create_display(context, user_id),
 		BlockTypes::Habit => habit_block::HabitBlock::create_display(context, user_id),
+		BlockTypes::Task => task_block::TaskBlock::create_display(context, user_id),
 		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }
@@ -70,6 +73,7 @@ pub fn delegate_block_name(
 		BlockTypes::Group => group_block::GroupBlock::block_name(block, context),
 		BlockTypes::Document => document_block::DocumentBlock::block_name(block, context),
 		BlockTypes::Habit => habit_block::HabitBlock::block_name(block, context),
+		BlockTypes::Task => task_block::TaskBlock::block_name(block, context),
 		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }
@@ -82,6 +86,7 @@ pub fn delegate_block_icon(block_type: impl ToString) -> Option<Icon> {
 		BlockTypes::Group => group_block::GroupBlock::info().icon,
 		BlockTypes::Document => document_block::DocumentBlock::info().icon,
 		BlockTypes::Habit => habit_block::HabitBlock::info().icon,
+		BlockTypes::Task => task_block::TaskBlock::info().icon,
 		BlockTypes::Invalid(_) => return None,
 	})
 }

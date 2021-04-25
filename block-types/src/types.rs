@@ -5,6 +5,7 @@ pub enum BlockTypes {
 	Document,
 	Group,
 	Habit,
+	Task,
 	Invalid(String),
 	Text,
 }
@@ -17,6 +18,7 @@ impl From<String> for BlockTypes {
 			group_block::BLOCK_NAME => BlockTypes::Group,
 			habit_block::BLOCK_NAME => BlockTypes::Habit,
 			text_block::BLOCK_NAME => BlockTypes::Text,
+			task_block::BLOCK_NAME => BlockTypes::Task,
 			_ => BlockTypes::Invalid(s),
 		}
 	}
