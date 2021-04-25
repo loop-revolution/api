@@ -9,6 +9,7 @@ pub struct RichTextComponent {
 	pub name: Option<String>,
 	pub save: Option<MethodObject>,
 	pub on_enter: Option<MethodObject>,
+	pub bordered: Option<bool>,
 }
 
 impl Default for RichTextComponent {
@@ -19,6 +20,7 @@ impl Default for RichTextComponent {
 			name: None,
 			save: None,
 			on_enter: None,
+			bordered: None,
 		}
 	}
 }

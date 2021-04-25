@@ -16,9 +16,9 @@ pub struct DisplayObject {
 }
 
 impl DisplayObject {
-	pub fn new(component: DisplayComponent) -> Self {
+	pub fn new(component: impl Into<DisplayComponent>) -> Self {
 		DisplayObject {
-			display: component,
+			display: component.into(),
 			meta: None,
 		}
 	}

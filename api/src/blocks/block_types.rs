@@ -29,6 +29,7 @@ pub fn type_list() -> Vec<BlockType> {
 	vec![
 		group_block::GroupBlock::info().into(),
 		document_block::DocumentBlock::info().into(),
+		habit_block::HabitBlock::info().into(),
 		text_block::TextBlock::info().into(),
 		data_block::DataBlock::info().into(),
 	]
