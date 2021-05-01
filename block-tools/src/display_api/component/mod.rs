@@ -33,6 +33,7 @@ pub enum DisplayComponent {
 	Card(layout::card::CardComponent),
 	DisplayList(layout::displaylist::DisplayListComponent),
 	Stack(layout::stack::StackComponent),
+	MessageList(layout::messagelist::MessageListComponent),
 	// Menu
 	ActionPopover(menus::actionpopover::ActionPopoverComponent),
 	// Misc
@@ -65,6 +66,7 @@ impl DisplayComponent {
 			Self::Icon(_) => "icon",
 			Self::Input(_) => "input",
 			Self::Link(_) => "link",
+			Self::MessageList(_) => "messagelist",
 			Self::Progress(_) => "progress",
 			Self::RichText(_) => "richtext",
 			Self::Stack(_) => "stack",
@@ -85,6 +87,7 @@ impl DisplayComponent {
 			Self::Dropdown(a) => a,
 			Self::Input(a) => a,
 			Self::Link(a) => a,
+			Self::MessageList(a) => a,
 			Self::Progress(a) => a,
 			Self::RichText(a) => a,
 			Self::Stack(a) => a,

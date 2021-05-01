@@ -13,6 +13,7 @@ pub struct CardComponent {
 	pub color: Option<String>,
 	pub content: Box<DisplayComponent>,
 	pub header: Option<Box<CardHeader>>,
+	pub detached_menu: Option<DetachedMenu>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -22,6 +23,17 @@ pub struct CardHeader {
 	pub block_id: Option<String>,
 	pub menu: Option<MenuComponent>,
 	pub custom: Option<Box<DisplayComponent>>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct DetachedMenu {
+	pub menu: MenuComponent,
+	pub location: DetachedMenuLocation,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum DetachedMenuLocation {
+	BottomRight,
 }
 
 impl CardHeader {
@@ -37,15 +49,24 @@ impl CardHeader {
 }
 
 impl CardComponent {
-	pub fn error_card(error: impl ToString) -> Self {
+	pub fn new(content: impl Into<DisplayComponent>) -> Self {
 		Self {
 			color: None,
-			content: box TextComponent {
+			content: box content.into(),
+			header: None,
+			detached_menu: None,
+		}
+	}
+}
+
+impl CardComponent {
+	pub fn error_card(error: impl ToString) -> Self {
+		Self {
+			header: Some(box CardHeader::new("Block Error")),
+			..Self::new(TextComponent {
 				color_scheme: Some(ColorScheme::Red),
 				..TextComponent::new(error)
-			}
-			.into(),
-			header: Some(box CardHeader::new("Block Error")),
+			})
 		}
 	}
 }
