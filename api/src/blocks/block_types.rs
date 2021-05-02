@@ -31,6 +31,7 @@ pub fn type_list() -> Vec<BlockType> {
 		task_block::TaskBlock::info().into(),
 		habit_block::HabitBlock::info().into(),
 		group_block::GroupBlock::info().into(),
+		chat_block::ChatBlock::info().into(),
 		text_block::TextBlock::info().into(),
 	]
 }
