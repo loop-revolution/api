@@ -10,7 +10,7 @@ use block_tools::{
 	models::Block,
 	schema::blocks,
 };
-use block_types::delegation::display::delegate_block_icon;
+use block_types::delegation::display::{delegate_block_icon, delegate_block_name};
 use std::time::SystemTime;
 use strsim::normalized_levenshtein;
 
@@ -71,21 +71,16 @@ impl BlockSearchQueries {
 				can_view(user_id, block)
 			})
 			.map(|block| {
-				let crumbs = gen_breadcrumb(context, &block).unwrap_or_default();
-				let crumb_string = crumbs
-					.iter()
-					.map(|crumb| crumb.name.as_str())
-					.collect::<Vec<&str>>()
-					.join("/");
-
-				let mut sim = normalized_levenshtein(&crumb_string, &query);
+				let name =
+					delegate_block_name(context, &block.block_type, &block).unwrap_or_default();
+				let mut sim = normalized_levenshtein(&name, &query);
 
 				// If the block is data, make it less influencial
 				if block.block_type == "data" {
 					sim /= 2.;
 				}
-				let result = BlockResult {
-					crumbs,
+				let result = PreBlockResult {
+					block: block.clone(),
 					icon: delegate_block_icon(block.block_type).map(String::from),
 					color: block.color,
 					id: block.id,
@@ -98,7 +93,7 @@ impl BlockSearchQueries {
 					created_at: block.created_at,
 				}
 			})
-			.filter(|helper| helper.strsim != 0.)
+			.filter(|helper| helper.strsim > 0.01)
 			.collect::<Vec<BlockSortHelper>>();
 
 		match sort_by {
@@ -116,16 +111,38 @@ impl BlockSearchQueries {
 			}
 		}
 
-		Ok(helpers.into_iter().map(|helper| helper.result).collect())
+		Ok(helpers
+			.into_iter()
+			.map(|helper| {
+				let block = helper.result.block;
+				let crumbs = gen_breadcrumb(context, &block).unwrap_or_default();
+				BlockResult {
+					icon: helper.result.icon,
+					color: helper.result.color,
+					id: helper.result.id,
+					crumbs,
+				}
+			})
+			.collect())
 	}
 }
 
 struct BlockSortHelper {
-	result: BlockResult,
+	result: PreBlockResult,
 	strsim: f64,
 	star_count: usize,
 	updated_at: SystemTime,
 	created_at: SystemTime,
+}
+
+struct PreBlockResult {
+	block: Block,
+	/// Icon to show to represent the block
+	icon: Option<String>,
+	/// Color of the block
+	color: Option<String>,
+	/// The ID of the block that was searched
+	id: i64,
 }
 
 #[derive(SimpleObject)]
