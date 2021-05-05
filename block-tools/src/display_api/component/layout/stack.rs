@@ -14,6 +14,7 @@ pub enum StackDirection {
 	Horizontal,
 	Vertical,
 	Fit,
+	Masonry,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -72,6 +73,12 @@ impl StackComponent {
 	pub fn horizontal() -> Self {
 		Self {
 			direction: Some(StackDirection::Horizontal),
+			..Default::default()
+		}
+	}
+	pub fn masonry() -> Self {
+		Self {
+			direction: Some(StackDirection::Masonry),
 			..Default::default()
 		}
 	}
