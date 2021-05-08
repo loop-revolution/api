@@ -59,6 +59,15 @@ impl CardComponent {
 	}
 }
 
+impl DetachedMenu {
+	pub fn bottom_right(menu: MenuComponent) -> Self {
+		Self {
+			menu,
+			location: DetachedMenuLocation::BottomRight,
+		}
+	}
+}
+
 impl CardComponent {
 	pub fn error_card(error: impl ToString) -> Self {
 		Self {
