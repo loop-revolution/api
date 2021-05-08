@@ -16,6 +16,3 @@
 [submodule "block-types/src/blocks/task_block"]
 	path = block-types/src/blocks/task_block
 	url = https://github.com/loop-revolution/task-block.git
-[submodule "block-types/src/blocks/chat_block"]
-	path = block-types/src/blocks/chat_block
-	url = https://github.com/loop-revolution/chat-block.git

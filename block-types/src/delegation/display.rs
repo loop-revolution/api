@@ -14,7 +14,6 @@ use block_tools::{
 pub fn delegate_page_display(block: &Block, context: &Context) -> Result<DisplayObject, LoopError> {
 	let block_type: BlockTypes = block.block_type.clone().into();
 	match block_type {
-		BlockTypes::Chat => chat_block::ChatBlock::page_display(block, context),
 		BlockTypes::Data => data_block::DataBlock::page_display(block, context),
 		BlockTypes::Text => text_block::TextBlock::page_display(block, context),
 		BlockTypes::Group => group_block::GroupBlock::page_display(block, context),
@@ -32,7 +31,6 @@ pub fn delegate_embed_display(block: &Block, context: &Context) -> DisplayCompon
 	let block_type: BlockTypes = block.block_type.clone().into();
 	match block_type {
 		BlockTypes::Data => data_block::DataBlock::embed_display(block, context),
-		BlockTypes::Chat => chat_block::ChatBlock::embed_display(block, context),
 		BlockTypes::Text => text_block::TextBlock::embed_display(block, context),
 		BlockTypes::Group => group_block::GroupBlock::embed_display(block, context),
 		BlockTypes::Document => document_block::DocumentBlock::embed_display(block, context),
@@ -54,7 +52,6 @@ pub fn delegate_creation_display(
 	let block_type: BlockTypes = block_type.to_string().into();
 	match block_type {
 		BlockTypes::Data => data_block::DataBlock::create_display(context, user_id),
-		BlockTypes::Chat => chat_block::ChatBlock::create_display(context, user_id),
 		BlockTypes::Text => text_block::TextBlock::create_display(context, user_id),
 		BlockTypes::Group => group_block::GroupBlock::create_display(context, user_id),
 		BlockTypes::Document => document_block::DocumentBlock::create_display(context, user_id),
@@ -72,7 +69,6 @@ pub fn delegate_block_name(
 	let block_type: BlockTypes = block_type.to_string().into();
 	match block_type {
 		BlockTypes::Data => data_block::DataBlock::block_name(block, context),
-		BlockTypes::Chat => chat_block::ChatBlock::block_name(block, context),
 		BlockTypes::Text => text_block::TextBlock::block_name(block, context),
 		BlockTypes::Group => group_block::GroupBlock::block_name(block, context),
 		BlockTypes::Document => document_block::DocumentBlock::block_name(block, context),
@@ -86,7 +82,6 @@ pub fn delegate_block_icon(block_type: impl ToString) -> Option<Icon> {
 	let block_type: BlockTypes = block_type.to_string().into();
 	Some(match block_type {
 		BlockTypes::Data => data_block::DataBlock::info().icon,
-		BlockTypes::Chat => chat_block::ChatBlock::info().icon,
 		BlockTypes::Text => text_block::TextBlock::info().icon,
 		BlockTypes::Group => group_block::GroupBlock::info().icon,
 		BlockTypes::Document => document_block::DocumentBlock::info().icon,
