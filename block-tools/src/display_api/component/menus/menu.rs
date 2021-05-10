@@ -40,6 +40,7 @@ pub struct CustomMenuItem {
 	pub text: String,
 	pub interact: Option<ActionObject>,
 	pub disabled: Option<bool>,
+	pub listed: Option<bool>,
 }
 
 impl CustomMenuItem {
@@ -49,6 +50,7 @@ impl CustomMenuItem {
 			text: text.to_string(),
 			interact: None,
 			disabled: None,
+			listed: None,
 		}
 	}
 }

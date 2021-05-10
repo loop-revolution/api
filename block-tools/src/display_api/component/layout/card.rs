@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 pub struct CardComponent {
 	pub color: Option<String>,
 	pub content: Box<DisplayComponent>,
-	pub header: Option<Box<CardHeader>>,
+	pub header: Option<CardHeader>,
 	pub detached_menu: Option<DetachedMenu>,
 }
 
@@ -71,7 +71,7 @@ impl DetachedMenu {
 impl CardComponent {
 	pub fn error_card(error: impl ToString) -> Self {
 		Self {
-			header: Some(box CardHeader::new("Block Error")),
+			header: Some(CardHeader::new("Block Error")),
 			..Self::new(TextComponent {
 				color_scheme: Some(ColorScheme::Red),
 				..TextComponent::new(error)

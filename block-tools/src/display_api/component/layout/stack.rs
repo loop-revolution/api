@@ -1,12 +1,13 @@
 use crate::display_api::component::{DisplayComponent, WrappedComponent};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct StackComponent {
 	pub direction: Option<StackDirection>,
 	pub items: Vec<WrappedComponent>,
 	pub align_y: Option<AlignYOptions>,
 	pub align_x: Option<AlignXOptions>,
+	pub spacing: Option<SpacingOptions>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -31,15 +32,11 @@ pub enum AlignXOptions {
 	Right,
 }
 
-impl Default for StackComponent {
-	fn default() -> Self {
-		Self {
-			direction: None,
-			items: vec![],
-			align_y: None,
-			align_x: None,
-		}
-	}
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum SpacingOptions {
+	Between,
+	Around,
+	Default,
 }
 
 impl StackComponent {
