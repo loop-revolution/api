@@ -29,7 +29,7 @@ jobs:
           --health-retries 5
     steps:
       - name: Auto-cancel redundant jobs
-        uses: technote-space/auto-cancel-redundant-job@v1
+        uses: technote-space/auto-cancel-redundant-job@v1.7.4
 
       - name: Checkout the repo
         uses: actions/checkout@v2
