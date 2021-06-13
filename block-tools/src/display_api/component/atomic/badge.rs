@@ -1,4 +1,4 @@
-use crate::display_api::colors::ColorScheme;
+use crate::display_api::{colors::ColorScheme, component::DisplayComponent};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -24,5 +24,11 @@ impl BadgeComponent {
 			text: text.to_string(),
 			variant: None,
 		}
+	}
+}
+
+impl From<BadgeComponent> for DisplayComponent {
+	fn from(component: BadgeComponent) -> Self {
+		DisplayComponent::Badge(component)
 	}
 }
