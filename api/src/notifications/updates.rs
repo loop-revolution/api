@@ -37,7 +37,7 @@ impl Update {
 		let (user_ctx, conn) = &ContextData::parse(context)?;
 		let user_id = optional_validate_token(optional_token(user_ctx))?;
 		let user = if let Some(user_id) = user_id {
-			if let Some(user) = User::by_id(user_id, &conn)? {
+			if let Some(user) = User::by_id(user_id, conn)? {
 				user
 			} else {
 				return Ok(None);

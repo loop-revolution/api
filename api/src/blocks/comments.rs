@@ -49,7 +49,7 @@ impl CommentObject {
 	/// Who made the comment?
 	async fn author(&self, context: &Context<'_>) -> Result<UserObject> {
 		let (_, conn) = &ContextData::parse(context)?;
-		let user = User::by_id(self.author_id, &conn)?;
+		let user = User::by_id(self.author_id, conn)?;
 
 		Ok(user.unwrap().into())
 	}
@@ -57,7 +57,7 @@ impl CommentObject {
 	/// The comment's block
 	async fn block(&self, context: &Context<'_>) -> Result<BlockObject> {
 		let (_, conn) = &ContextData::parse(context)?;
-		let block = Block::by_id(self.content_id, &conn)?;
+		let block = Block::by_id(self.content_id, conn)?;
 
 		Ok(block.unwrap().into())
 	}

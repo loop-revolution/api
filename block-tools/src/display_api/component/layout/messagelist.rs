@@ -41,7 +41,7 @@ impl MessageListMessage {
 			component: component.into(),
 			author_display_name,
 			author_username,
-			sent_at: Utc::now().into(),
+			sent_at: Utc::now(),
 			stars: None,
 			menu: None,
 		}

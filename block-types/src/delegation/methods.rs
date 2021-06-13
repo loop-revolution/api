@@ -65,3 +65,35 @@ pub fn delegate_visibility_update(
 		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
 	}
 }
+
+pub fn delegate_general_perm_update(
+	context: &Context,
+	block_type: &str,
+	block_id: i64,
+	perm_full: Vec<i32>,
+	perm_edit: Vec<i32>,
+	perm_view: Vec<i32>,
+) -> Result<(), LoopError> {
+	let block_type: BlockTypes = block_type.to_string().into();
+	match block_type {
+		BlockTypes::Data => data_block::DataBlock::general_perm_update(
+			context, block_id, perm_full, perm_edit, perm_view,
+		),
+		BlockTypes::Text => text_block::TextBlock::general_perm_update(
+			context, block_id, perm_full, perm_edit, perm_view,
+		),
+		BlockTypes::Group => group_block::GroupBlock::general_perm_update(
+			context, block_id, perm_full, perm_edit, perm_view,
+		),
+		BlockTypes::Habit => habit_block::HabitBlock::general_perm_update(
+			context, block_id, perm_full, perm_edit, perm_view,
+		),
+		BlockTypes::Task => task_block::TaskBlock::general_perm_update(
+			context, block_id, perm_full, perm_edit, perm_view,
+		),
+		BlockTypes::Document => document_block::DocumentBlock::general_perm_update(
+			context, block_id, perm_full, perm_edit, perm_view,
+		),
+		BlockTypes::Invalid(name) => Err(BlockError::TypeExist(name).into()),
+	}
+}

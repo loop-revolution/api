@@ -74,13 +74,13 @@ impl MenuComponent {
 	pub fn from_block(block: &Block, user_id: i32) -> Self {
 		let mut menu = MenuComponent::new(block.id);
 
-		if has_perm_level(user_id, &block, PermLevel::View) {
+		if has_perm_level(user_id, block, PermLevel::View) {
 			menu.notifications_enabled = Some(block.notif_enabled.contains(&user_id));
 			menu.star_button = Some(StarButton {
 				count: block.stars.len(),
 				starred: block.stars.contains(&user_id),
 			});
-			let public = if has_perm_level(user_id, &block, PermLevel::Full) {
+			let public = if has_perm_level(user_id, block, PermLevel::Full) {
 				Some(block.public)
 			} else {
 				None
@@ -93,7 +93,7 @@ impl MenuComponent {
 			});
 		}
 
-		if has_perm_level(user_id, &block, PermLevel::Owner) {
+		if has_perm_level(user_id, block, PermLevel::Owner) {
 			menu.delete = Some(true);
 		}
 

@@ -49,4 +49,13 @@ pub trait BlockType {
 	) -> Result<(), LoopError> {
 		Ok(())
 	}
+	fn general_perm_update(
+		_context: &Context,
+		_block_id: i64,
+		_perm_full: Vec<i32>,
+		_perm_edit: Vec<i32>,
+		_perm_view: Vec<i32>,
+	) -> Result<(), LoopError> {
+		Ok(())
+	}
 }

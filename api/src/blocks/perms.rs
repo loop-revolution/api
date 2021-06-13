@@ -9,7 +9,10 @@ use block_tools::{
 	models::{Block, NewNotification, User},
 	NoAccessSubject, UserError,
 };
-use block_types::delegation::{display::delegate_block_name, methods::delegate_visibility_update};
+use block_types::delegation::{
+	display::delegate_block_name,
+	methods::{delegate_general_perm_update, delegate_visibility_update},
+};
 
 #[derive(Default)]
 pub struct BlockPermMutations;
@@ -92,7 +95,21 @@ impl BlockPermMutations {
 			return Err(access_err);
 		}
 
-		let block = block.update_perms(perm_full, perm_edit, perm_view, conn)?;
+		let block = block.update_perms(
+			perm_full.clone(),
+			perm_edit.clone(),
+			perm_view.clone(),
+			conn,
+		)?;
+
+		delegate_general_perm_update(
+			context,
+			&block.block_type,
+			block.id,
+			perm_full,
+			perm_edit,
+			perm_view,
+		)?;
 
 		// If the user is not the owner, send a notification
 		if user_id != block.owner_id {

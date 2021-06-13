@@ -101,7 +101,7 @@ impl BlockObject {
 	/// The user that owns the block
 	async fn owner(&self, context: &Context<'_>) -> Result<UserObject> {
 		let (_, conn) = &ContextData::parse(context)?;
-		let user = User::by_id(self.owner_id, &conn)?;
+		let user = User::by_id(self.owner_id, conn)?;
 
 		Ok(user.unwrap().into())
 	}
@@ -118,7 +118,7 @@ impl BlockObject {
 		};
 
 		for id in id_list {
-			let user = User::by_id(id, &conn)?;
+			let user = User::by_id(id, conn)?;
 			if let Some(user) = user {
 				users.push(user.into());
 			}
@@ -158,7 +158,7 @@ impl BlockObject {
 		let mut comment_objects: Vec<CommentObject> = vec![];
 
 		for comment in comments {
-			if let Some(block) = Block::by_id(comment.content_id, &conn)? {
+			if let Some(block) = Block::by_id(comment.content_id, conn)? {
 				if can_view(user_id, &block) {
 					comment_objects.push(comment.into())
 				}
