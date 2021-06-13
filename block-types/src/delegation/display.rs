@@ -1,8 +1,12 @@
 use crate::blocks::*;
 use crate::types::BlockTypes;
 use block_tools::{
+	auth::{optional_token, optional_validate_token},
 	blocks::BlockType,
-	display_api::component::atomic::{icon::Icon, text::TextComponent},
+	display_api::component::{
+		atomic::{icon::Icon, text::TextComponent},
+		layout::card::CardComponent,
+	},
 };
 use block_tools::{
 	blocks::Context,
@@ -29,6 +33,7 @@ pub fn delegate_page_display(block: &Block, context: &Context) -> Result<Display
 
 pub fn delegate_embed_display(block: &Block, context: &Context) -> DisplayComponent {
 	let block_type: BlockTypes = block.block_type.clone().into();
+	let user_id = optional_validate_token(optional_token(context)).unwrap();
 	match block_type {
 		BlockTypes::Data => data_block::DataBlock::embed_display(block, context),
 		BlockTypes::Text => text_block::TextBlock::embed_display(block, context),
@@ -36,11 +41,17 @@ pub fn delegate_embed_display(block: &Block, context: &Context) -> DisplayCompon
 		BlockTypes::Document => document_block::DocumentBlock::embed_display(block, context),
 		BlockTypes::Habit => habit_block::HabitBlock::embed_display(block, context),
 		BlockTypes::Task => task_block::TaskBlock::embed_display(block, context),
-		BlockTypes::Invalid(name) => TextComponent {
-			color: Some("#ff0000".to_string()),
-			..TextComponent::new(format!("Invalid block type '{}'", name))
+		BlockTypes::Invalid(_) => {
+			if user_id.is_some() {
+				let text = format!("Invalid block type: {}", block.block_type);
+				let card = CardComponent {
+					..CardComponent::error_card(text)
+				};
+				card.into()
+			} else {
+				TextComponent::new("").into()
+			}
 		}
-		.into(),
 	}
 }
 

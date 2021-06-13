@@ -54,6 +54,12 @@ impl TextComponent {
 			..Self::new(text)
 		}
 	}
+	pub fn error(text: impl ToString) -> Self {
+		TextComponent {
+			preset: Some(TextPreset::Error),
+			..Self::new(text)
+		}
+	}
 }
 
 impl From<TextComponent> for DisplayComponent {
