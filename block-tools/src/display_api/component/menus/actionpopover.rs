@@ -12,9 +12,9 @@ pub struct ActionPopoverComponent {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ActionPopoverAction {
-	icon: Option<Icon>,
-	text: String,
-	interact: Option<ActionObject>,
+	pub icon: Option<Icon>,
+	pub text: String,
+	pub interact: Option<ActionObject>,
 }
 
 impl Default for ActionPopoverComponent {
@@ -33,5 +33,11 @@ impl ActionPopoverAction {
 			text: text.to_string(),
 			interact: None,
 		}
+	}
+}
+
+impl From<ActionPopoverComponent> for DisplayComponent {
+	fn from(component: ActionPopoverComponent) -> Self {
+		DisplayComponent::ActionPopover(component)
 	}
 }

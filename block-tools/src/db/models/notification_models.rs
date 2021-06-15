@@ -50,10 +50,10 @@ impl NewNotification {
 		Ok(notif)
 	}
 
-	pub fn new(name: String, description: String) -> Self {
+	pub fn new(name: impl ToString, description: impl ToString) -> Self {
 		NewNotification {
-			name,
-			description,
+			name: name.to_string(),
+			description: description.to_string(),
 			recipients: vec![],
 			block_link: None,
 			time: Some(SystemTime::now()),
