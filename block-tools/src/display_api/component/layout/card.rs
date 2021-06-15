@@ -14,6 +14,7 @@ pub struct CardComponent {
 	pub content: Box<DisplayComponent>,
 	pub header: Option<CardHeader>,
 	pub detached_menu: Option<DetachedMenu>,
+	pub mobile_override: Option<Box<CardComponent>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -55,6 +56,7 @@ impl CardComponent {
 			content: box content.into(),
 			header: None,
 			detached_menu: None,
+			mobile_override: None,
 		}
 	}
 }
