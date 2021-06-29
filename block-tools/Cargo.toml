@@ -25,7 +25,7 @@ slab = "0.4.3"
 sentry = "0.22"
 expo-server-sdk = { git = "https://github.com/big-neon/expo-server-sdk-rust.git", rev = "5e133bce17d76b5cd9ef8e3f9e58dd194a4c453c" }
 colors-transform = "0.2.11"
-rand = "0.8.3"
+rand = "0.8.4"
 
 [dependencies.palette]
 version = "0.5.0"
