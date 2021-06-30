@@ -35,5 +35,5 @@ log = "0.4.13"
 pretty_env_logger = "0.4.0"
 
 ## Sign up
-lettre = "0.10.0-beta.3"
+lettre = "0.10.0-rc.3"
 rust-argon2 = "0.8.3"
