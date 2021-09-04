@@ -2,6 +2,7 @@ use super::misc_queries::MiscQueries;
 use crate::{
 	blocks::{
 		basic::{BasicBlockMutations, BasicBlockQueries},
+		colors::BlockColorMutations,
 		comments::CommentMutations,
 		create::{BlockCreationMutation, BlockCreationQuery},
 		perms::BlockPermMutations,
@@ -55,6 +56,7 @@ pub struct Mutation(
 	UpdateEmailMutation,
 	UpdateMutations,
 	UserInfoMutations,
+	BlockColorMutations,
 );
 
 pub type Schema = GraphQLSchema<Query, Mutation, Notifications>;
