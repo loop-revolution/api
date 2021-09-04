@@ -1,7 +1,7 @@
 use super::block::BlockObject;
 use crate::graphql::ContextData;
 use async_graphql::{Context, Error, Object};
-use block_tools::models::User;
+use block_tools::models::{Block, User};
 use block_tools::{
 	auth::{require_token, validate_token},
 	UserError,
@@ -25,6 +25,7 @@ impl BlockCreationMutation {
 		context: &Context<'_>,
 		#[graphql(desc = "Name of the block type to create.")] r#type: String,
 		#[graphql(desc = "JSON string to specify what to create.")] input: String,
+		inherit_block_perms: Option<i64>,
 	) -> Result<BlockObject, Error> {
 		let (context, conn) = &ContextData::parse(context)?;
 
@@ -34,8 +35,21 @@ impl BlockCreationMutation {
 			None => return Err(UserError::JwtGeneric.into()),
 		};
 
-		let mut block =
-			BlockObject::from(delegate_create(r#type.as_str(), input, context, user_id)?);
+		let block = delegate_create(r#type.as_str(), input, context, user_id)?;
+
+		if let Some(inheritance_id) = inherit_block_perms {
+			if let Some(inheritance) = Block::by_id(inheritance_id, conn)? {
+				block.update_public(inheritance.public, conn)?;
+				block.update_perms(
+					inheritance.perm_full,
+					inheritance.perm_edit,
+					inheritance.perm_view,
+					conn,
+				)?;
+			}
+		}
+
+		let mut block = BlockObject::from(block);
 
 		// If the user has no root, create one
 		if user.root_id.is_none() {
