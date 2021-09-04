@@ -129,4 +129,41 @@ impl BlockPermMutations {
 
 		Ok(block.into())
 	}
+
+	/// Copy the permissions of a block to another, overriding the current ones
+	pub async fn copy_block_permissions(
+		&self,
+		context: &Context<'_>,
+		example_block_id: i64,
+		target_block_id: i64,
+	) -> Result<BlockObject, Error> {
+		let (context, conn) = &ContextData::parse(context)?;
+
+		let user_id = validate_token(&require_token(context)?)?;
+
+		let access_err: Error =
+			UserError::NoAccess(NoAccessSubject::UpdatePermissions(target_block_id)).into();
+
+		if let Some(inheritance) = Block::by_id(example_block_id, conn)? {
+			if let Some(target) = Block::by_id(target_block_id, conn)? {
+				if !has_perm_level(user_id, &target, PermLevel::Full) {
+					return Err(access_err);
+				}
+
+				target.update_public(inheritance.public, conn)?;
+				target.update_perms(
+					inheritance.perm_full,
+					inheritance.perm_edit,
+					inheritance.perm_view,
+					conn,
+				)?;
+
+				Ok(BlockObject::from(target))
+			} else {
+				Err(access_err)
+			}
+		} else {
+			Err(UserError::NoAccess(NoAccessSubject::ViewBlock(example_block_id)).into())
+		}
+	}
 }
